@@ -24,7 +24,6 @@ from smarteval import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("portals/", include('portals.urls')),
-    path("students/", include('student_portal.urls')),
     path("", views.home, name="home"),
 ]
 
