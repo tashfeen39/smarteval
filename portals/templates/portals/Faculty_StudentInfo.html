@@ -1,0 +1,334 @@
+{% extends "portals/dashboard_template.html" %}
+
+
+{% load static %}
+
+<!-- ---------------- Block for Header ---------------- -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'static/plugins/scrollbar/scroll.min.css' %}">
+
+{% endblock %}
+
+
+<!-- ---------------- Block for Body ---------------- -->
+{% block body %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <h5 class="card-title">Student Profile</h5>
+
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4">
+                                <div class="profile-user-box">
+                                    <div class="profile-user-img">
+                                        <img src="static/img/profiles/avatar-01.jpg" alt="Profile">
+
+                                    </div>
+                                    <div class="names-profiles">
+                                        <h4>Muhammad Ali Raza</h4>
+                                        <h5>Computer Science</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+
+                        </div>
+                        <div class="col-lg-6 col-lg-8">
+                            <div class="card" style="border: 1px solid black; border-radius: 0px;">
+                                <div class="card-header">
+                                    <div class="table-responsive">
+
+                                        <table class="table table-nowrap mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Quizes</th>
+                                                    <th>Assignments</th>
+                                                    <th>CP</th>
+                                                    <th>Mids</th>
+                                                    <th>Finals</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="card-body vertical-scroll scroll-demo ps-container ps-theme-default ps-active-y"
+                                    data-ps-id="ac123a32-a3ce-8692-ad21-d0c67a6832af">
+                                    <div class="table-responsive">
+                                        <table class="table table-nowrap mb-0">
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>Anna</td>
+                                                    <td>Pitt</td>
+                                                    <td>35</td>
+                                                    <td>New York</td>
+                                                    <td>USA</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Bar Chart</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="h-250" id="flotBar1" style="padding: 0px; position: relative;">
+                                        <canvas class="flot-base" width="997" height="500"
+                                            style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                        <div class="flot-text"
+                                            style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);">
+                                            <div class="flot-x-axis flot-x1-axis xAxis x1Axis"
+                                                style="position: absolute; inset: 0px;">
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 15px; text-align: center;">
+                                                    0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 65px; text-align: center;">
+                                                    1</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 116px; text-align: center;">
+                                                    2</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 166px; text-align: center;">
+                                                    3</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 216px; text-align: center;">
+                                                    4</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 267px; text-align: center;">
+                                                    5</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 317px; text-align: center;">
+                                                    6</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 367px; text-align: center;">
+                                                    7</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 417px; text-align: center;">
+                                                    8</div>
+                                                <div
+                                                    style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 468px; text-align: center;">
+                                                    9</div>
+                                            </div>
+                                            <div class="flot-y-axis flot-y1-axis yAxis y1Axis"
+                                                style="position: absolute; inset: 0px;">
+                                                <div
+                                                    style="position: absolute; top: 226px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 7px; text-align: right;">
+                                                    0</div>
+                                                <div
+                                                    style="position: absolute; top: 181px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                    10</div>
+                                                <div
+                                                    style="position: absolute; top: 136px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                    20</div>
+                                                <div
+                                                    style="position: absolute; top: 92px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                    30</div>
+                                                <div
+                                                    style="position: absolute; top: 47px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                    40</div>
+                                                <div
+                                                    style="position: absolute; top: 2px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                    50</div>
+                                            </div>
+                                        </div><canvas class="flot-overlay" width="997" height="500"
+                                            style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Line Chart</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="h-250" id="flotLine1" style="padding: 0px; position: relative;">
+                                        <canvas class="flot-base" width="997" height="500"
+                                            style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                        <div class="flot-text"
+                                            style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);">
+                                            <div class="flot-x-axis flot-x1-axis xAxis x1Axis"
+                                                style="position: absolute; inset: 0px;">
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 10px; text-align: center;">
+                                                    0.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 89px; text-align: center;">
+                                                    1.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 168px; text-align: center;">
+                                                    2.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 247px; text-align: center;">
+                                                    3.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 326px; text-align: center;">
+                                                    4.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 405px; text-align: center;">
+                                                    5.0</div>
+                                                <div
+                                                    style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 484px; text-align: center;">
+                                                    6.0</div>
+                                            </div>
+                                            <div class="flot-y-axis flot-y1-axis yAxis y1Axis"
+                                                style="position: absolute; inset: 0px;">
+                                                <div
+                                                    style="position: absolute; top: 227px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 6px; text-align: right;">
+                                                    0</div>
+                                                <div
+                                                    style="position: absolute; top: 171px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                    10</div>
+                                                <div
+                                                    style="position: absolute; top: 115px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                    20</div>
+                                                <div
+                                                    style="position: absolute; top: 58px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                    30</div>
+                                                <div
+                                                    style="position: absolute; top: 2px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                    40</div>
+                                            </div>
+                                        </div><canvas class="flot-overlay" width="997" height="500"
+                                            style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                        <div class="legend">
+                                            <div
+                                                style="position: absolute; width: 72.1875px; height: 41.5px; top: 13px; left: 22px; background-color: rgb(255, 255, 255); opacity: 0.85;">
+                                            </div>
+                                            <table
+                                                style="position:absolute;top:13px;left:22px;;font-size:smaller;color:#545454">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="legendColorBox">
+                                                            <div style="border:1px solid transparent;padding:1px">
+                                                                <div
+                                                                    style="width:4px;height:0;border:5px solid #664dc9;overflow:hidden">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="legendLabel">Me</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="legendColorBox">
+                                                            <div style="border:1px solid transparent;padding:1px">
+                                                                <div
+                                                                    style="width:4px;height:0;border:5px solid #44c4fa;overflow:hidden">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="legendLabel">Class Average</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- ---------------- Block for Footer ---------------- -->
+{% block footer %}
+
+<script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
+<script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.fillbetween.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.pie.js' %}"></script>
+<script src="{% static 'plugins/flot/chart-data.js' %}"></script>
+
+{% endblock %}
