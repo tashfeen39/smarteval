@@ -39,7 +39,7 @@
         <div class="header">
 
             <div class="header-left">
-                <a href="Faculty_Dashboard.html" class="logo">
+                <a href="{% url 'portals:dashboard' %}" class="logo">
                     <img src="{% static 'img/logo.png' %}" alt="Logo">
                 </a>
                 <a href="index.html" class="logo logo-small">
@@ -181,7 +181,7 @@
                                 <h6>Ali Raza</h6>
                             </div>
                         </div>
-                        <a class="dropdown-item" href="Faculty_Profile.html">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'portals:my-profile' %}">My Profile</a>
                         <a class="dropdown-item" href="Faculty_login.html">Logout</a>
                     </div>
                 </li>
@@ -199,37 +199,44 @@
                             <span>Main Menu</span>
                         </li>
                         <li>
-                            <a href="Faculty_Dashboard.html"><i class="feather-grid"></i> <span> Dashboard</span> </a>
-
-                        </li>
-                        <li>
-                            <a href="Faculty_DisplayClasses.html"><i class="fas fa-graduation-cap"></i> <span> Display
-                                    Classes</span> </a>
-
-                        </li>
-                        <li>
-                            <a href="Faculty_Grading.html"><i class="fas fa-chalkboard-teacher"></i> <span>
-                                    Grading</span> </a>
-
-                        </li>
-                        <li>
-                            <a href="Faculty_MarksEntry.html"><i class="fas fa-building"></i> <span> Marks Entry</span>
+                            <a href="{% url 'portals:dashboard' %}"><i class="feather-grid"></i> <span> Dashboard</span>
                             </a>
 
                         </li>
                         <li>
-                            <a href="Faculty_GenerateExam.html"><i class="fas fa-book-reader"></i> <span> Generate
+                            <a href="{% url 'portals:display-classes' %}"><i class="fas fa-graduation-cap"></i> <span>
+                                    Display
+                                    Classes</span> </a>
+
+                        </li>
+                        <li>
+                            <a href="{% url 'portals:grading' %}"><i class="fas fa-chalkboard-teacher"></i> <span>
+                                    Grading</span> </a>
+
+                        </li>
+                        <li>
+                            <a href="{% url 'portals:enter-marks' %}"><i class="fas fa-building"></i> <span> Marks
+                                    Entry</span>
+                            </a>
+
+                        </li>
+                        <li>
+                            <a href="{% url 'portals:generate-exam' %}"><i class="fas fa-book-reader"></i> <span>
+                                    Generate
                                     Exam</span>
                             </a>
 
                         </li>
                         <li>
-                            <a href="Faculty_Feedbacks.html"><i class="fas fa-clipboard"></i> <span> Feedbacks</span>
+                            <a href="{% url 'portals:feedbacks' %}"><i class="fas fa-clipboard"></i> <span>
+                                    Feedbacks</span>
                             </a>
 
                         </li>
                         <li>
-                            <a href="Faculty_Complaints.html"><i class="fas fa-file"></i> <span> Complaints</span> </a>
+                            <a href="{% url 'portals:complaints' %}"><i class="fas fa-file"></i> <span>
+                                    Complaints</span>
+                            </a>
 
                         </li>
                     </ul>
