@@ -16,11 +16,19 @@ class Student(models.Model):
     roll_no = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='teacher')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     subject = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 
