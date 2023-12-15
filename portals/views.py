@@ -33,3 +33,6 @@ def faculty_profile_view(request):
 
 def faculty_student_info_view(request):
     return render(request, "portals/Faculty_StudentInfo.html")
+
+def faculty_student_marks_entry_view(request):
+    return render(request, "portals/Faculty_StudentsMarksEntry.html")

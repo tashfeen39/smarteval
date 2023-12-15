@@ -5,7 +5,7 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
-<link rel="stylesheet" href="{% static 'static/plugins/scrollbar/scroll.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/scrollbar/scroll.min.css' %}">
 
 {% endblock %}
 
@@ -28,7 +28,7 @@
                             <div class="col-lg-4 col-md-4">
                                 <div class="profile-user-box">
                                     <div class="profile-user-img">
-                                        <img src="static/img/profiles/avatar-01.jpg" alt="Profile">
+                                        <img src="{% static 'img/profiles/avatar-01.jpg' %}" alt="Profile">
 
                                     </div>
                                     <div class="names-profiles">
@@ -324,11 +324,15 @@
 <!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
 
+
 <script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
 <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.fillbetween.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.pie.js' %}"></script>
 <script src="{% static 'plugins/flot/chart-data.js' %}"></script>
+
+
+
 
 {% endblock %}

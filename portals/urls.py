@@ -14,4 +14,6 @@ urlpatterns = [
     path("faculty/enter-marks/", views.faculty_marks_entry_view, name="enter-marks"),
     path("faculty/my-profile/", views.faculty_profile_view, name="my-profile"),
     path("faculty/student-info/", views.faculty_student_info_view, name="student-info"),
+    path("faculty/student-marksentry/", views.faculty_student_marks_entry_view, name="student-marksentry"),
+
 ]
