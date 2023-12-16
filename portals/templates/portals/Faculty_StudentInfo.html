@@ -41,116 +41,98 @@
 
 
                         </div>
-                        <div class="col-lg-6 col-lg-8">
-                            <div class="card" style="border: 1px solid black; border-radius: 0px;">
-                                <div class="card-header">
-                                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table class="table border-0 table-center table-hover">
+                                <thead class="student-thread sticky-header">
+                                    <tr>
+                                        <th></th>
+                                        <th>Roll No.</th>
+                                        <th>Name</th>
+                                        <th>Quiz 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th>Quiz 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th>Quiz 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th>Quiz 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th>Assignment 1</th>
+                                        <th>Assignment 2</th>
+                                        <th>Assignment 3</th>
+                                        <th>Assignment 4</th>
+                                        <th>Mid-term Marks</th>
+                                        <th>Final Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="table_width">
+                                            <a href="{% url 'portals:student-info' %}"
+                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
+                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
+                                                    alt="User Image" /></a>
+                                        </td>
+                                        <td class="table_width">200819</td>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
+                                            </h2>
+                                        </td>
 
-                                        <table class="table table-nowrap mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Quizes</th>
-                                                    <th>Assignments</th>
-                                                    <th>CP</th>
-                                                    <th>Mids</th>
-                                                    <th>Finals</th>
-                                                </tr>
-                                            </thead>
+                                        <td>
+                                            <!-- Editable input field for Quiz 1 -->
+                                            <input type="number" name="quiz1" value="" class="form-control"
+                                                placeholder="6" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Quiz 2 -->
+                                            <input type="number" name="quiz2" value="" class="form-control"
+                                                placeholder="7" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Quiz 3 -->
+                                            <input type="number" name="quiz3" value="" class="form-control"
+                                                placeholder="8" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Quiz 4 -->
+                                            <input type="number" name="quiz4" value="" class="form-control"
+                                                placeholder="9" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Assignment 1 -->
+                                            <input type="number" name="assignment1" value="" class="form-control"
+                                                placeholder="10 " readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Assignment 2 -->
+                                            <input type="number" name="assignment2" value="" class="form-control"
+                                                placeholder="5" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Assignment 3 -->
+                                            <input type="number" name="assignment3" value="" class="form-control"
+                                                placeholder="6" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Assignment 4 -->
+                                            <input type="number" name="assignment4" value="" class="form-control"
+                                                placeholder="6" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Mid-term Marks -->
+                                            <input type="number" name="midterm_marks" value="" class="form-control"
+                                                placeholder="70 " readonly>
+                                        </td>
+                                        <td>
+                                            <!-- Editable input field for Final Marks -->
+                                            <input type="number" name="final_marks" value="" class="form-control"
+                                                placeholder="80 " readonly>
+                                        </td>
+                                    </tr>
 
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="card-body vertical-scroll scroll-demo ps-container ps-theme-default ps-active-y"
-                                    data-ps-id="ac123a32-a3ce-8692-ad21-d0c67a6832af">
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap mb-0">
-
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>Anna</td>
-                                                    <td>Pitt</td>
-                                                    <td>35</td>
-                                                    <td>New York</td>
-                                                    <td>USA</td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
 
 
-                        <div class="col-md-6 col-lg-6">
+                        <div class="col-md-6 col-lg-12">
                             <div class="card">
                                 <div class="card-header">
                                     <div class="card-title">Bar Chart</div>
@@ -222,7 +204,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
                                     <div class="card-title">Line Chart</div>

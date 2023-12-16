@@ -9324,28 +9324,42 @@ body[data-layout-mode="dark"]
   }
 }
 
-
-.class-taken{
-    margin-bottom: 0px;
-    padding-left: 500px;
+.class-taken {
+  margin-bottom: 0px;
+  padding-left: 500px;
 }
 
-.class-taken-1{
-    margin-bottom: 0px;
+.class-taken-1 {
+  margin-bottom: 0px;
 }
 
-
-.table_width{
-    width: 50px;
+.table_width {
+  width: 50px;
 }
 
-.bottom_border{
-    border-bottom: 1px solid #dee2e6;
+.bottom_border {
+  border-bottom: 1px solid #dee2e6;
 }
 
-.table_height{
-    line-height: 50px;
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
+.table_height {
+  line-height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1000; /* to ensure the header stays on top */
+}
+.table-responsive {
+  max-height: 500px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+.form-control {
+  background-color: white !important; /* Change the background color to white */
+  color: black; /* Change the text color to black (optional) */
 }
