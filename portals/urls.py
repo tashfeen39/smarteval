@@ -17,7 +17,10 @@ urlpatterns = [
     path("faculty/student-marksentry/", views.faculty_student_marks_entry_view, name="student-marksentry"),
     path("student/dashboard/", views.student_dashboard_view, name="student-dashboard"),
     path("student/RegisteredCourses/", views.student_registeredcourses_view, name="student-registeredcourses"),
-
+    path("student/timetable/", views.student_timetable_view, name="student-timetable"),
+    path("student/report/", views.student_report_view, name="student-report"),
+    path("student/feedback/", views.student_feedback_view, name="student-feedback"),
+    path("student/complaint/", views.student_complaint_view, name="student-complaint"),
 
 
 ]

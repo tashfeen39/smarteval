@@ -1,0 +1,76 @@
+{% extends "portals/Student_DashboardTemplate.html" %}
+
+
+{% load static %}
+
+<!-- ---------------- Block for Header ---------------- -->
+{% block header %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/Student_Complaint.css' %}">
+{% endblock %}
+
+
+<!-- ---------------- Block for Body ---------------- -->
+{% block body %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <h5 class="card-title">Complaint Form</h5>
+
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="feedback-form">
+                                <form id="feedbackForm" onsubmit="submitComplaint(); return false;">
+                                    {% csrf_token %}
+                                    <label for="name">Student Name</label>
+                                    <input type="text" id="name" name="name" required><br>
+
+                                    <label for="classSelect">Select a Teacher</label>
+                                    <div class="custom-select">
+                                        <select id="classSelect" name="classSelect">
+                                            <option value="Teacher A">Sir Atif Ali Shah</option>
+                                            <option value="Teacher B">Sir Imran</option>
+                                            <option value="Teacher C">Sir Sohaib</option>
+                                            <option value="Teacher D">Sir Junaid</option>
+                                            <option value="Teacher E">Sir Shoaib</option>
+                                        </select>
+                                    </div>
+
+                                    <label for="message">Message</label><br>
+                                    <textarea id="message" name="message" rows="4" required></textarea><br>
+
+                                    <input type="submit" value="Submit">
+                                </form>
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- ---------------- Block for Footer ---------------- -->
+{% block footer %}
+<script src="{% static 'js/Student_Complaint.js' %}"></script>
+
+{% endblock %}

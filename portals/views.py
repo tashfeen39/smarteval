@@ -42,3 +42,15 @@ def student_dashboard_view(request):
 
 def student_registeredcourses_view(request):
     return render(request, "portals/Student_RegisteredCourses.html")
+
+def student_timetable_view(request):
+    return render(request, "portals/Student_TimeTable.html")
+
+def student_report_view(request):
+    return render(request, "portals/Student_Report.html")
+
+def student_feedback_view(request):
+    return render(request, "portals/Student_Feedback.html")
+
+def student_complaint_view(request):
+    return render(request, "portals/Student_Complaint.html")
