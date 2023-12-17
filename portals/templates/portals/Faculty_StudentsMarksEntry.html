@@ -24,8 +24,9 @@
                             <div class="row align-items-center">
                                 <div class="col-md-12">
                                     <h3 class="page-title">Students</h3>
-                                    <button type="btn" class="btn btn-primary" style="float: right; right:20px;">View
-                                        Report</button>
+                                    <a href="{% url 'portals:student-dashboard' %}"><button type="btn"
+                                            class="btn btn-primary" style="float: right; right:20px;">View
+                                            Report</button></a>
                                 </div>
 
 
@@ -70,7 +71,7 @@
                                         <td>
                                             <!-- Editable input field for Quiz 1 -->
                                             <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6" >
+                                                placeholder="6">
                                         </td>
                                         <td>
                                             <!-- Editable input field for Quiz 2 -->

@@ -36,3 +36,9 @@ def faculty_student_info_view(request):
 
 def faculty_student_marks_entry_view(request):
     return render(request, "portals/Faculty_StudentsMarksEntry.html")
+
+def student_dashboard_view(request):
+    return render(request, "portals/Student_Dashboard.html")
+
+def student_registeredcourses_view(request):
+    return render(request, "portals/Student_RegisteredCourses.html")
