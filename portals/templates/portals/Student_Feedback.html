@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                    <h5 class="card-title">Feedback Form</h5>
+                    <h5 class="card-title">Feedback / Complaint</h5>
 
                 </div>
                 <div class="card">
@@ -28,17 +28,25 @@
                             <div class="feedback-form">
                                 <form id="feedbackForm" onsubmit="submitFeedback(); return false;">
                                     {% csrf_token %}
+                                    <label for="classSelect">Select</label>
+                                    <div class="custom-select">
+                                        <select id="classSelect" name="classSelect">
+                                            <option value="Form A">Feedback</option>
+                                            <option value="Form B">Complaint</option>
+                                        
+                                        </select>
+                                    </div>
                                     <label for="name">Student Name</label>
                                     <input type="text" id="name" name="name" required><br>
 
                                     <label for="classSelect">Select a Teacher</label>
                                     <div class="custom-select">
                                         <select id="classSelect" name="classSelect">
-                                            <option value="Teacher A">Sir Atif Ali Shah</option>
-                                            <option value="Teacher B">Sir Imran</option>
-                                            <option value="Teacher C">Sir Sohaib</option>
-                                            <option value="Teacher D">Sir Junaid</option>
-                                            <option value="Teacher E">Sir Shoaib</option>
+                                            <option value="Teacher A">Mr. Atif Ali Shah</option>
+                                            <option value="Teacher B">Mr. Imran</option>
+                                            <option value="Teacher C">Mr. Sohaib</option>
+                                            <option value="Teacher D">Mr. Junaid</option>
+                                            <option value="Teacher E">Mr. Shoaib</option>
                                         </select>
                                     </div>
 

@@ -7,8 +7,6 @@ def home(request):
 def faculty_class_info_view(request):
     return render(request, "portals/Faculty_ClassInfo.html")
 
-def faculty_complaints_view(request):
-    return render(request, "portals/Faculty_Complaints.html")
 
 def faculty_dashboard_view(request):
     return render(request, "portals/Faculty_Dashboard.html")
@@ -52,8 +50,7 @@ def student_report_view(request):
 def student_feedback_view(request):
     return render(request, "portals/Student_Feedback.html")
 
-def student_complaint_view(request):
-    return render(request, "portals/Student_Complaint.html")
+
 
 def student_profile_view(request):
     return render(request, "portals/Student_Profile.html")
