@@ -54,3 +54,6 @@ def student_feedback_view(request):
 
 def student_complaint_view(request):
     return render(request, "portals/Student_Complaint.html")
+
+def student_profile_view(request):
+    return render(request, "portals/Student_Profile.html")
