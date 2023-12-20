@@ -5,16 +5,329 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/Student_Report.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/scrollbar/scroll.min.css' %}">
 
 {% endblock %}
 
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h5 class="card-title">Student Profile</h5>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="feedback-form">
+                        <form id="feedbackForm">
+                            <label for="classSelect">Select</label>
+                            <div class="custom-select">
+                                <select id="classSelect" name="nextview">
+                                    <option value="Software Engineering">Software Engineering</option>
+                                    <option value="Entrepreneurship">Entrepreneurship</option>
+                                    <option value="Information Security">Information Security</option>
+                                    <option value="Parallel Distributed Computing">Parallel Distributed Computing
+                                    </option>
+                                    <option value="Graph Theory">Graph Theory</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="subjectwisereport">
+            <!-- Content sections for different options -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4">
+                            <div class="profile-user-box">
+                                <div class="profile-user-img">
+                                    <img src="{% static 'img/profiles/avatar-01.jpg' %}" alt="Profile">
+            
+                                </div>
+                                <div class="names-profiles">
+                                    <h4>Muhammad Ali Raza</h4>
+                                    <h5>Computer Science</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+            
+            
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table border-0 table-center table-hover">
+                            <thead class="student-thread sticky-header">
+                                <tr>
+                                    <th></th>
+                                    <th>Roll No.</th>
+                                    <th>Name</th>
+                                    <th>Quiz 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th>Quiz 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th>Quiz 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th>Quiz 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th>Assignment 1</th>
+                                    <th>Assignment 2</th>
+                                    <th>Assignment 3</th>
+                                    <th>Assignment 4</th>
+                                    <th>Mid-term Marks</th>
+                                    <th>Final Marks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="table_width">
+                                        <a href="{% url 'portals:student-info' %}" class="avatar avatar-sm me-2"><img
+                                                class="avatar-img rounded-circle" src="{% static 'img/profiles/avatar-01.jpg' %}"
+                                                alt="User Image" /></a>
+                                    </td>
+                                    <td class="table_width">200819</td>
+                                    <td>
+                                        <h2 class="table-avatar">
+                                            <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
+                                        </h2>
+                                    </td>
+            
+                                    <td>
+                                        <!-- Editable input field for Quiz 1 -->
+                                        <input type="number" name="quiz1" value="" class="form-control" placeholder="6" readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Quiz 2 -->
+                                        <input type="number" name="quiz2" value="" class="form-control" placeholder="7" readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Quiz 3 -->
+                                        <input type="number" name="quiz3" value="" class="form-control" placeholder="8" readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Quiz 4 -->
+                                        <input type="number" name="quiz4" value="" class="form-control" placeholder="9" readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Assignment 1 -->
+                                        <input type="number" name="assignment1" value="" class="form-control" placeholder="10 "
+                                            readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Assignment 2 -->
+                                        <input type="number" name="assignment2" value="" class="form-control" placeholder="5"
+                                            readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Assignment 3 -->
+                                        <input type="number" name="assignment3" value="" class="form-control" placeholder="6"
+                                            readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Assignment 4 -->
+                                        <input type="number" name="assignment4" value="" class="form-control" placeholder="6"
+                                            readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Mid-term Marks -->
+                                        <input type="number" name="midterm_marks" value="" class="form-control" placeholder="70 "
+                                            readonly>
+                                    </td>
+                                    <td>
+                                        <!-- Editable input field for Final Marks -->
+                                        <input type="number" name="final_marks" value="" class="form-control" placeholder="80 "
+                                            readonly>
+                                    </td>
+                                </tr>
+            
+                            </tbody>
+                        </table>
+                    </div>
+            
+            
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Bar Chart</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="h-250" id="flotBar1" style="padding: 0px; position: relative;">
+                                    <canvas class="flot-base" width="997" height="500"
+                                        style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                    <div class="flot-text"
+                                        style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);">
+                                        <div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; inset: 0px;">
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 15px; text-align: center;">
+                                                0</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 65px; text-align: center;">
+                                                1</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 116px; text-align: center;">
+                                                2</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 166px; text-align: center;">
+                                                3</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 216px; text-align: center;">
+                                                4</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 267px; text-align: center;">
+                                                5</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 317px; text-align: center;">
+                                                6</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 367px; text-align: center;">
+                                                7</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 417px; text-align: center;">
+                                                8</div>
+                                            <div
+                                                style="position: absolute; max-width: 45px; top: 237px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 468px; text-align: center;">
+                                                9</div>
+                                        </div>,
+                                        <div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; inset: 0px;">
+                                            <div
+                                                style="position: absolute; top: 226px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 7px; text-align: right;">
+                                                0</div>
+                                            <div
+                                                style="position: absolute; top: 181px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                10</div>
+                                            <div
+                                                style="position: absolute; top: 136px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                20</div>
+                                            <div
+                                                style="position: absolute; top: 92px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                30</div>
+                                            <div
+                                                style="position: absolute; top: 47px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                40</div>
+                                            <div
+                                                style="position: absolute; top: 2px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 1px; text-align: right;">
+                                                50</div>
+                                        </div>
+                                    </div><canvas class="flot-overlay" width="997" height="500"
+                                        style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Line Chart</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="h-250" id="flotLine1" style="padding: 0px; position: relative;">
+                                    <canvas class="flot-base" width="997" height="500"
+                                        style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                    <div class="flot-text"
+                                        style="position: absolute; inset: 0px; font-size: smaller; color: rgb(84, 84, 84);">
+                                        <div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; inset: 0px;">
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 10px; text-align: center;">
+                                                0.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 89px; text-align: center;">
+                                                1.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 168px; text-align: center;">
+                                                2.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 247px; text-align: center;">
+                                                3.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 326px; text-align: center;">
+                                                4.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 405px; text-align: center;">
+                                                5.0</div>
+                                            <div
+                                                style="position: absolute; max-width: 71px; top: 238px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 484px; text-align: center;">
+                                                6.0</div>
+                                        </div>
+                                        <div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; inset: 0px;">
+                                            <div
+                                                style="position: absolute; top: 227px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 6px; text-align: right;">
+                                                0</div>
+                                            <div
+                                                style="position: absolute; top: 171px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                10</div>
+                                            <div
+                                                style="position: absolute; top: 115px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                20</div>
+                                            <div
+                                                style="position: absolute; top: 58px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                30</div>
+                                            <div
+                                                style="position: absolute; top: 2px; font: 400 10px / 12px roboto, sans-serif; color: rgb(142, 156, 173); left: 0px; text-align: right;">
+                                                40</div>
+                                        </div>
+                                    </div><canvas class="flot-overlay" width="997" height="500"
+                                        style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 498.5px; height: 250px;"></canvas>
+                                    <div class="legend">
+                                        <div
+                                            style="position: absolute; width: 72.1875px; height: 41.5px; top: 13px; left: 22px; background-color: rgb(255, 255, 255); opacity: 0.85;">
+                                        </div>
+                                        <table style="position:absolute;top:13px;left:22px;;font-size:smaller;color:#545454">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="legendColorBox">
+                                                        <div style="border:1px solid transparent;padding:1px">
+                                                            <div
+                                                                style="width:4px;height:0;border:5px solid #664dc9;overflow:hidden">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="legendLabel">Me</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="legendColorBox">
+                                                        <div style="border:1px solid transparent;padding:1px">
+                                                            <div
+                                                                style="width:4px;height:0;border:5px solid #44c4fa;overflow:hidden">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="legendLabel">Class Average</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+            
+            </div>
+
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 
 <!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
+<script src="{% static 'js/Student_Report.js' %}"></script>
+<script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
+<script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.fillbetween.js' %}"></script>
+<script src="{% static 'plugins/flot/jquery.flot.pie.js' %}"></script>
+<script src="{% static 'plugins/flot/chart-data.js' %}"></script>
+
 
 {% endblock %}

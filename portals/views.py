@@ -51,6 +51,8 @@ def student_feedback_view(request):
     return render(request, "portals/Student_Feedback.html")
 
 
-
 def student_profile_view(request):
     return render(request, "portals/Student_Profile.html")
+
+def student_subjectwisereport_view(request):
+    return render(request, "portals/Student_SubjectWiseReport.html")
