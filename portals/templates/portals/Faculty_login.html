@@ -24,6 +24,7 @@
 
     <link rel="stylesheet" href="{% static '/css/style.css' %}" />
 </head>
+
 <body>
 
     <div class="main-wrapper login-body">
@@ -35,7 +36,8 @@
                         <div class="login-right-wrap">
                             <h1 style="padding-left: 40%;">Sign In</h1><br><br>
 
-                            <form action="Faculty_Dashboard.html">
+                            <form action="{% url 'portals:faculty-login' %}" method="POST">
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label>Username <span class="login-danger">*</span></label>
                                     <input class="form-control" type="text">
@@ -70,7 +72,7 @@
 
 
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-    
+
     <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
     <script src="{% static 'js/feather.min.js' %}"></script>
