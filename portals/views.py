@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 
 def home(request):
@@ -56,3 +58,24 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+
+def faculty_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        print(f"Attempting login for username: {username}")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and user.is_teacher:
+            login(request, user)
+            messages.success(request, 'Login successful!')
+            print(f"Login successful for user: {username}")
+            return redirect('portals:dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+            print(f"Login failed for user: {username}")
+
+    return render(request, 'portals/faculty_login.html')

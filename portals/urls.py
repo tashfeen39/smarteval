@@ -4,12 +4,8 @@ from . import views
 app_name = 'portals'
 urlpatterns = [
     path("", views.home, name="home"),
-<<<<<<< HEAD
     path("faculty/login", views.faculty_login_view, name="faculty-login"),
     path("faculty/dashboard", views.faculty_dashboard_view, name="dashboard"),
-=======
-    path("faculty/dashboard/", views.faculty_dashboard_view, name="dashboard"),
->>>>>>> be3c1a394142408575f1f28c9f2e46f63fe8a175
     path("faculty/class-info/", views.faculty_class_info_view, name="class-info"),
     path("faculty/display-classes/", views.faculty_display_classes_view, name="display-classes"),
     path("faculty/feedbacks/", views.faculty_feedback_view, name="feedbacks"),
