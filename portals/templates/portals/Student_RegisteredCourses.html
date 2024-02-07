@@ -1,0 +1,125 @@
+{% extends "portals/Student_DashboardTemplate.html" %}
+
+
+{% load static %}
+
+<!-- ---------------- Block for Header ---------------- -->
+{% block header %}
+<link rel="stylesheet" href="{% static '/plugins/datatables/datatables.min.css' %}" />
+<link rel="stylesheet" href="{% static 'css/Student_RegisteredCourses.css' %}">
+
+{% endblock %}
+
+
+<!-- ---------------- Block for Body ---------------- -->
+{% block body %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <h5 class="card-title">Registered Courses</h5>
+
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="registration-info">
+                                <p><strong>Registration ID:</strong> 200819</p>
+                                <p><strong>Name:</strong> Muhammad Ali Raza</p>
+                                <p><strong>Class:</strong> Course</p>
+                            </div>
+
+                            <table>
+                                <tr>
+                                    <th>Sr. No.</th>
+                                    <th>Course Code</th>
+                                    <th>Course Title</th>
+                                    <th>Credit Hours</th>
+                                    <th>Pre-Requisite</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td>CS225 - CS225L</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td>CS494</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td>CS225 - CS225L</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>CS371</td>
+                                    <td>F-23-Software Engineering-923</td>
+                                    <td>2</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- ---------------- Block for Footer ---------------- -->
+{% block footer %}
+<script src="{% static 'plugins/datatables/datatables.min.js' %}"></script>
+
+{% endblock %}

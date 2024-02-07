@@ -1,4 +1,4 @@
-function submitComplaint() {
+function submitFeedback() {
   var name = document.getElementById("name").value;
   var feedbackSubject = document.getElementById("feedbackSubject").value;
   var message = document.getElementById("message").value;

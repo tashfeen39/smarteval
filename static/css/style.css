@@ -3577,8 +3577,8 @@ table.table-inbox tbody tr.checked {
 }
 .profile-header img {
   height: auto;
-  max-width: 120px;
-  width: 120px;
+  /* max-width: 160px; */
+  width: 160px;
 }
 .profile-tab-cont {
   padding-top: 1.875rem;

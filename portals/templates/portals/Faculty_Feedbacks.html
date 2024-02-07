@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                    <h5 class="card-title">Feedback Form</h5>
+                    <h5 class="card-title">Feedback / Complaint</h5>
 
                 </div>
                 <div class="card">
@@ -28,6 +28,14 @@
                             <div class="feedback-form">
                                 <form id="feedbackForm" onsubmit="submitFeedback(); return false;">
                                     {% csrf_token %}
+                                    <label for="classSelect">Select</label>
+                                    <div class="custom-select">
+                                        <select id="classSelect" name="classSelect">
+                                            <option value="Form A">Feedback</option>
+                                            <option value="Form B">Complaint</option>
+                                    
+                                        </select>
+                                    </div>
                                     <label for="name">Faculty Name</label>
                                     <input type="text" id="name" name="name" required><br>
 
