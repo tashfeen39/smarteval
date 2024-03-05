@@ -22,6 +22,7 @@ urlpatterns = [
     path("student/feedback/", views.student_feedback_view, name="student-feedback"),
     path("student/profile/", views.student_profile_view, name="student-profile"),
     path("student/subjectwisereport/", views.student_subjectwisereport_view, name="student-subjectwisereport"),
+    path("student/registration/", views.student_registration, name="student-registration"),
 
 
 ]
