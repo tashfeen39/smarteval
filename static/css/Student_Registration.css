@@ -1,11 +1,3 @@
-/* .container {
-  background: radial-gradient(circle at top left, #e4e6e7, #b9c4cd);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  
-  margin-left: 100px;
-} */
 
 .container {
   margin-top: 65px;
@@ -87,3 +79,4 @@
   font-size: 120px;
   color: #888;
 }
+
