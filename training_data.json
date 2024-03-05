@@ -1,0 +1,13 @@
+[
+  {
+    "prompt": "The question paper has {number} questions",
+    "target": "The correct answer or desired text goes here.",
+    "subject": "Parallel and Distributed Computing"
+  },
+  
+  {
+    "prompt": "Another question prompt.",
+    "target": "Correct answer for the second question.",
+    "subject": "Software Engineering"
+  }
+]
