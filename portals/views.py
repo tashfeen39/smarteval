@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
+from portals.models import Student, User
+
 
 def home(request):
     return render(request, "portals/Faculty_Profile.html")
@@ -68,7 +70,61 @@ def student_registration(request):
         return render(request, "portals/Student_Registration.html")
     
 def saveUser(request):
-    pass
+    if request.method == 'POST':
+        # Get form input values
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        profile_picture = request.FILES.get('profile_picture')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        username = request.POST.get('username')
+        roll_no = 123
+        is_student = True
+
+        # # Check if the phone, email, or username already exists in the database
+        # if User.objects.filter(phone=phone).exists():
+        #     messages.error(request, 'Phone number already exists')
+        #     return render(request, 'affiliate/signup.html', {'phone_error': 'Phone number already exists'})
+
+        # if User.objects.filter(email=email).exists():
+        #     messages.error(request, 'Email already exists')
+        #     return render(request, 'affiliate/signup.html', {'email_error': 'Email already exists'})
+
+        # if User.objects.filter(username=username).exists():
+        #     messages.error(request, 'Username already exists')
+        #     return render(request, 'affiliate/signup.html', {'username_error': 'Username already exists'})
+
+        # # Perform other validations and save the user if all validations pass
+        # if password != confirm_password:
+        #     messages.error(request, 'Passwords do not match')
+        #     return render(request, 'affiliate/signup.html', {'password_error': 'Passwords do not match'})
+
+        # Create the user object
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            email=email,
+            profile_picture=profile_picture,
+            password=password,
+            username=username,
+            is_student=is_student
+        )
+        user.save()
+        student = Student(
+            user=user,
+            roll_no = 123,
+            section = "ABC"
+        )
+        student.save()
+
+        # Redirect to the signin page or any other desired page
+        return redirect('portals:faculty-login')
+
+    # Handle invalid request method
+    return redirect('portals:dashboard')
 
 
 def faculty_login_view(request):
