@@ -64,23 +64,22 @@ def student_subjectwisereport_view(request):
 def student_registration(request):
     if request.method == 'POST':
         # Handle the form submission
-        return saveUser(request)
+        return saveStudent(request)
     else:
         # Render the signup page for GET requests
         return render(request, "portals/Student_Registration.html")
     
-def saveUser(request):
+def saveStudent(request):
     if request.method == 'POST':
         # Get form input values
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        phone = request.POST.get('phone')
+        phone_number = request.POST.get('phone_number')
         email = request.POST.get('email')
         profile_picture = request.FILES.get('profile_picture')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         username = request.POST.get('username')
-        roll_no = 123
         is_student = True
 
         # # Check if the phone, email, or username already exists in the database
@@ -105,7 +104,7 @@ def saveUser(request):
         user = User(
             first_name=first_name,
             last_name=last_name,
-            phone=phone,
+            phone_number=phone_number,
             email=email,
             profile_picture=profile_picture,
             password=password,
@@ -115,8 +114,7 @@ def saveUser(request):
         user.save()
         student = Student(
             user=user,
-            roll_no = 123,
-            section = "ABC"
+           
         )
         student.save()
 
