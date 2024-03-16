@@ -39,16 +39,16 @@
                         <div class="login-right-wrap">
                             <h1 style="padding-left: 40%;">Sign In</h1><br><br>
 
-                            <form action="{% url 'portals:faculty-login' %}" method="POST">
+                            <form action="{% url 'portals:student-login' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label>Username <span class="login-danger">*</span></label>
-                                    <input class="form-control" type="text">
+                                    <input class="form-control" type="text" name="username">
                                     <span class="profile-views"><i class="fas fa-user-circle"></i></span>
                                 </div>
                                 <div class="form-group">
                                     <label>Password <span class="login-danger">*</span></label>
-                                    <input class="form-control pass-input" type="text">
+                                    <input class="form-control pass-input" type="password" name="password">
                                     <span class="profile-views feather-eye toggle-password"></span>
                                 </div>
                                 <div class="forgotpass">

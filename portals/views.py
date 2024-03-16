@@ -39,9 +39,6 @@ def faculty_student_info_view(request):
 def faculty_student_marks_entry_view(request):
     return render(request, "portals/Faculty_StudentsMarksEntry.html")
 
-def student_login_view(request):
-    return render(request, "portals/Student_login.html")
-
 def student_dashboard_view(request):
     return render(request, "portals/Student_Dashboard.html")
 
@@ -104,7 +101,7 @@ def saveStudent(request):
         #     return render(request, 'affiliate/signup.html', {'password_error': 'Passwords do not match'})
 
         # Create the user object
-        user = User(
+        user = User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
             phone_number=phone_number,
@@ -114,7 +111,7 @@ def saveStudent(request):
             username=username,
             is_student=is_student
         )
-        user.save()
+        # user.save()
         student = Student(
             user=user,
            
@@ -122,10 +119,39 @@ def saveStudent(request):
         student.save()
 
         # Redirect to the signin page or any other desired page
-        return redirect('portals:faculty-login')
+        return redirect('portals:student-login')
 
     # Handle invalid request method
-    return redirect('portals:dashboard')
+    return redirect('portals:student-login')
+
+
+def student_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        print(f"Attempting login for username: {username}")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            print(f"Authentication successful for user: {username}")
+            if user.is_student:
+                print(f"User {username} is a student.")
+                login(request, user)
+                messages.success(request, 'Login successful!')
+                print(f"Login successful for user: {username}")
+                return redirect('portals:student-dashboard')
+            else:
+                print(f"User {username} is not a student.")
+                messages.error(request, 'Invalid username or password.')
+                print(f"Login failed for user: {username}")
+        else:
+            print(f"Authentication failed for user: {username}")
+            messages.error(request, 'Invalid username or password.')
+            print(f"Login failed for user: {username}")
+
+    return render(request, 'portals/Student_login.html')
 
 
 def faculty_login_view(request):
