@@ -82,23 +82,25 @@ def saveStudent(request):
         username = request.POST.get('username')
         is_student = True
 
-        # # Check if the phone, email, or username already exists in the database
-        # if User.objects.filter(phone=phone).exists():
-        #     messages.error(request, 'Phone number already exists')
-        #     return render(request, 'affiliate/signup.html', {'phone_error': 'Phone number already exists'})
+        # Check if the phone, email, or username already exists in the database
+        if User.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, 'Phone number already exists')
+            return render(request, 'portals/Student_Registration.html', {'phone_error': 'Phone number already exists', 'email_error': '', 'username_error': ''})
 
-        # if User.objects.filter(email=email).exists():
-        #     messages.error(request, 'Email already exists')
-        #     return render(request, 'affiliate/signup.html', {'email_error': 'Email already exists'})
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists')
+            return render(request, 'portals/Student_Registration.html', {'email_error': 'Email already exists', 'phone_error': '', 'username_error': ''})
 
-        # if User.objects.filter(username=username).exists():
-        #     messages.error(request, 'Username already exists')
-        #     return render(request, 'affiliate/signup.html', {'username_error': 'Username already exists'})
 
-        # # Perform other validations and save the user if all validations pass
-        # if password != confirm_password:
-        #     messages.error(request, 'Passwords do not match')
-        #     return render(request, 'affiliate/signup.html', {'password_error': 'Passwords do not match'})
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists')
+            return render(request, 'portals/Student_Registration.html', {'username_error': 'Username already exists', 'phone_error': '', 'email_error': ''})
+
+
+        # Perform other validations and save the user if all validations pass
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return render(request, 'portals/Student_Registration.html', {'password_error': 'Passwords do not match', 'phone_error': '', 'email_error': '', 'username_error': ''})
 
         # Create the user object
         user = User.objects.create_user(

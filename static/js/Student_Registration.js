@@ -20,21 +20,23 @@ document.addEventListener("DOMContentLoaded", function () {
     form.classList.add("was-validated");
   });
 
-  // function validatePassword() {
-  //   const password = passwordInput.value;
-  //   const confirmPassword = confirmPasswordInput.value;
+  function validatePassword() {
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
 
-  //   if (password === confirmPassword) {
-  //     errorElement.textContent = "";
-  //     confirmPasswordInput.setCustomValidity("");
-  //   } else {
-  //     errorElement.textContent = "Passwords do not match";
-  //     confirmPasswordInput.setCustomValidity("Passwords do not match");
-  //   }
-  // }
+    if (password === confirmPassword) {
+      errorElement.textContent = "";
+      confirmPasswordInput.setCustomValidity("");
+    } else {
+      errorElement.textContent = "Passwords do not match";
+      confirmPasswordInput.setCustomValidity("Passwords do not match");
+    }
+  }
 
-  // passwordInput.addEventListener("input", validatePassword);
-  // confirmPasswordInput.addEventListener("input", validatePassword);
+  confirmPasswordInput.addEventListener("focus", function () {
+    confirmPasswordInput.addEventListener("input", validatePassword);
+    passwordInput.addEventListener("input", validatePassword);
+  });
 
   profilePictureInput.addEventListener("change", function () {
     const file = profilePictureInput.files[0];
@@ -48,4 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
       profilePicturePreview.removeAttribute("src");
     }
   });
+  // Display error message for username, email, and phone number fields
+  // const errorMessageElements = document.querySelectorAll(".error-message");
+  // errorMessageElements.forEach(function (element) {
+  //   element.classList.add("invalid-feedback");
+  // });
 });
