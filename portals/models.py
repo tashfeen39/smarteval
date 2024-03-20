@@ -22,25 +22,25 @@ class Student(models.Model):
         User, on_delete=models.CASCADE, primary_key=True, related_name="student"
     )
    
-    date_of_birth = models.DateField(unique=True, null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
         ('Other', 'Other')
     )
-    gender = models.CharField(max_length=10, unique=True, null=True, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
         ('Sinle', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
-    marital_status = models.CharField(max_length=10, unique=True, null=True, choices=MARITAL_STATUS_CHOICES)
-    religion = models.CharField(max_length=100, unique=True, null=True)
-    nationality = models.CharField(max_length=100, unique=True, null=True)
-    cnic = models.CharField(max_length=15, unique=True, null=True)
-    father_name = models.CharField(max_length=255, unique=True, null=True)
-    father_occupation = models.CharField(max_length=100, unique=True, null=True)
-    semester = models.CharField(max_length=100, unique=True, null=True)
+    marital_status = models.CharField(max_length=10, null=True, blank=True, choices=MARITAL_STATUS_CHOICES)
+    religion = models.CharField(max_length=100, null=True, blank=True)
+    nationality = models.CharField(max_length=100, null=True, blank=True)
+    cnic = models.CharField(max_length=15, null=True, blank=True)
+    father_name = models.CharField(max_length=255, null=True, blank=True)
+    father_occupation = models.CharField(max_length=100, null=True, blank=True)
+    semester = models.CharField(max_length=100, null=True, blank=True)
     address = models.TextField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -69,22 +69,22 @@ class Teacher(models.Model):
         User, on_delete=models.CASCADE, primary_key=True, related_name="teacher"
     )
 
-    date_of_birth = models.DateField(unique=True, null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
         ('Other', 'Other')
     )
-    gender = models.CharField(max_length=10, unique=True, null=True, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
         ('Sinle', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
-    marital_status = models.CharField(max_length=10, unique=True, null=True, choices=MARITAL_STATUS_CHOICES)
-    religion = models.CharField(max_length=100, unique=True, null=True)
-    nationality = models.CharField(max_length=100, unique=True, null=True)
-    cnic = models.CharField(max_length=15, unique=True, null=True)
+    marital_status = models.CharField(max_length=10, null=True, blank=True, choices=MARITAL_STATUS_CHOICES)
+    religion = models.CharField(max_length=100, null=True, blank=True)
+    nationality = models.CharField(max_length=100, null=True, blank=True)
+    cnic = models.CharField(max_length=15, null=True, blank=True)
     office_number = models.CharField(max_length=20, null=True, blank=True)
     address = models.TextField(max_length=200, blank=True, null=True)
 

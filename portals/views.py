@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
-from portals.models import Student, User
+from portals.models import Student, Teacher, User
 
 
 def home(request):
@@ -72,7 +72,62 @@ def faculty_registration(request):
     
 
 def saveFaculty(request):
-    pass
+    if request.method == 'POST':
+        # Get form input values
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone_number = request.POST.get('phone_number')
+        email = request.POST.get('email')
+        profile_picture = request.FILES.get('profile_picture')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        username = request.POST.get('username')
+        is_teacher = True
+
+        # Check if the phone, email, or username already exists in the database
+        if User.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, 'Phone number already exists')
+            return render(request, 'portals/Faculty_Registration.html', {'phone_error': 'Phone number already exists', 'email_error': '', 'username_error': ''})
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists')
+            return render(request, 'portals/Faculty_Registration.html', {'email_error': 'Email already exists', 'phone_error': '', 'username_error': ''})
+
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists')
+            return render(request, 'portals/Faculty_Registration.html', {'username_error': 'Username already exists', 'phone_error': '', 'email_error': ''})
+
+
+        # Perform other validations and save the user if all validations pass
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return render(request, 'portals/Faculty_Registration.html', {'password_error': 'Passwords do not match', 'phone_error': '', 'email_error': '', 'username_error': ''})
+
+        # Create the user object
+        user = User.objects.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            email=email,
+            profile_picture=profile_picture,
+            password=password,
+            username=username,
+            is_teacher=is_teacher
+        )
+        # user.save()
+        teacher = Teacher(
+            user=user,
+           
+        )
+        teacher.save()
+
+        # Redirect to the signin page or any other desired page
+        return redirect('portals:faculty-login')
+
+    # Handle invalid request method
+    return redirect('portals:faculty-login')
+
 
 def student_registration(request):
     if request.method == 'POST':
