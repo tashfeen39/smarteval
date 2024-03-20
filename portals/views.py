@@ -148,10 +148,14 @@ def student_login_view(request):
                 print(f"User {username} is not a student.")
                 messages.error(request, 'Invalid username or password.')
                 print(f"Login failed for user: {username}")
+                return render(request, 'portals/Student_login.html', {'error': 'Invalid username or password.'})
+
         else:
             print(f"Authentication failed for user: {username}")
             messages.error(request, 'Invalid username or password.')
             print(f"Login failed for user: {username}")
+            return render(request, 'portals/Student_login.html', {'error': 'Invalid username or password.'})
+
 
     return render(request, 'portals/Student_login.html')
 
