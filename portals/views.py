@@ -237,13 +237,23 @@ def faculty_login_view(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None and user.is_teacher:
-            login(request, user)
-            messages.success(request, 'Login successful!')
-            print(f"Login successful for user: {username}")
-            return redirect('portals:dashboard')
+        if user is not None:
+            print(f"Authentication successful for user: {username}")
+            if user.is_teacher:
+                print(f"User {username} is a teacher.")
+                login(request, user)
+                messages.success(request, 'Login successful!')
+                print(f"Login successful for user: {username}")
+                return redirect('portals:dashboard')
+            else:
+                print(f"User {username} is not a teacher.")
+                messages.error(request, 'Invalid username or password.')
+                print(f"Login failed for user: {username}")
+                return render(request, 'portals/Faculty_login.html', {'error': 'Invalid username or password.'})
         else:
+            print(f"Authentication failed for user: {username}")
             messages.error(request, 'Invalid username or password.')
             print(f"Login failed for user: {username}")
+            return render(request, 'portals/Faculty_login.html', {'error': 'Invalid username or password.'})
 
-    return render(request, 'portals/faculty_login.html')
+    return render(request, 'portals/Faculty_login.html')
