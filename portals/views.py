@@ -61,6 +61,19 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+
+def faculty_registration(request):
+    if request.method == 'POST':
+        # Handle the form submission
+        return saveFaculty(request)
+    else:
+        # Render the signup page for GET requests
+        return render(request, "portals/Faculty_Registration.html")
+    
+
+def saveFaculty(request):
+    pass
+
 def student_registration(request):
     if request.method == 'POST':
         # Handle the form submission
