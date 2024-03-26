@@ -30,7 +30,7 @@ class Student(models.Model):
     )
     gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
-        ('Sinle', 'Single'),
+        ('Single', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
@@ -77,7 +77,7 @@ class Teacher(models.Model):
     )
     gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
-        ('Sinle', 'Single'),
+        ('Single', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
