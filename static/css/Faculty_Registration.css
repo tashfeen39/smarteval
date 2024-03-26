@@ -1,37 +1,15 @@
-<<<<<<< HEAD
-body {
-  background: linear-gradient(90deg, #ff0000, #ffff00);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-=======
->>>>>>> 51d5dafbfd2f38ba55c910093d1937d78194d884
 .container {
   margin-top: 65px;
   margin-bottom: 65px;
   max-width: 560px;
-  background-size: 200% 200%;
-  background-image: linear-gradient(to right, #233, #240244, #233, #240244);
+  /* background-color: rgb(246, 251, 254); another choice for background color*/
+  background-color: rgb(233, 240, 244);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 30px 20px 30px 20px;
   border-radius: 2%;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  animation: gradientAnimation 15s ease infinite;
 }
 
 .error-message {

@@ -13,14 +13,14 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="{% static '/plugins/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}" />
 
     <link rel="stylesheet" href="{% static '/plugins/feather/feather.css' %}" />
 
     <link rel="stylesheet" href="{% static '/plugins/icons/flags/flags.css' %}" />
 
-    <link rel="stylesheet" href="{% static '/plugins/fontawesome/css/fontawesome.min.css' %}" />
-    <link rel="stylesheet" href="{% static '/plugins/fontawesome/css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/fontawesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/all.min.css' %}" />
 
     <link rel="stylesheet" href="{% static '/css/style.css' %}" />
     <link rel="stylesheet" href="{% static '/css/Faculty_login.css' %}" />
@@ -41,17 +41,38 @@
                         <div class="login-right-wrap">
                             <h1 class="login_padding">Faculty Sign In</h1><br><br>
 
-                            <form action="{% url 'portals:faculty-login' %}" method="POST">
+                            <form action="{% url 'portals:faculty-login' %}" method="POST" enctype="multipart/form-data"
+                                class="needs-validation" novalidate>
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label>Username <span class="login-danger">*</span></label>
-                                    <input class="form-control" type="text">
+                                    <input class="form-control" type="text"  name="username" id="username" required>
                                     <span class="profile-views"><i class="fas fa-user-circle"></i></span>
+                                    <div class="invalid-feedback">Please enter your Username.</div>
                                 </div>
                                 <div class="form-group">
                                     <label>Password <span class="login-danger">*</span></label>
-                                    <input class="form-control pass-input" type="text">
+                                    <input class="form-control pass-input" type="password" name="password" id="password" required>
                                     <span class="profile-views feather-eye toggle-password"></span>
+<<<<<<< HEAD
+=======
+                                    <div class="invalid-feedback">Please enter your Username.</div>
+                                </div>
+                                {% if error %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error }}
+                                </div>
+                                {% endif %}
+
+                                <div class="forgotpass">
+                                    <div class="remember-me">
+                                        <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> Remember me
+                                            <input type="checkbox" name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <a href="forgot-password.html">Forgot Password?</a>
+>>>>>>> 51d5dafbfd2f38ba55c910093d1937d78194d884
                                 </div><br>
 
                                 <div class="form-group">
@@ -69,12 +90,14 @@
 
 
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-
-    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
     <script src="{% static 'js/feather.min.js' %}"></script>
 
     <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/Faculty_login.js' %}"></script>
+
 </body>
 
 </html>
