@@ -23,12 +23,13 @@
     <link rel="stylesheet" href="{% static '/css/all.min.css' %}" />
 
     <link rel="stylesheet" href="{% static '/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/Student_login.css' %}" />
+
 </head>
 
 <body>
 
 
-    <h1>Student Portal</h1>
     <div class="main-wrapper login-body">
         <div class="login-wrapper">
             <div class="container">
@@ -37,7 +38,7 @@
                     <div class="login-right">
 
                         <div class="login-right-wrap">
-                            <h1 style="padding-left: 40%;">Sign In</h1><br><br>
+                            <h1 class="login_padding">Student Sign In</h1><br><br>
 
                             <form action="{% url 'portals:student-login' %}" method="POST" enctype="multipart/form-data"
                                 class="needs-validation" novalidate>
@@ -54,6 +55,9 @@
                                     <span class="profile-views feather-eye toggle-password"></span>
                                     <div class="invalid-feedback">Please enter a password.</div>
                                 </div>
+<<<<<<< HEAD
+                                <br>
+=======
                                 {% if error %}
                                 <div class="alert alert-danger" role="alert">
                                     {{ error }}
@@ -69,6 +73,7 @@
                                     </div>
                                     <a href="forgot-password.html">Forgot Password?</a>
                                 </div><br>
+>>>>>>> 51d5dafbfd2f38ba55c910093d1937d78194d884
                                 <div class="form-group">
                                     <button class="btn btn-primary btn-block" type="submit">Login</button>
                                 </div>
