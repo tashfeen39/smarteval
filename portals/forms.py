@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import transaction
-from .models import User, Student, Teacher, Question, Answer
+from .models import Degree, User, Student, Teacher
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -60,3 +60,15 @@ class LoginForm(AuthenticationForm):
 
 
 
+
+class DegreeForm(forms.ModelForm):
+    class Meta:
+        model = Degree
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.department:
+            self.fields['program'].queryset = self.instance.department.program_set.all()
+        else:
+            self.fields['program'].queryset = self.fields['program'].queryset.none()
