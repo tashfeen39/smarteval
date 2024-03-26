@@ -4,7 +4,7 @@ from django.contrib import messages
 import requests
 from bs4 import BeautifulSoup
 
-from portals.models import Course, Student, Teacher, User
+from portals.models import Course, Department, Student, Teacher, User
 
 
 def home(request):
@@ -64,6 +64,8 @@ def student_subjectwisereport_view(request):
 
 
 def scrape_data(request):
+    # Set all department values to "Department of Humanities"
+    department = Department.objects.get(department_name="Department of Humanities")
     # URL to scrape
     url = "https://www.au.edu.pk/Pages/Faculties/SocialSciences/Departments/Humanities/dept_humanities_course_desc.aspx"
 
@@ -94,7 +96,7 @@ def scrape_data(request):
     for name in course_names:
         # You can set credit hours accordingly
         course = Course(course_name=name, theory_credit_hours=0,
-                        lab_credit_hours=0)
+                        lab_credit_hours=0, department=department)
         course.save()
 
     print("Courses added to the database.")
@@ -235,7 +237,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    scrape_data(request)
+    # scrape_data(request)
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
