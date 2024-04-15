@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
-
 from portals.forms import DegreeForm
 from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, User, Student, Teacher
 
@@ -15,8 +14,11 @@ class TeacherAdmin(admin.ModelAdmin):
     pass
 
 
-class CustomUserAdmin(UserAdmin):
-    pass
+class CustomUserAdmin(admin.ModelAdmin):
+    # list_display = ('username', 'email', 'first_name', 'last_name', 'is_student', 'is_teacher', 'phone_number', 'profile_picture')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_filter = ('is_staff', 'is_superuser')
+
 
 class CustomAdminSite(admin.AdminSite):
     site_header = "SMARTEVAL ADMINISTRATION"

@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block admin_change_form_content %}
+<h1>Hello from degree_change_form.html!</h1>
+{% endblock %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script src="{% static 'js/admin_degree_form.js' %}"></script>
+<script>
+    console.log("Hello from inline JavaScript!");
+</script>
+{% endblock %}
