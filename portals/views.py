@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 import requests
 from bs4 import BeautifulSoup
+from django.http import JsonResponse
+from .models import Program
 
 from portals.models import Course, Department, Student, Teacher, User
 
@@ -299,3 +301,11 @@ def faculty_login_view(request):
             return render(request, 'portals/Faculty_login.html', {'error': 'Invalid username or password.'})
 
     return render(request, 'portals/Faculty_login.html')
+
+
+
+
+def get_programs(request):
+    department_id = request.GET.get('department_id')
+    programs = Program.objects.filter(department_id=department_id).values('id', 'name')
+    return JsonResponse(list(programs), safe=False)

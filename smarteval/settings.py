@@ -57,7 +57,9 @@ ROOT_URLCONF = "smarteval.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "templates",
+                 os.path.join(BASE_DIR, 'portals', 'templates', 'admin'),
+                 os.path.join(BASE_DIR, 'portals', 'templates'),],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

@@ -127,8 +127,8 @@ class Program(models.Model):
 
 class Degree(models.Model):
     DegreeID = models.AutoField(primary_key=True)
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, default="")
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, blank=True, null=True)
     degree_name = models.CharField(max_length=100)
 
     def __str__(self):
