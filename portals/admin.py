@@ -41,7 +41,8 @@ class SemesterDetailsAdmin(admin.ModelAdmin):
     pass
 
 class CourseAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('department',)
+
 
 class SemesterCoursesAdmin(admin.ModelAdmin):
     pass
