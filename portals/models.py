@@ -12,8 +12,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField(unique=True)
-    # profile_picture = models.ImageField(
-    #     upload_to='profile_pictures', null=True, blank=True)
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures', null=True, blank=True)
     password = models.CharField(max_length=128)
     username = models.CharField(max_length=150, unique=True, null=True)
 
@@ -108,7 +108,6 @@ class Department(models.Model):
     DepartmentID = models.AutoField(primary_key=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     department_name = models.CharField(max_length=100)
-    department_intro = models.TextField()
 
     def __str__(self):
         return self.department_name
