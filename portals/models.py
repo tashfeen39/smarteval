@@ -108,7 +108,6 @@ class Department(models.Model):
     DepartmentID = models.AutoField(primary_key=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     department_name = models.CharField(max_length=100)
-    department_intro = models.TextField()
 
     def __str__(self):
         return self.department_name
