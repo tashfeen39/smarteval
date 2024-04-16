@@ -104,36 +104,35 @@ def remove_duplicates(request):
 def scrape_data(request):
     # Set all department values to "Department of Humanities"
     department = Department.objects.get(
-        department_name="Department of Avionics Engineering"
+        department_name="Department of Cyber Security"
     )
     # URL to scrape
-    url = (
-        "https://www.au.edu.pk/Pages/Faculties/IAA/Departments/Avionics/avi_course.aspx"
-    )
+    url = "https://www.au.edu.pk/Pages/Faculties/Computing_AI/Cyber_Security/dept_cyber_programdesc.aspx"
+
     # Send a GET request to the URL
     response = requests.get(url)
 
     # Parse HTML content
     soup = BeautifulSoup(response.content, "html.parser")
 
-    # Find all panel-body elements
-    panel_bodies = soup.find_all("div", class_="panel-body")
-    # table = soup.find("table", id="Table2")  # Replace "your_table_id_here" with the actual ID of the table
+    # # Find all panel-body elements
+    # panel_bodies = soup.find_all("div", class_="panel-body")
+    # # table = soup.find("table", id="Table2")  # Replace "your_table_id_here" with the actual ID of the table
 
-    # Create a list to store course names
-    # course_names = []
-    course_names = set()
+    # # Create a list to store course names
+    # # course_names = []
+    # course_names = set()
 
-    # Iterate over panel-body elements
-    for panel_body in panel_bodies:
-        # Find all h4 elements within panel-body
-        h4_elements = panel_body.find_all("h4")
+    # # Iterate over panel-body elements
+    # for panel_body in panel_bodies:
+    #     # Find all h4 elements within panel-body
+    #     h4_elements = panel_body.find_all("h4")
 
-        # Extract course names
-        for h4 in h4_elements:
-            # Remove everything before the "-" and the space after it
-            course_name = re.sub(r"^[A-Z]+-\d+\s", "", h4.text.strip())
-            course_names.add(course_name)
+    #     # Extract course names
+    #     for h4 in h4_elements:
+    #         # Remove everything before the "-" and the space after it
+    #         course_name = re.sub(r"^[A-Z]+-\d+\s", "", h4.text.strip())
+    #         course_names.add(course_name)
 
         # # Find all rows in the table
         # rows = table.find_all("tr")
@@ -147,8 +146,48 @@ def scrape_data(request):
         #         # Extract data from the second cell and append it to the list
         #         course_names.add(cells[1].text.strip())
 
+        
         # Create Course objects and save them in the database
-        for name in course_names:
+    # Find the div with class 'table-responsive'
+    table_div = soup.find("div", class_="table-responsive")
+
+    # Initialize an empty list to store course titles from the specified column
+    course_titles = []
+
+    # Find the table element within the div
+    table = table_div.find("table")
+
+    # Find all rows in the table
+    rows = table.find_all("tr")
+
+    # Iterate over rows and extract data from the third column (index 2)
+    for row in rows:
+        # Find all cells in the row
+        cells = row.find_all("td")
+        # Check if the row has at least three cells (for safety) and extract data from the third cell
+        if len(cells) >= 3:
+            # Assuming the course titles are in the third column, extract and append to the list
+            course_title = cells[2].text.strip()
+            course_titles.append(course_title)
+
+    # Find all subsequent tables
+    subsequent_tables = soup.find_all("table")[1:]
+
+    # Iterate through subsequent tables and extract data from the specified column
+    for table in subsequent_tables:
+        # Find all rows in the table
+        rows = table.find_all("tr")
+        # Iterate over rows and extract data from the third column (index 2)
+        for row in rows:
+            # Find all cells in the row
+            cells = row.find_all("td")
+            # Check if the row has at least three cells (for safety) and extract data from the third cell
+            if len(cells) >= 3:
+                # Assuming the course titles are in the third column, extract and append to the list
+                course_title = cells[2].text.strip()
+                course_titles.append(course_title)
+
+    for name in course_titles:
             # You can set credit hours accordingly
             course = Course(
                 course_name=name,
@@ -158,7 +197,7 @@ def scrape_data(request):
             )
             course.save()
 
-        print("Courses added to the database.")
+    print("Courses added to the database.")
 
 
 def faculty_registration(request):
