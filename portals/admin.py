@@ -28,7 +28,7 @@ class SchoolAdmin(admin.ModelAdmin):
     pass
 
 class DepartmentAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('school',)
 
 class ProgramAdmin(admin.ModelAdmin):
     pass
