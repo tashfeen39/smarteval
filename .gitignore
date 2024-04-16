@@ -1,6 +1,3 @@
-# Ignore the folder named "folder_to_ignore"
+# Ignore the folder 
 migrations/
-__pychache__/
-
-
-
+__pycache__
