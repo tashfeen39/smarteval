@@ -30,7 +30,7 @@ class Student(models.Model):
     )
     gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
-        ('Sinle', 'Single'),
+        ('Single', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
@@ -77,7 +77,7 @@ class Teacher(models.Model):
     )
     gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
     MARITAL_STATUS_CHOICES = (
-        ('Sinle', 'Single'),
+        ('Single', 'Single'),
         ('Married', 'Married'),
         ('Other', 'Other')
     )
@@ -108,7 +108,6 @@ class Department(models.Model):
     DepartmentID = models.AutoField(primary_key=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     department_name = models.CharField(max_length=100)
-    department_intro = models.TextField()
 
     def __str__(self):
         return self.department_name
@@ -127,8 +126,8 @@ class Program(models.Model):
 
 class Degree(models.Model):
     DegreeID = models.AutoField(primary_key=True)
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, default="")
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, blank=True, null=True)
     degree_name = models.CharField(max_length=100)
 
     def __str__(self):
