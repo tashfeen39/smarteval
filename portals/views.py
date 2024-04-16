@@ -1,3 +1,4 @@
+import csv
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -80,6 +81,27 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+def read_csv(request):
+    csv_file_path = 'C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv'
+    department = Department.objects.get(
+        department_name="Department of Computer Science"
+    )
+
+    # Open the CSV file and iterate over its rows
+    with open(csv_file_path, 'r', newline='') as csvfile:
+        for line in csvfile:
+            # Create a new Course object for each row in the CSV file
+            course = Course(
+                course_name = line.strip(),
+                department=department,
+                theory_credit_hours=0,
+                lab_credit_hours=0,
+            )
+            # Save the Course object to the database
+            course.save()
+
+    print("Courses saved to the database.")
 
 
 def remove_duplicates(request):
@@ -397,6 +419,7 @@ def saveStudent(request):
 def student_login_view(request):
     # scrape_data(request)
     # remove_duplicates(request)
+    # read_csv(request)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
