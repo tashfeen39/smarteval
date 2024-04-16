@@ -1,4 +1,6 @@
 # Ignore the folder named "folder_to_ignore"
 migrations/
+__pychache__/
+
 
 
