@@ -6,7 +6,7 @@ import re
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from .models import Program
-
+from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 
 
@@ -82,13 +82,34 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 
+def remove_duplicates(request):
+    # Get a list of duplicate course names
+    duplicate_course_names = (
+        Course.objects.values("course_name")
+        .annotate(count=Count("course_name"))
+        .filter(count__gt=1)
+    )
+    # Iterate over duplicate course names
+    for duplicate in duplicate_course_names:
+        # Get all instances of the duplicate course
+        duplicate_instances = Course.objects.filter(
+            course_name=duplicate["course_name"]
+        )
+        # Keep the first instance and delete the rest
+        for instance in duplicate_instances[1:]:
+            instance.delete()
+    print("Duplicates removed successfully.")
+
+
 def scrape_data(request):
     # Set all department values to "Department of Humanities"
     department = Department.objects.get(
         department_name="Department of Avionics Engineering"
     )
     # URL to scrape
-    url = "https://www.au.edu.pk/Pages/Faculties/IAA/Departments/Avionics/avi_course.aspx"
+    url = (
+        "https://www.au.edu.pk/Pages/Faculties/IAA/Departments/Avionics/avi_course.aspx"
+    )
     # Send a GET request to the URL
     response = requests.get(url)
 
@@ -97,13 +118,11 @@ def scrape_data(request):
 
     # Find all panel-body elements
     panel_bodies = soup.find_all("div", class_="panel-body")
-    #table = soup.find("table", id="Table2")  # Replace "your_table_id_here" with the actual ID of the table
-
+    # table = soup.find("table", id="Table2")  # Replace "your_table_id_here" with the actual ID of the table
 
     # Create a list to store course names
     # course_names = []
     course_names = set()
-
 
     # Iterate over panel-body elements
     for panel_body in panel_bodies:
@@ -116,17 +135,17 @@ def scrape_data(request):
             course_name = re.sub(r"^[A-Z]+-\d+\s", "", h4.text.strip())
             course_names.add(course_name)
 
-    # # Find all rows in the table
-    # rows = table.find_all("tr")
+        # # Find all rows in the table
+        # rows = table.find_all("tr")
 
-    # # Iterate over rows and extract data from the second column
-    # for row in rows:
-    #     # Find all cells in the row
-    #     cells = row.find_all("td")
-    #     # Check if the row has at least two cells (for safety)
-    #     if len(cells) >= 2:
-    #         # Extract data from the second cell and append it to the list
-    #         course_names.add(cells[1].text.strip())
+        # # Iterate over rows and extract data from the second column
+        # for row in rows:
+        #     # Find all cells in the row
+        #     cells = row.find_all("td")
+        #     # Check if the row has at least two cells (for safety)
+        #     if len(cells) >= 2:
+        #         # Extract data from the second cell and append it to the list
+        #         course_names.add(cells[1].text.strip())
 
         # Create Course objects and save them in the database
         for name in course_names:
@@ -337,7 +356,8 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    #scrape_data(request)
+    # scrape_data(request)
+    # remove_duplicates(request)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -413,12 +433,10 @@ def faculty_login_view(request):
                 {"error": "Invalid username or password."},
             )
 
-    return render(request, 'portals/Faculty_login.html')
-
-
+    return render(request, "portals/Faculty_login.html")
 
 
 def get_programs(request):
-    department_id = request.GET.get('department_id')
-    programs = Program.objects.filter(department_id=department_id).values('id', 'name')
+    department_id = request.GET.get("department_id")
+    programs = Program.objects.filter(department_id=department_id).values("id", "name")
     return JsonResponse(list(programs), safe=False)
