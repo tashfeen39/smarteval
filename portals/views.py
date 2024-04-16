@@ -85,10 +85,10 @@ def student_subjectwisereport_view(request):
 def scrape_data(request):
     # Set all department values to "Department of Humanities"
     department = Department.objects.get(
-        department_name="Department of Physics"
+        department_name="Department of Avionics Engineering"
     )
     # URL to scrape
-    url = "https://www.au.edu.pk/Pages/Faculties/Basic_Applied_Sciences/Departments/Physics/dept_physics_course_desc.aspx"
+    url = "https://www.au.edu.pk/Pages/Faculties/IAA/Departments/Avionics/avi_course.aspx"
     # Send a GET request to the URL
     response = requests.get(url)
 
@@ -113,7 +113,7 @@ def scrape_data(request):
         # Extract course names
         for h4 in h4_elements:
             # Remove everything before the "-" and the space after it
-            course_name = re.sub(r"^[A-Z]{2}\s\d{3}\s", "", h4.text.strip())
+            course_name = re.sub(r"^[A-Z]+-\d+\s", "", h4.text.strip())
             course_names.add(course_name)
 
     # # Find all rows in the table
