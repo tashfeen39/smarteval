@@ -336,7 +336,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    scrape_data(request)
+    # scrape_data(request)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
