@@ -41,6 +41,7 @@ class SemesterDetailsAdmin(admin.ModelAdmin):
     pass
 
 class CourseAdmin(admin.ModelAdmin):
+    search_fields = ['course_name']
     list_filter = ('department',)
 
 
