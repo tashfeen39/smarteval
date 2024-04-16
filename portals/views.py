@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 import requests
+import re
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from .models import Program
@@ -84,10 +85,10 @@ def student_subjectwisereport_view(request):
 def scrape_data(request):
     # Set all department values to "Department of Humanities"
     department = Department.objects.get(
-        department_name="Department of English"
+        department_name="Department of Physics"
     )
     # URL to scrape
-    url = "https://www.au.edu.pk/Pages/Faculties/SocialSciences/Departments/English/dept_course_description.aspx"
+    url = "https://www.au.edu.pk/Pages/Faculties/Basic_Applied_Sciences/Departments/Physics/dept_physics_course_desc.aspx"
     # Send a GET request to the URL
     response = requests.get(url)
 
@@ -95,8 +96,8 @@ def scrape_data(request):
     soup = BeautifulSoup(response.content, "html.parser")
 
     # Find all panel-body elements
-    # panel_bodies = soup.find_all("div", class_="panel-body")
-    table = soup.find("table", id="Table1")  # Replace "your_table_id_here" with the actual ID of the table
+    panel_bodies = soup.find_all("div", class_="panel-body")
+    #table = soup.find("table", id="Table2")  # Replace "your_table_id_here" with the actual ID of the table
 
 
     # Create a list to store course names
@@ -105,27 +106,27 @@ def scrape_data(request):
 
 
     # Iterate over panel-body elements
-    # for panel_body in panel_bodies:
-    #     # Find all h4 elements within panel-body
-    #     h4_elements = panel_body.find_all("h4")
+    for panel_body in panel_bodies:
+        # Find all h4 elements within panel-body
+        h4_elements = panel_body.find_all("h4")
 
-    #     # Extract course names
-    #     for h4 in h4_elements:
-    #         # Remove everything before the "-" and the space after it
-    #         course_name = re.sub(r"^[A-Z]{2}\s\d{3}\s", "", h4.text.strip())
-    #         course_names.append(course_name)
+        # Extract course names
+        for h4 in h4_elements:
+            # Remove everything before the "-" and the space after it
+            course_name = re.sub(r"^[A-Z]{2}\s\d{3}\s", "", h4.text.strip())
+            course_names.add(course_name)
 
-    # Find all rows in the table
-    rows = table.find_all("tr")
+    # # Find all rows in the table
+    # rows = table.find_all("tr")
 
-    # Iterate over rows and extract data from the second column
-    for row in rows:
-        # Find all cells in the row
-        cells = row.find_all("td")
-        # Check if the row has at least two cells (for safety)
-        if len(cells) >= 2:
-            # Extract data from the second cell and append it to the list
-            course_names.add(cells[1].text.strip())
+    # # Iterate over rows and extract data from the second column
+    # for row in rows:
+    #     # Find all cells in the row
+    #     cells = row.find_all("td")
+    #     # Check if the row has at least two cells (for safety)
+    #     if len(cells) >= 2:
+    #         # Extract data from the second cell and append it to the list
+    #         course_names.add(cells[1].text.strip())
 
         # Create Course objects and save them in the database
         for name in course_names:
@@ -336,7 +337,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    # scrape_data(request)
+    #scrape_data(request)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
