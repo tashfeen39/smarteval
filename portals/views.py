@@ -498,5 +498,6 @@ def faculty_login_view(request):
 
 def get_programs(request):
     department_id = request.GET.get("department_id")
-    programs = Program.objects.filter(department_id=department_id).values("id", "name")
+    programs = Program.objects.filter(department_id=department_id).values("id", "program_name")
     return JsonResponse(list(programs), safe=False)
+
