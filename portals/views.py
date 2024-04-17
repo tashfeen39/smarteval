@@ -84,9 +84,9 @@ def student_subjectwisereport_view(request):
 
 
 def read_csv(request):
-    csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\coursescs.csv"
+    csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv"
     department = Department.objects.get(
-        department_name="Department of Creative Technologies"
+        department_name="Department of Strategic Studies (DSS)"
     )
 
     # Open the CSV file and iterate over its rows
@@ -417,7 +417,7 @@ def saveStudent(request):
 def student_login_view(request):
     # scrape_data(request)
     # remove_duplicates(request)
-    read_csv(request)
+    # read_csv(request)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
