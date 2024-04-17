@@ -82,18 +82,19 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+
 def read_csv(request):
-    csv_file_path = 'C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv'
+    csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\coursescs.csv"
     department = Department.objects.get(
         department_name="Department of Computer Science"
     )
 
     # Open the CSV file and iterate over its rows
-    with open(csv_file_path, 'r', newline='') as csvfile:
+    with open(csv_file_path, "r", newline="") as csvfile:
         for line in csvfile:
             # Create a new Course object for each row in the CSV file
             course = Course(
-                course_name = line.strip(),
+                course_name=line.strip(),
                 department=department,
                 theory_credit_hours=0,
                 lab_credit_hours=0,
@@ -125,9 +126,7 @@ def remove_duplicates(request):
 
 def scrape_data(request):
     # Set all department values to "Department of Humanities"
-    department = Department.objects.get(
-        department_name="Department of Cyber Security"
-    )
+    department = Department.objects.get(department_name="Department of Cyber Security")
     # URL to scrape
     url = "https://www.au.edu.pk/Pages/Faculties/Computing_AI/Cyber_Security/dept_cyber_programdesc.aspx"
 
@@ -156,20 +155,19 @@ def scrape_data(request):
     #         course_name = re.sub(r"^[A-Z]+-\d+\s", "", h4.text.strip())
     #         course_names.add(course_name)
 
-        # # Find all rows in the table
-        # rows = table.find_all("tr")
+    # # Find all rows in the table
+    # rows = table.find_all("tr")
 
-        # # Iterate over rows and extract data from the second column
-        # for row in rows:
-        #     # Find all cells in the row
-        #     cells = row.find_all("td")
-        #     # Check if the row has at least two cells (for safety)
-        #     if len(cells) >= 2:
-        #         # Extract data from the second cell and append it to the list
-        #         course_names.add(cells[1].text.strip())
+    # # Iterate over rows and extract data from the second column
+    # for row in rows:
+    #     # Find all cells in the row
+    #     cells = row.find_all("td")
+    #     # Check if the row has at least two cells (for safety)
+    #     if len(cells) >= 2:
+    #         # Extract data from the second cell and append it to the list
+    #         course_names.add(cells[1].text.strip())
 
-        
-        # Create Course objects and save them in the database
+    # Create Course objects and save them in the database
     # Find the div with class 'table-responsive'
     table_div = soup.find("div", class_="table-responsive")
 
@@ -210,14 +208,14 @@ def scrape_data(request):
                 course_titles.append(course_title)
 
     for name in course_titles:
-            # You can set credit hours accordingly
-            course = Course(
-                course_name=name,
-                theory_credit_hours=0,
-                lab_credit_hours=0,
-                department=department,
-            )
-            course.save()
+        # You can set credit hours accordingly
+        course = Course(
+            course_name=name,
+            theory_credit_hours=0,
+            lab_credit_hours=0,
+            department=department,
+        )
+        course.save()
 
     print("Courses added to the database.")
 
