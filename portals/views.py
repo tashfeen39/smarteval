@@ -84,9 +84,9 @@ def student_subjectwisereport_view(request):
 
 
 def read_csv(request):
-    csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\coursescs.csv"
+    csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv"
     department = Department.objects.get(
-        department_name="Department of Computer Science"
+        department_name="Department of Computer and Games Development"
     )
 
     # Open the CSV file and iterate over its rows
