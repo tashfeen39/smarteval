@@ -60,7 +60,6 @@ class LoginForm(AuthenticationForm):
 
 
 
-
 class DegreeForm(forms.ModelForm):
     class Meta:
         model = Degree

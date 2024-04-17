@@ -31,7 +31,8 @@ class DepartmentAdmin(admin.ModelAdmin):
     list_filter = ('school',)
 
 class ProgramAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('department',)
+   
 
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
