@@ -6,7 +6,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
-from .models import Program
+from .models import Degree, Program, SemesterDetails
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 
@@ -82,8 +82,56 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+def create_semester_details(request):
+    # Define degree names and semester numbers
+    degrees = ["BS Computer Science", "BS Cyber Security", "BS Artificial Intelligence"]
+    semester_numbers = list(range(1, 9))
+
+    # Define the file name
+    file_name = "semester_details.csv"
+
+    # Open the CSV file in write mode
+    with open(file_name, mode="w", newline="") as file:
+        # Create a CSV writer object
+        writer = csv.writer(file)
+
+        # Write the header row
+        writer.writerow(["Semester Number", "Degree"])
+
+        # Write data for each degree and semester combination
+        for degree in degrees:
+            for semester_number in semester_numbers:
+                writer.writerow([semester_number, degree])
+
+    print(f"CSV data has been generated and saved to {file_name}.")
+
+
+def import_semester_details_from_csv(request):
+    file_path = "semester_details.csv"
+    # Open the CSV file in read mode
+    with open(file_path, mode="r") as file:
+        # Create a CSV reader object
+        reader = csv.reader(file)
+        
+        # Skip the header row
+        next(reader)
+        
+        # Iterate over each row in the CSV file
+        for row in reader:
+            semester_number, degree_name = row
+            
+            # Get the Degree object from the database
+            degree = Degree.objects.get(degree_name=degree_name)
+            
+            # Create the SemesterDetails object
+            SemesterDetails.objects.create(
+                semester_number=int(semester_number),
+                degree=degree
+            )
+
 
 def read_csv(request):
+    #File path for Maryam
     csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv"
     department = Department.objects.get(
         department_name="Department of Strategic Studies (DSS)"
@@ -415,6 +463,8 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # create_semester_details(request)
+    # import_semester_details_from_csv(request)
     # scrape_data(request)
     # remove_duplicates(request)
     # read_csv(request)

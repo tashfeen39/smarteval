@@ -5,8 +5,6 @@ from django.utils import timezone
 from .models import User, Teacher, Student
 from django.test import TransactionTestCase
 
-
-
 @pytest.mark.django_db
 class TestUserModel(TestCase):
     def test_user_creation_with_defaults(self):

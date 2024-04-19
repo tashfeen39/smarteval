@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, User, Student, Teacher
+from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, User, Student, Teacher, SemesterDetails
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -37,9 +38,26 @@ class ProgramAdmin(admin.ModelAdmin):
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
     form = DegreeForm
+    list_filter = ('department',)
+
+
+# class DepartmentFilter(admin.RelatedFieldListFilter):
+#     def field_choices(self, field, request, model_admin):
+#         # Get all unique departments associated with degrees that have semester details
+#         queryset = field.related_model.objects.filter(degree__isnull=False).distinct()
+#         print(queryset)
+#         departments = set([str(department) for department in queryset])
+
+#         return [(department, department) for department in departments]
+
+        
+
 
 class SemesterDetailsAdmin(admin.ModelAdmin):
-    pass
+    # list_filter = (('degree__department', DepartmentFilter),)
+      list_filter = ('degree__department',)
+
+
 
 class CourseAdmin(admin.ModelAdmin):
     search_fields = ['course_name']

@@ -136,11 +136,14 @@ class Degree(models.Model):
 
 class SemesterDetails(models.Model):
     SemesterDetailsID = models.AutoField(primary_key=True)
-    semester_number = models.PositiveIntegerField()
     degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+    semester_number = models.PositiveIntegerField()
 
     def __str__(self):
         return f"Semester {self.semester_number} - {self.degree}"
+    
+    class Meta:
+        verbose_name_plural = "Semester Details"
 
 
 class Course(models.Model):
@@ -161,6 +164,9 @@ class SemesterCourses(models.Model):
 
     def __str__(self):
         return f"Semester Courses: {self.semester_details.semester_number}"
+    
+    class Meta:
+        verbose_name_plural = "Semester Courses"
 
 
 class CoursePrerequisite(models.Model):
@@ -169,3 +175,6 @@ class CoursePrerequisite(models.Model):
 
     def __str__(self):
         return f"Course Prerequisite: {self.CoursePrerequisiteID}"
+
+    class Meta:
+        verbose_name_plural = "Course Prerequisites"
