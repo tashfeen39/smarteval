@@ -1,2 +1,141 @@
 from django.test import TestCase
-from portals.views import home
+import pytest
+from django.db import IntegrityError
+from django.utils import timezone
+from .models import User, Teacher
+from django.test import TransactionTestCase
+
+
+
+@pytest.mark.django_db
+class TestUserModel(TestCase):
+    def test_user_creation_with_defaults(self):
+        user = User.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="john.doe@example.com",
+            password="securepassword123",
+            username="johndoe"
+        )
+        assert user.is_student == False
+        assert user.is_teacher == False
+        assert user.phone_number == None  
+        assert user.profile_picture == None
+
+    def test_user_optional_fields_blank(self):
+        user = User.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="john.doe@example.com",
+            password="securepassword123",
+            username="johndoe"
+        )
+        assert user.phone_number == None
+        assert user.profile_picture == None
+
+@pytest.mark.django_db
+class TestUserModelTransaction(TransactionTestCase):
+    def test_user_unique_email_and_username(self):
+        # Create a user with a unique email address
+        User.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="unique@example.com",
+            password="securepassword123",
+            username="uniqueusername"
+        )
+
+        # Attempt to create another user with the same email address
+        with pytest.raises(IntegrityError):
+            User.objects.create(
+                first_name="Jane",
+                last_name="Doe",
+                email="unique@example.com",  # This email is already used by the previous user
+                password="securepassword123",
+                username="anotherusername"
+            )
+
+        # Attempt to create another user with the same username
+        with pytest.raises(IntegrityError):
+            User.objects.create(
+                first_name="Jane",
+                last_name="Doe",
+                email="another@example.com",  
+                password="securepassword123",
+                username="uniqueusername" # This username is already used by the previous user
+            )
+
+
+class TeacherModelTestCase(TestCase):
+    def setUp(self):
+        # Create a User instance for the Teacher
+        self.teacher_user = User.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="john.doe@example.com",
+            password="securepassword123",
+            username="johndoe"
+        )
+
+    def test_teacher_creation(self):
+        # Create and save a Teacher object with valid data
+        teacher = Teacher.objects.create(
+            user=self.teacher_user,
+            date_of_birth="1990-01-01",
+            gender="Male",
+            marital_status="Single",
+            religion="Christian",
+            nationality="American",
+            cnic="1234567890123",
+            office_number="1234567890",
+            address="123 Main St, City, Country"
+        )
+        # Assert that the Teacher object was created successfully
+        self.assertIsNotNone(teacher)
+        self.assertEqual(teacher.user, self.teacher_user)
+        self.assertEqual(teacher.date_of_birth, "1990-01-01")
+        self.assertEqual(teacher.gender, "Male")
+        self.assertEqual(teacher.marital_status, "Single")
+        self.assertEqual(teacher.religion, "Christian")
+        self.assertEqual(teacher.nationality, "American")
+        self.assertEqual(teacher.cnic, "1234567890123")
+        self.assertEqual(teacher.office_number, "1234567890")
+        self.assertEqual(teacher.address, "123 Main St, City, Country")
+        self.assertTrue(teacher.created_at)
+
+    def test_default_values(self):
+        # Create and save a Teacher object without specifying optional fields
+        teacher = Teacher.objects.create(user=self.teacher_user)
+        # Assert that default values are correctly applied
+        self.assertIsNotNone(teacher.created_at)
+
+
+class TeacherUserRelationshipTestCase(TestCase):
+    def setUp(self):
+        # Create a User instance for the Teacher
+        self.teacher_user = User.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="john.doe@example.com",
+            password="securepassword123",
+            username="johndoe"
+        )
+
+        # Create a Teacher instance
+        self.teacher = Teacher.objects.create(
+            user=self.teacher_user,
+            date_of_birth="1990-01-01",
+            gender="Male",
+            marital_status="Single",
+            religion="Christian",
+            nationality="American",
+            cnic="1234567890123",
+            office_number="1234567890",
+            address="123 Main St, City, Country"
+        )
+
+    def test_teacher_user_relationship(self):
+        # Check if the Teacher object is associated with the correct User object
+        self.assertEqual(self.teacher.user, self.teacher_user)
+        # Check if the User object has the correct Teacher object associated with it
+        self.assertEqual(self.teacher_user.teacher, self.teacher)
