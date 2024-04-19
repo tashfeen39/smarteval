@@ -109,6 +109,44 @@ class TeacherModelTestCase(TestCase):
         # Assert that default values are correctly applied
         self.assertIsNotNone(teacher.created_at)
 
+    def test_string_representation(self):
+        # Create a Teacher object
+        teacher = Teacher.objects.create(
+            user=self.teacher_user,
+            date_of_birth="1990-01-01",
+            gender="Male",
+            marital_status="Single",
+            religion="Christian",
+            nationality="American",
+            cnic="1234567890123",
+            office_number="1234567890",
+            address="123 Main St, City, Country"
+        )
+        # Assert the string representation of the Teacher model
+        expected_string = f"{self.teacher_user.first_name} {self.teacher_user.last_name}"
+        self.assertEqual(str(teacher), expected_string)
+
+    def test_optional_fields_blank(self):
+        # Create and save a Teacher object without specifying optional fields
+        teacher = Teacher.objects.create(user=self.teacher_user)
+        # Assert that optional fields can be left blank or set to null
+        self.assertIsNone(teacher.date_of_birth)
+        self.assertIsNone(teacher.gender)
+        self.assertIsNone(teacher.marital_status)
+        self.assertIsNone(teacher.religion)
+        self.assertIsNone(teacher.nationality)
+        self.assertIsNone(teacher.cnic)
+        self.assertIsNone(teacher.office_number)
+        self.assertIsNone(teacher.address)
+
+    def test_field_lengths(self):
+        # Assert that fields with defined max lengths enforce the specified maximum lengths
+        self.assertEqual(Teacher._meta.get_field('religion').max_length, 100)
+        self.assertEqual(Teacher._meta.get_field('nationality').max_length, 100)
+        self.assertEqual(Teacher._meta.get_field('cnic').max_length, 15)
+        self.assertEqual(Teacher._meta.get_field('office_number').max_length, 20)
+        self.assertEqual(Teacher._meta.get_field('address').max_length, 200)
+
 
 class TeacherUserRelationshipTestCase(TestCase):
     def setUp(self):
