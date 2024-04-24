@@ -12,6 +12,11 @@ from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
 from django.db import transaction
+from faker import Faker
+
+
+
+fake = Faker()
 
 
 
@@ -86,6 +91,34 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+def generate_username(first_name, last_name):
+    return (first_name + last_name).lower().replace(" ", "")
+
+def generate_unique_data(num_students, filename):
+    unique_emails = set()
+    unique_usernames = set()
+    unique_phone_numbers = set()
+
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['first_name', 'last_name', 'phone_number', 'email', 'password', 'username'])
+
+        while len(unique_emails) < num_students:
+            first_name = fake.first_name()
+            last_name = fake.last_name()
+            email = fake.email()
+            phone_number = fake.phone_number()
+            username = generate_username(first_name, last_name)
+
+            # Check if email, username, and phone number are unique
+            if email not in unique_emails and username not in unique_usernames and phone_number not in unique_phone_numbers:
+                unique_emails.add(email)
+                unique_usernames.add(username)
+                unique_phone_numbers.add(phone_number)
+
+                # Write data to the CSV file
+                writer.writerow([first_name, last_name, phone_number, email, '1234', username])
 
 def import_semester_courses(request):
     # Path to CSV files
@@ -517,6 +550,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    generate_unique_data(100, 'student_data.csv')
     # import_semester_courses(request)
     # create_semester_details(request)
     # import_semester_details_from_csv(request)
