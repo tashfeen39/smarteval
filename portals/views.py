@@ -4,11 +4,16 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 import requests
 import re
+import random
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
-from .models import Degree, Program, SemesterDetails
+from .models import Degree, Program, SemesterCourses, SemesterDetails
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
+from django.http import HttpResponse
+from django.db import transaction
+
+
 
 
 def home(request):
@@ -82,12 +87,60 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+def import_semester_courses(request):
+    # Path to CSV files
+    semester_details_file = "semester_details.csv"
+    all_courses_file = "allcourses.csv"
+
+    # Read all courses from CSV
+    all_courses_data = []
+    with open(all_courses_file, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            all_courses_data.append(row['Course Name'])
+
+    # Read semester details from CSV and create SemesterCourses instances
+    with open(semester_details_file, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            semester_number = row['Semester Number']
+            degree_name = row['Degree']
+
+            # Fetch the corresponding degree
+            degree = Degree.objects.get(degree_name=degree_name)
+
+            # Create SemesterDetails instance if not already exists
+            semester_details, created = SemesterDetails.objects.get_or_create(degree=degree, semester_number=semester_number)
+
+            # Randomly select 6 courses from all courses
+            selected_courses = random.sample(all_courses_data, 6)
+
+            # Link selected courses with SemesterCourses
+            semester_courses = SemesterCourses.objects.create(semester_details=semester_details)
+            for course_name in selected_courses:
+                course = Course.objects.get(course_name=course_name)
+                semester_courses.courses.add(course)
+
+    return HttpResponse("Semester courses imported successfully!")
 def create_semester_details(request):
-    # Define degree names and semester numbers
-    degrees = ["BS Computer Science", "BS Cyber Security", "BS Artificial Intelligence"]
+    # Define the file name for degrees
+    degrees_file = "alldegrees.csv"
+
+    # Open the CSV file containing degrees
+    with open(degrees_file, mode="r", newline="") as file:
+        # Create a CSV reader object
+        reader = csv.reader(file)
+        
+        # Skip the header row if it exists
+        next(reader, None)
+        
+        # Read the degrees from the file
+        degrees = [row[0] for row in reader]
+
+    # Define semester numbers
     semester_numbers = list(range(1, 9))
 
-    # Define the file name
+    # Define the file name for semester details
     file_name = "semester_details.csv"
 
     # Open the CSV file in write mode
@@ -104,6 +157,7 @@ def create_semester_details(request):
                 writer.writerow([semester_number, degree])
 
     print(f"CSV data has been generated and saved to {file_name}.")
+
 
 
 def import_semester_details_from_csv(request):
@@ -463,11 +517,13 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # import_semester_courses(request)
     # create_semester_details(request)
     # import_semester_details_from_csv(request)
     # scrape_data(request)
     # remove_duplicates(request)
     # read_csv(request)
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -550,4 +606,6 @@ def get_programs(request):
     department_id = request.GET.get("department_id")
     programs = Program.objects.filter(department_id=department_id).values("id", "program_name")
     return JsonResponse(list(programs), safe=False)
+
+
 
