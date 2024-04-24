@@ -163,7 +163,7 @@ class SemesterCourses(models.Model):
     courses = models.ManyToManyField(Course)
 
     def __str__(self):
-        return f"Semester Courses: {self.semester_details.semester_number}"
+        return f"Semester {self.semester_details.semester_number} - {self.semester_details.degree} - Courses"
     
     class Meta:
         verbose_name_plural = "Semester Courses"
