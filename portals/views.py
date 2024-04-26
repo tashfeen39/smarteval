@@ -116,7 +116,6 @@ def read_users_from_csv(request):
 
 
 def add_students_from_csv(request):
-    # Fetch all user objects from the database
    
     # File path for allstudents.csv
     csv_file_path = "allstudents.csv"
@@ -129,7 +128,7 @@ def add_students_from_csv(request):
             # Randomly select a user object
             random_user = random.choice(users)
             # Create a new Student object for each row in the CSV file
-            student = Student(
+            student =  Student.objects.create(
                 user=random_user,
                 date_of_birth=row['date_of_birth'],
                 gender=row['gender'],
@@ -143,8 +142,6 @@ def add_students_from_csv(request):
                 address=row['address'],
             )
 
-            # Save the Student object to the database
-            student.save()
 
 
     print("Students linked to users and saved to the database.")
