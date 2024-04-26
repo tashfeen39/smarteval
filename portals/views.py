@@ -89,6 +89,30 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 
+def read_users_from_csv(request):
+    # File path for allusers.csv
+    csv_file_path = "allusers.csv"
+
+    # Open the CSV file and iterate over its rows
+    with open(csv_file_path, "r", newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            # Create a new User object for each row in the CSV file
+            user = User.objects.create_user(
+                first_name=row['First Name'],
+                last_name=row['Last Name'],
+                phone_number=row['Phone Number'],
+                email=row['Email'],
+                password=(row['Password']),  
+                username=row['Username'],
+                is_student=True if reader.line_num <= 495 else False,  
+                is_teacher=False if reader.line_num <= 495 else True,
+            )
+            # # Save the User object to the database
+            # user.save()
+
+    print("Users saved to the database.")
+
 def generate_random_date_of_birth():
     # Generate a random year between 1995 and 2004
     year = random.randint(1960, 1990)
@@ -153,7 +177,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allusers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -162,13 +186,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['office_number']
+            username = row['Email']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewteachers.csv"
+    output_file_path = "allnewusers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -640,6 +664,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # read_users_from_csv(request)
     # change_date_of_birth(request)
     # change_phone_numbers(request)
     # remove_duplicate_users(request)
