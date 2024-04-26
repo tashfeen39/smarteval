@@ -91,7 +91,7 @@ def student_subjectwisereport_view(request):
 
 def generate_random_date_of_birth():
     # Generate a random year between 1995 and 2004
-    year = random.randint(1995, 2004)
+    year = random.randint(1960, 1990)
     # Generate a random month between 1 and 12
     month = random.randint(1, 12)
     # Generate a random day between 1 and the maximum number of days in the month
@@ -101,7 +101,7 @@ def generate_random_date_of_birth():
 
 def change_date_of_birth(request):
     # Define the path to your CSV file
-    csv_file_path = "allstudents.csv"
+    csv_file_path = "allteachers.csv"
 
     # Read the CSV file and generate random birth years for each entry
     updated_rows = []
@@ -118,7 +118,7 @@ def change_date_of_birth(request):
                 pass
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewstudents.csv"
+    output_file_path = "allnewsteachers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -128,7 +128,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allnewstudents.csv"
+    csv_file_path = "allteachers.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -137,13 +137,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=13))
+            phone_number = ''.join(random.choices(string.digits, k=4))
             # phone_number = 000
-            row['cnic'] = phone_number
+            row['office_number'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allstudents.csv"
+    output_file_path = "allnewteachers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -153,7 +153,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allccusers.csv"
+    csv_file_path = "allteachers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -162,13 +162,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['Phone Number']
+            username = row['office_number']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allusers.csv"
+    output_file_path = "allnewteachers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
