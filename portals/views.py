@@ -113,6 +113,43 @@ def read_users_from_csv(request):
 
     print("Users saved to the database.")
 
+
+
+def add_students_from_csv(request):
+    # Fetch all user objects from the database
+   
+    # File path for allstudents.csv
+    csv_file_path = "allstudents.csv"
+
+    # Open the CSV file and iterate over its rows
+    with open(csv_file_path, "r", newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            users = User.objects.exclude(student__isnull=False)
+            # Randomly select a user object
+            random_user = random.choice(users)
+            # Create a new Student object for each row in the CSV file
+            student = Student(
+                user=random_user,
+                date_of_birth=row['date_of_birth'],
+                gender=row['gender'],
+                marital_status=row['marital_status'],
+                religion=row['religion'],
+                nationality=row['nationality'],
+                cnic=row['cnic'],
+                father_name=row['father_name'],
+                father_occupation=row['father_occupation'],
+                semester=row['semester'],
+                address=row['address'],
+            )
+
+            # Save the Student object to the database
+            student.save()
+
+
+    print("Students linked to users and saved to the database.")
+
+
 def generate_random_date_of_birth():
     # Generate a random year between 1995 and 2004
     year = random.randint(1960, 1990)
@@ -587,6 +624,7 @@ def saveStudent(request):
         confirm_password = request.POST.get("confirm_password")
         username = request.POST.get("username")
         is_student = True
+        is_teacher = False
 
         # Check if the phone, email, or username already exists in the database
         if User.objects.filter(phone_number=phone_number).exists():
@@ -649,6 +687,7 @@ def saveStudent(request):
             password=password,
             username=username,
             is_student=is_student,
+            is_teacher=is_teacher,
         )
         # user.save()
         student = Student(
@@ -664,6 +703,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # add_students_from_csv(request)
     # read_users_from_csv(request)
     # change_date_of_birth(request)
     # change_phone_numbers(request)
