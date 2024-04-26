@@ -5,6 +5,7 @@ from django.contrib import messages
 import requests
 import re
 import random
+import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from .models import Degree, Program, SemesterCourses, SemesterDetails
@@ -12,12 +13,7 @@ from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
 from django.db import transaction
-from faker import Faker
-
-
-
-fake = Faker()
-
+from datetime import datetime
 
 
 
@@ -91,6 +87,100 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+
+def generate_random_date_of_birth():
+    # Generate a random year between 1995 and 2004
+    year = random.randint(1995, 2004)
+    # Generate a random month between 1 and 12
+    month = random.randint(1, 12)
+    # Generate a random day between 1 and the maximum number of days in the month
+    max_day = 31 if month in [1, 3, 5, 7, 8, 10, 12] else 30 if month != 2 else 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28
+    day = random.randint(1, max_day)
+    return datetime(year, month, day).strftime('%Y-%m-%d')
+
+def change_date_of_birth(request):
+    # Define the path to your CSV file
+    csv_file_path = "allstudents.csv"
+
+    # Read the CSV file and generate random birth years for each entry
+    updated_rows = []
+
+    with open(csv_file_path, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            try:
+                # Generate a random date of birth
+                row['date_of_birth'] = generate_random_date_of_birth()
+                updated_rows.append(row)
+            except ValueError:
+                # Handle invalid date of birth
+                pass
+
+    # Write the updated rows to a new CSV file
+    output_file_path = "allnewstudents.csv"
+
+    with open(output_file_path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(updated_rows)
+
+
+def change_phone_numbers(request):
+    # Define the path to your CSV file
+    csv_file_path = "allnewstudents.csv"
+
+    # Read the CSV file and generate random 11-digit phone numbers for each entry
+    updated_rows = []
+
+    with open(csv_file_path, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            # Generate a random 11-digit phone number
+            phone_number = ''.join(random.choices(string.digits, k=13))
+            # phone_number = 000
+            row['cnic'] = phone_number
+            updated_rows.append(row)
+
+    # Write the updated rows to a new CSV file
+    output_file_path = "allstudents.csv"
+
+    with open(output_file_path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(updated_rows)
+
+
+def remove_duplicate_users(request):
+    # Define the path to your CSV file
+    csv_file_path = "allccusers.csv"
+
+    # Read the CSV file and remove duplicates based on username
+    unique_usernames = set()
+    unique_rows = []
+
+    with open(csv_file_path, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            username = row['Phone Number']
+            if username not in unique_usernames:
+                unique_usernames.add(username)
+                unique_rows.append(row)
+
+    # Write the unique rows to a new CSV file
+    output_file_path = "allusers.csv"
+
+    with open(output_file_path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(unique_rows)
+
+    # # Return a response with a download link for the new CSV file
+    # with open(output_file_path, mode='rb') as file:
+    #     response = HttpResponse(file.read(), content_type='text/csv')
+    #     response['Content-Disposition'] = 'attachment; filename="unique_users.csv"'
+    #     return response
+
 
 def generate_username(first_name, last_name):
     return (first_name + last_name).lower().replace(" ", "")
@@ -550,7 +640,10 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    generate_unique_data(100, 'student_data.csv')
+    # change_date_of_birth(request)
+    # change_phone_numbers(request)
+    # remove_duplicate_users(request)
+    # generate_unique_data(100, 'student_data.csv')
     # import_semester_courses(request)
     # create_semester_details(request)
     # import_semester_details_from_csv(request)
