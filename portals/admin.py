@@ -9,16 +9,17 @@ from .models import Course, CoursePrerequisite, Degree, Department, Program, Sch
 class StudentAdmin(admin.ModelAdmin):
     # list_display = ['user', 'StudentID', 'date_of_birth', 'gender', 'marital_status', 'religion', 'nationality', 'cnic', 'father_name', 'father_occupation', 'semester', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'StudentID']
+    list_filter = ('user__is_student', 'user__is_teacher')
     readonly_fields = ('StudentID',)
 
 class TeacherAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('user__is_student', 'user__is_teacher')
 
 
 class CustomUserAdmin(admin.ModelAdmin):
     # list_display = ('username', 'email', 'first_name', 'last_name', 'is_student', 'is_teacher', 'phone_number', 'profile_picture')
     search_fields = ('username', 'email', 'first_name', 'last_name')
-    list_filter = ('is_staff', 'is_superuser')
+    list_filter = ('is_staff', 'is_superuser', 'is_student', 'is_teacher')
 
 
 class CustomAdminSite(admin.AdminSite):
