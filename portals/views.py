@@ -88,6 +88,53 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 
+def add_random_digit_to_username(request):
+    input_file_path = 'moreusers.csv'  # Replace '/path/to/allusers.csv' with the actual path to your input file
+    output_file_path = 'morenewusers.csv'  # Replace '/path/to/allnewusers.csv' with the desired path for the output file
+
+    with open(input_file_path, 'r') as input_file:
+        reader = csv.DictReader(input_file)
+        modified_data = []
+        for row in reader:
+            username = row['Username']
+            random_digit = random.randint(0, 9)
+            username_with_random_digit = f'{username}{random_digit}'
+            row['Username'] = username_with_random_digit
+            modified_data.append(row)
+
+    with open(output_file_path, 'w', newline='') as output_file:
+        fieldnames = ['First Name', 'Last Name', 'Phone Number', 'Email', 'Password', 'Username']
+        writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(modified_data)
+
+    
+
+
+
+def add_random_digits_to_email(request):
+    input_file_path = 'moreusers.csv'  # Replace '/path/to/allusers.csv' with the actual path to your input file
+    output_file_path = 'morenewusers.csv'  # Replace '/path/to/allnewusers.csv' with the desired path for the output file
+
+    with open(input_file_path, 'r') as input_file:
+        reader = csv.DictReader(input_file)
+        modified_data = []
+        for row in reader:
+            email = row['Email']
+            if email.endswith('@gmail.com'):
+                random_digits = ''.join(str(random.randint(0, 9)) for _ in range(1))
+                email_with_random_digits = email.replace('@gmail.com', f'{random_digits}@gmail.com')
+                row['Email'] = email_with_random_digits
+            modified_data.append(row)
+
+    with open(output_file_path, 'w', newline='') as output_file:
+        fieldnames = ['First Name', 'Last Name', 'Phone Number', 'Email', 'Password', 'Username']
+        writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(modified_data)
+    
+
+
 def read_users_from_csv(request):
     # File path for allusers.csv
     csv_file_path = "allusers.csv"
@@ -217,7 +264,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allnewstudents.csv"
+    csv_file_path = "allusers.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -226,13 +273,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=13))
+            phone_number = ''.join(random.choices(string.digits, k=11))
             # phone_number = 000
-            row['cnic'] = phone_number
+            row['Phone Number'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allstudents.csv"
+    output_file_path = "allnewusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -242,7 +289,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allstudents.csv"
+    csv_file_path = "moreusers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -251,13 +298,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['cnic']
+            username = row['Phone Number']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewstudents.csv"
+    output_file_path = "morenewusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -707,6 +754,8 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # add_random_digit_to_username(request)
+    # add_random_digits_to_email(request)
     # add_teachers_from_csv(request)
     # add_students_from_csv(request)
     # read_users_from_csv(request)
@@ -720,6 +769,7 @@ def student_login_view(request):
     # scrape_data(request)
     # remove_duplicates(request)
     # read_csv(request)
+
 
     if request.method == "POST":
         username = request.POST.get("username")
