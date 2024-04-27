@@ -221,7 +221,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allnewstudents.csv"
+    csv_file_path = "allnewusers.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -230,13 +230,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=13))
+            phone_number ='03' + ''.join(random.choices(string.digits, k=9))
             # phone_number = 000
-            row['cnic'] = phone_number
+            row['Phone Number'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allstudents.csv"
+    output_file_path = "allusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -246,7 +246,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allstudents.csv"
+    csv_file_path = "allusers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -255,13 +255,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['cnic']
+            username = row['Email']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewstudents.csv"
+    output_file_path = "allnewusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -716,7 +716,7 @@ def student_login_view(request):
     # read_users_from_csv(request)
     # change_date_of_birth(request)
     # change_phone_numbers(request)
-    # remove_duplicate_users(request)
+    remove_duplicate_users(request)
     # generate_unique_data(100, 'student_data.csv')
     # import_semester_courses(request)
     # create_semester_details(request)
