@@ -144,7 +144,7 @@ def add_teachers_from_csv(request):
 
 
 def add_students_from_csv(request):
-   
+
     # File path for allstudents.csv
     csv_file_path = "allstudents.csv"
 
@@ -156,57 +156,64 @@ def add_students_from_csv(request):
             # Randomly select a user object
             random_user = random.choice(users)
             # Create a new Student object for each row in the CSV file
-            student =  Student.objects.create(
+            student = Student.objects.create(
                 user=random_user,
-                date_of_birth=row['date_of_birth'],
-                gender=row['gender'],
-                marital_status=row['marital_status'],
-                religion=row['religion'],
-                nationality=row['nationality'],
-                cnic=row['cnic'],
-                father_name=row['father_name'],
-                father_occupation=row['father_occupation'],
-                semester=row['semester'],
-                address=row['address'],
+                date_of_birth=row["date_of_birth"],
+                gender=row["gender"],
+                marital_status=row["marital_status"],
+                religion=row["religion"],
+                nationality=row["nationality"],
+                cnic=row["cnic"],
+                father_name=row["father_name"],
+                father_occupation=row["father_occupation"],
+                semester=row["semester"],
+                address=row["address"],
             )
-
-
 
     print("Students linked to users and saved to the database.")
 
 
 def generate_random_date_of_birth():
     # Generate a random year between 1995 and 2004
-    year = random.randint(1960, 1990)
+    year = random.randint(1994, 2004)
     # Generate a random month between 1 and 12
     month = random.randint(1, 12)
     # Generate a random day between 1 and the maximum number of days in the month
-    max_day = 31 if month in [1, 3, 5, 7, 8, 10, 12] else 30 if month != 2 else 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28
+    max_day = (
+        31
+        if month in [1, 3, 5, 7, 8, 10, 12]
+        else (
+            30
+            if month != 2
+            else 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28
+        )
+    )
     day = random.randint(1, max_day)
-    return datetime(year, month, day).strftime('%Y-%m-%d')
+    return datetime(year, month, day).strftime("%Y-%m-%d")
+
 
 def change_date_of_birth(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allstudents.csv"
 
     # Read the CSV file and generate random birth years for each entry
     updated_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
             try:
                 # Generate a random date of birth
-                row['date_of_birth'] = generate_random_date_of_birth()
+                row["date_of_birth"] = generate_random_date_of_birth()
                 updated_rows.append(row)
             except ValueError:
                 # Handle invalid date of birth
                 pass
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewsteachers.csv"
+    output_file_path = "allnewstudents.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(updated_rows)
@@ -214,24 +221,24 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allnewstudents.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=4))
+            phone_number = ''.join(random.choices(string.digits, k=13))
             # phone_number = 000
-            row['office_number'] = phone_number
+            row['cnic'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewteachers.csv"
+    output_file_path = "allstudents.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(updated_rows)
@@ -239,24 +246,24 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allusers.csv"
+    csv_file_path = "allstudents.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
     unique_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['Email']
+            username = row['cnic']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewusers.csv"
+    output_file_path = "allnewstudents.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(unique_rows)
@@ -275,34 +282,40 @@ def import_semester_courses(request):
 
     # Read all courses from CSV
     all_courses_data = []
-    with open(all_courses_file, mode='r') as file:
+    with open(all_courses_file, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            all_courses_data.append(row['Course Name'])
+            all_courses_data.append(row["Course Name"])
 
     # Read semester details from CSV and create SemesterCourses instances
-    with open(semester_details_file, mode='r') as file:
+    with open(semester_details_file, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            semester_number = row['Semester Number']
-            degree_name = row['Degree']
+            semester_number = row["Semester Number"]
+            degree_name = row["Degree"]
 
             # Fetch the corresponding degree
             degree = Degree.objects.get(degree_name=degree_name)
 
             # Create SemesterDetails instance if not already exists
-            semester_details, created = SemesterDetails.objects.get_or_create(degree=degree, semester_number=semester_number)
+            semester_details, created = SemesterDetails.objects.get_or_create(
+                degree=degree, semester_number=semester_number
+            )
 
             # Randomly select 6 courses from all courses
             selected_courses = random.sample(all_courses_data, 6)
 
             # Link selected courses with SemesterCourses
-            semester_courses = SemesterCourses.objects.create(semester_details=semester_details)
+            semester_courses = SemesterCourses.objects.create(
+                semester_details=semester_details
+            )
             for course_name in selected_courses:
                 course = Course.objects.get(course_name=course_name)
                 semester_courses.courses.add(course)
 
     return HttpResponse("Semester courses imported successfully!")
+
+
 def create_semester_details(request):
     # Define the file name for degrees
     degrees_file = "alldegrees.csv"
@@ -311,10 +324,10 @@ def create_semester_details(request):
     with open(degrees_file, mode="r", newline="") as file:
         # Create a CSV reader object
         reader = csv.reader(file)
-        
+
         # Skip the header row if it exists
         next(reader, None)
-        
+
         # Read the degrees from the file
         degrees = [row[0] for row in reader]
 
@@ -340,33 +353,31 @@ def create_semester_details(request):
     print(f"CSV data has been generated and saved to {file_name}.")
 
 
-
 def import_semester_details_from_csv(request):
     file_path = "semester_details.csv"
     # Open the CSV file in read mode
     with open(file_path, mode="r") as file:
         # Create a CSV reader object
         reader = csv.reader(file)
-        
+
         # Skip the header row
         next(reader)
-        
+
         # Iterate over each row in the CSV file
         for row in reader:
             semester_number, degree_name = row
-            
+
             # Get the Degree object from the database
             degree = Degree.objects.get(degree_name=degree_name)
-            
+
             # Create the SemesterDetails object
             SemesterDetails.objects.create(
-                semester_number=int(semester_number),
-                degree=degree
+                semester_number=int(semester_number), degree=degree
             )
 
 
 def read_csv(request):
-    #File path for Maryam
+    # File path for Maryam
     csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv"
     department = Department.objects.get(
         department_name="Department of Strategic Studies (DSS)"
@@ -713,7 +724,7 @@ def student_login_view(request):
     # scrape_data(request)
     # remove_duplicates(request)
     # read_csv(request)
-    
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -794,203 +805,7 @@ def faculty_login_view(request):
 
 def get_programs(request):
     department_id = request.GET.get("department_id")
-    programs = Program.objects.filter(department_id=department_id).values("id", "program_name")
+    programs = Program.objects.filter(department_id=department_id).values(
+        "id", "program_name"
+    )
     return JsonResponse(list(programs), safe=False)
-
-
-
-# ---------------------------- GENERATE PAPER ----------------------------
-def index(request):
-    subjects = Subject.objects.all()
-    if request.method == "POST":
-        subject_id = request.POST.get("subject")
-        select_questions = request.POST.get("select_questions")
-        if select_questions:
-            questions = Question.objects.filter(subject_id=subject_id)
-        else:
-            questions = None
-        return render(
-            request, "Faculty_GenerateExam.html", {"subjects": subjects, "questions": questions}
-        )
-    return render(request, "Faculty_GenerateExam.html", {"subjects": subjects})
-
-
-logger = logging.getLogger(__name__)
-
-
-@csrf_exempt
-def generate_paper(request):
-    try:
-        if request.method == "POST":
-            # Extract data from AJAX request
-            data = json.loads(request.body)
-            subject_id = data.get("subject_id")
-            subject_name = data.get("subject_name")
-            select_questions = data.get("selectQuestions")
-            question_parts = data.get("questionParts") or []
-            question_topics = data.get("questionTopics") or []
-            question_complexities = data.get("questionComplexities") or []
-            question_keywords = data.get("questionKeywords") or []
-
-            # Check if the question topics, complexities, and keywords have the required length
-            if (
-                not question_parts
-                or not question_topics
-                or not question_complexities
-                or not question_keywords
-            ):
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Incomplete data for question topics, complexities, keywords, or parts",
-                    },
-                    status=400,
-                )
-
-            # Ensure the lists have the same length as select_questions
-            required_length = int(select_questions)
-            if (
-                len(question_parts) != required_length
-                or len(question_topics) != required_length
-                or len(question_complexities) != required_length
-                or len(question_keywords) != required_length
-            ):
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Inconsistent data length for question topics, complexities, keywords, or parts",
-                    },
-                    status=400,
-                )
-
-            # Construct the overall prompt
-            prompt = f"The question paper is on the topic of {subject_name}. Generate {select_questions} bachelor level exam questions with the following specifications:\n"
-
-            for i in range(required_length):
-                prompt += f"\nQuestion {i + 1}:\n"
-                prompt += f"Topic: {question_topics[i]}\n"
-                prompt += f"Keywords: {question_keywords[i]}\n"
-                prompt += f"Complexity: {question_complexities[i].capitalize()}\n"
-                prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
-            
-            # Log the generated prompt
-            logger.info(f"Generated prompt: {prompt}")
-
-            # Call ChatGPT API to generate response
-            api_key = "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"
-            endpoint_url = "https://api.openai.com/v1/chat/completions"
-            payload = {
-                "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 2000,
-                # Add other parameters as needed
-            }
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}",
-            }
-            response = requests.post(endpoint_url, json=payload, headers=headers)
-
-            # Log the ChatGPT API response
-            logger.info(f"ChatGPT API response: {response.text}")
-
-            # Process response from ChatGPT API
-            if response.status_code == 200:
-                response_data = response.json()
-                paper_prompts = []
-                for choice in response_data.get("choices", []):
-                    content = choice.get("message", {}).get("content", "").strip()
-                    if content:
-                        # Split content into individual questions based on "Question X:" pattern
-                        questions = re.split(r'\n(?=Question \d+:)', content)
-                        # Append each question's prompt to the paper_prompts list
-                        for question in questions:
-                            paper_prompts.append(question)
-               
-
-                return JsonResponse({"success": True, "paper_prompts": paper_prompts})
-            else:
-                logger.error(
-                    f"Failed to generate paper: {response.status_code} - {response.text}"
-                )
-                return JsonResponse(
-                    {"success": False, "error": "Failed to generate paper"}, status=500
-                )
-
-        # Return error if request method is not POST
-        return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
-    except Exception as e:
-        logger.error(f"Error in generate_paper view: {e}")
-        return JsonResponse(
-            {"success": False, "error": "An error occurred while generating the paper"},
-            status=500,
-        )
-    
-
-@csrf_exempt
-def generate_chatgpt_response(request):
-    pass
-
-@csrf_exempt
-def regenerate_question(request):
-    if request.method == "POST":
-        # Extract question data from AJAX request
-        question_data = json.loads(request.body)
-        topic = question_data.get("topic")
-        keywords = question_data.get("keywords")
-        complexity = question_data.get("complexity")
-        parts = question_data.get("parts")
-        question_index = question_data.get("questionIndex")
-
-        # Construct the prompt based on the received question data
-        prompt = f"Regenerate the question based on the following points.\n Topic: {topic}\nKeywords: {', '.join(keywords)}\nComplexity: {complexity.capitalize()}\nGenerate a {complexity} question with {parts} parts.\n Clearly mention all parts like Part 1, Part 2 and each part should begin at new line."
-
-        # Log the generated prompt
-        logger.info(f"Generated prompt: {prompt}")
-
-        # Call ChatGPT API to generate response
-        api_key = "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"
-        endpoint_url = "https://api.openai.com/v1/chat/completions"
-        payload = {
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": 2000,
-            # Add other parameters as needed
-        }
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        }
-        response = requests.post(endpoint_url, json=payload, headers=headers)
-
-        # Log the ChatGPT API response
-        logger.info(f"ChatGPT API response: {response.text}")
-
-        # Return the new question prompt as JSON response
-        if response.status_code == 200:
-            response_data = response.json()
-            question_prompt = (
-                response_data.get("choices", [])[0]
-                .get("message", {})
-                .get("content", "")
-                .strip()
-            )
-            print("Question Prompt")
-            print(question_prompt)
-            return JsonResponse(
-                {
-                    "success": True,
-                    "question_prompt": question_prompt,
-                    "questionIndex": question_index,
-                }
-            )
-        else:
-            logger.error(
-                f"Failed to regenerate question: {response.status_code} - {response.text}"
-            )
-            return JsonResponse(
-                {"success": False, "error": "Failed to regenerate question"}, status=500
-            )
-
-    # Return error if request method is not POST
-    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
