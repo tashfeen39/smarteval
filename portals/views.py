@@ -16,7 +16,6 @@ from django.db import transaction
 from datetime import datetime
 
 
-
 def home(request):
     return render(request, "portals/Faculty_Profile.html")
 
@@ -99,13 +98,13 @@ def read_users_from_csv(request):
         for row in reader:
             # Create a new User object for each row in the CSV file
             user = User.objects.create_user(
-                first_name=row['First Name'],
-                last_name=row['Last Name'],
-                phone_number=row['Phone Number'],
-                email=row['Email'],
-                password=(row['Password']),  
-                username=row['Username'],
-                is_student=True if reader.line_num <= 495 else False,  
+                first_name=row["First Name"],
+                last_name=row["Last Name"],
+                phone_number=row["Phone Number"],
+                email=row["Email"],
+                password=(row["Password"]),
+                username=row["Username"],
+                is_student=True if reader.line_num <= 495 else False,
                 is_teacher=False if reader.line_num <= 495 else True,
             )
             # # Save the User object to the database
@@ -114,9 +113,8 @@ def read_users_from_csv(request):
     print("Users saved to the database.")
 
 
-
 def add_students_from_csv(request):
-   
+
     # File path for allstudents.csv
     csv_file_path = "allstudents.csv"
 
@@ -128,21 +126,19 @@ def add_students_from_csv(request):
             # Randomly select a user object
             random_user = random.choice(users)
             # Create a new Student object for each row in the CSV file
-            student =  Student.objects.create(
+            student = Student.objects.create(
                 user=random_user,
-                date_of_birth=row['date_of_birth'],
-                gender=row['gender'],
-                marital_status=row['marital_status'],
-                religion=row['religion'],
-                nationality=row['nationality'],
-                cnic=row['cnic'],
-                father_name=row['father_name'],
-                father_occupation=row['father_occupation'],
-                semester=row['semester'],
-                address=row['address'],
+                date_of_birth=row["date_of_birth"],
+                gender=row["gender"],
+                marital_status=row["marital_status"],
+                religion=row["religion"],
+                nationality=row["nationality"],
+                cnic=row["cnic"],
+                father_name=row["father_name"],
+                father_occupation=row["father_occupation"],
+                semester=row["semester"],
+                address=row["address"],
             )
-
-
 
     print("Students linked to users and saved to the database.")
 
@@ -153,9 +149,18 @@ def generate_random_date_of_birth():
     # Generate a random month between 1 and 12
     month = random.randint(1, 12)
     # Generate a random day between 1 and the maximum number of days in the month
-    max_day = 31 if month in [1, 3, 5, 7, 8, 10, 12] else 30 if month != 2 else 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28
+    max_day = (
+        31
+        if month in [1, 3, 5, 7, 8, 10, 12]
+        else (
+            30
+            if month != 2
+            else 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28
+        )
+    )
     day = random.randint(1, max_day)
-    return datetime(year, month, day).strftime('%Y-%m-%d')
+    return datetime(year, month, day).strftime("%Y-%m-%d")
+
 
 def change_date_of_birth(request):
     # Define the path to your CSV file
@@ -164,12 +169,12 @@ def change_date_of_birth(request):
     # Read the CSV file and generate random birth years for each entry
     updated_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
             try:
                 # Generate a random date of birth
-                row['date_of_birth'] = generate_random_date_of_birth()
+                row["date_of_birth"] = generate_random_date_of_birth()
                 updated_rows.append(row)
             except ValueError:
                 # Handle invalid date of birth
@@ -178,7 +183,7 @@ def change_date_of_birth(request):
     # Write the updated rows to a new CSV file
     output_file_path = "allnewsteachers.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(updated_rows)
@@ -191,19 +196,19 @@ def change_phone_numbers(request):
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=4))
+            phone_number = "".join(random.choices(string.digits, k=4))
             # phone_number = 000
-            row['office_number'] = phone_number
+            row["office_number"] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
     output_file_path = "allnewteachers.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(updated_rows)
@@ -217,10 +222,10 @@ def remove_duplicate_users(request):
     unique_usernames = set()
     unique_rows = []
 
-    with open(csv_file_path, mode='r') as file:
+    with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['Email']
+            username = row["Username"]
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
@@ -228,7 +233,7 @@ def remove_duplicate_users(request):
     # Write the unique rows to a new CSV file
     output_file_path = "allnewusers.csv"
 
-    with open(output_file_path, mode='w', newline='') as file:
+    with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
         writer.writeheader()
         writer.writerows(unique_rows)
@@ -243,14 +248,17 @@ def remove_duplicate_users(request):
 def generate_username(first_name, last_name):
     return (first_name + last_name).lower().replace(" ", "")
 
+
 def generate_unique_data(num_students, filename):
     unique_emails = set()
     unique_usernames = set()
     unique_phone_numbers = set()
 
-    with open(filename, 'w', newline='') as file:
+    with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(['first_name', 'last_name', 'phone_number', 'email', 'password', 'username'])
+        writer.writerow(
+            ["first_name", "last_name", "phone_number", "email", "password", "username"]
+        )
 
         while len(unique_emails) < num_students:
             first_name = fake.first_name()
@@ -260,13 +268,20 @@ def generate_unique_data(num_students, filename):
             username = generate_username(first_name, last_name)
 
             # Check if email, username, and phone number are unique
-            if email not in unique_emails and username not in unique_usernames and phone_number not in unique_phone_numbers:
+            if (
+                email not in unique_emails
+                and username not in unique_usernames
+                and phone_number not in unique_phone_numbers
+            ):
                 unique_emails.add(email)
                 unique_usernames.add(username)
                 unique_phone_numbers.add(phone_number)
 
                 # Write data to the CSV file
-                writer.writerow([first_name, last_name, phone_number, email, '1234', username])
+                writer.writerow(
+                    [first_name, last_name, phone_number, email, "1234", username]
+                )
+
 
 def import_semester_courses(request):
     # Path to CSV files
@@ -275,34 +290,40 @@ def import_semester_courses(request):
 
     # Read all courses from CSV
     all_courses_data = []
-    with open(all_courses_file, mode='r') as file:
+    with open(all_courses_file, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            all_courses_data.append(row['Course Name'])
+            all_courses_data.append(row["Course Name"])
 
     # Read semester details from CSV and create SemesterCourses instances
-    with open(semester_details_file, mode='r') as file:
+    with open(semester_details_file, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            semester_number = row['Semester Number']
-            degree_name = row['Degree']
+            semester_number = row["Semester Number"]
+            degree_name = row["Degree"]
 
             # Fetch the corresponding degree
             degree = Degree.objects.get(degree_name=degree_name)
 
             # Create SemesterDetails instance if not already exists
-            semester_details, created = SemesterDetails.objects.get_or_create(degree=degree, semester_number=semester_number)
+            semester_details, created = SemesterDetails.objects.get_or_create(
+                degree=degree, semester_number=semester_number
+            )
 
             # Randomly select 6 courses from all courses
             selected_courses = random.sample(all_courses_data, 6)
 
             # Link selected courses with SemesterCourses
-            semester_courses = SemesterCourses.objects.create(semester_details=semester_details)
+            semester_courses = SemesterCourses.objects.create(
+                semester_details=semester_details
+            )
             for course_name in selected_courses:
                 course = Course.objects.get(course_name=course_name)
                 semester_courses.courses.add(course)
 
     return HttpResponse("Semester courses imported successfully!")
+
+
 def create_semester_details(request):
     # Define the file name for degrees
     degrees_file = "alldegrees.csv"
@@ -311,10 +332,10 @@ def create_semester_details(request):
     with open(degrees_file, mode="r", newline="") as file:
         # Create a CSV reader object
         reader = csv.reader(file)
-        
+
         # Skip the header row if it exists
         next(reader, None)
-        
+
         # Read the degrees from the file
         degrees = [row[0] for row in reader]
 
@@ -340,33 +361,31 @@ def create_semester_details(request):
     print(f"CSV data has been generated and saved to {file_name}.")
 
 
-
 def import_semester_details_from_csv(request):
     file_path = "semester_details.csv"
     # Open the CSV file in read mode
     with open(file_path, mode="r") as file:
         # Create a CSV reader object
         reader = csv.reader(file)
-        
+
         # Skip the header row
         next(reader)
-        
+
         # Iterate over each row in the CSV file
         for row in reader:
             semester_number, degree_name = row
-            
+
             # Get the Degree object from the database
             degree = Degree.objects.get(degree_name=degree_name)
-            
+
             # Create the SemesterDetails object
             SemesterDetails.objects.create(
-                semester_number=int(semester_number),
-                degree=degree
+                semester_number=int(semester_number), degree=degree
             )
 
 
 def read_csv(request):
-    #File path for Maryam
+    # File path for Maryam
     csv_file_path = "C:\\Users\\lenovo\\Documents\\smarteval\\smarteval\\courses.csv"
     department = Department.objects.get(
         department_name="Department of Strategic Studies (DSS)"
@@ -712,7 +731,7 @@ def student_login_view(request):
     # scrape_data(request)
     # remove_duplicates(request)
     # read_csv(request)
-    
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -793,8 +812,7 @@ def faculty_login_view(request):
 
 def get_programs(request):
     department_id = request.GET.get("department_id")
-    programs = Program.objects.filter(department_id=department_id).values("id", "program_name")
+    programs = Program.objects.filter(department_id=department_id).values(
+        "id", "program_name"
+    )
     return JsonResponse(list(programs), safe=False)
-
-
-
