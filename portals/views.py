@@ -211,7 +211,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allnewusers.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -220,13 +220,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = ''.join(random.choices(string.digits, k=4))
+            phone_number = '03' + ''.join(random.choices(string.digits, k=9))
             # phone_number = 000
-            row['office_number'] = phone_number
+            row['Phone Number'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewteachers.csv"
+    output_file_path = "allcorrusers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -236,7 +236,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allusers.csv"
+    csv_file_path = "allcorrectusers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -245,13 +245,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['Email']
+            username = row['Phone Number']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewusers.csv"
+    output_file_path = "allusers.csv"
 
     with open(output_file_path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
