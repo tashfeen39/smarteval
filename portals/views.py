@@ -217,7 +217,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allnewusers.csv"
+    csv_file_path = "allnewstudents.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -226,13 +226,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = '03' + ''.join(random.choices(string.digits, k=9))
+            phone_number = ''.join(random.choices(string.digits, k=13))
             # phone_number = 000
-            row['Phone Number'] = phone_number
+            row['cnic'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allcorrusers.csv"
+    output_file_path = "allstudents.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -242,7 +242,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allcorrectusers.csv"
+    csv_file_path = "allstudents.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -251,13 +251,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row['Phone Number']
+            username = row['cnic']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allusers.csv"
+    output_file_path = "allnewstudents.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
