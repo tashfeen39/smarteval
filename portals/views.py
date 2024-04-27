@@ -171,7 +171,7 @@ def add_students_from_csv(request):
 
 def generate_random_date_of_birth():
     # Generate a random year between 1995 and 2004
-    year = random.randint(1960, 1990)
+    year = random.randint(1994, 2004)
     # Generate a random month between 1 and 12
     month = random.randint(1, 12)
     # Generate a random day between 1 and the maximum number of days in the month
@@ -190,7 +190,7 @@ def generate_random_date_of_birth():
 
 def change_date_of_birth(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allstudents.csv"
 
     # Read the CSV file and generate random birth years for each entry
     updated_rows = []
@@ -207,7 +207,7 @@ def change_date_of_birth(request):
                 pass
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewsteachers.csv"
+    output_file_path = "allnewstudents.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
