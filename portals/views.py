@@ -150,8 +150,8 @@ def read_users_from_csv(request):
                 email=row['Email'],
                 password=(row['Password']),  
                 username=row['Username'],
-                is_student=True if reader.line_num < 495 else False,  
-                is_teacher=False if reader.line_num < 495 else True,
+                is_student=True if reader.line_num < 9025 else False,  
+                is_teacher=False if reader.line_num < 9025 else True,
             )
            
     print("Users saved to the database.")
