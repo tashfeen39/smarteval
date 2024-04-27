@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import generate_paper
+
 
 app_name = 'portals'
 urlpatterns = [
@@ -10,6 +12,9 @@ urlpatterns = [
     path("faculty/display-classes/", views.faculty_display_classes_view, name="display-classes"),
     path("faculty/feedbacks/", views.faculty_feedback_view, name="feedbacks"),
     path("faculty/generate-exam/", views.faculty_generate_exam_view, name="generate-exam"),
+    # For generating the paper
+    path("generate_paper/", views.generate_paper, name="generate_paper"),
+    path("regenerate_question/", views.regenerate_question, name="regenerate_question"),
     path("faculty/grading/", views.faculty_grading_view, name="grading"),
     path("faculty/enter-marks/", views.faculty_marks_entry_view, name="enter-marks"),
     path("faculty/my-profile/", views.faculty_profile_view, name="my-profile"),

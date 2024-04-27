@@ -14,6 +14,10 @@ from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
 from django.db import transaction
 from datetime import datetime
+import json
+from django.views.decorators.csrf import csrf_exempt
+import logging
+
 
 
 def home(request):
@@ -855,3 +859,186 @@ def get_programs(request):
         "id", "program_name"
     )
     return JsonResponse(list(programs), safe=False)
+
+
+# ---------------------------- GENERATE PAPER ------------------
+
+@csrf_exempt
+def generate_paper(request):
+    try:
+        if request.method == "POST":
+            # Extract data from AJAX request
+            data = json.loads(request.body)
+            subject_id = data.get("subject_id")
+            subject_name = data.get("subject_name")
+            select_questions = data.get("selectQuestions")
+            question_parts = data.get("questionParts") or []
+            question_topics = data.get("questionTopics") or []
+            question_complexities = data.get("questionComplexities") or []
+            question_keywords = data.get("questionKeywords") or []
+
+            # Check if the question topics, complexities, and keywords have the required length
+            if (
+                not question_parts
+                or not question_topics
+                or not question_complexities
+                or not question_keywords
+            ):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Incomplete data for question topics, complexities, keywords, or parts",
+                    },
+                    status=400,
+                )
+
+            # Ensure the lists have the same length as select_questions
+            required_length = int(select_questions)
+            if (
+                len(question_parts) != required_length
+                or len(question_topics) != required_length
+                or len(question_complexities) != required_length
+                or len(question_keywords) != required_length
+            ):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Inconsistent data length for question topics, complexities, keywords, or parts",
+                    },
+                    status=400,
+                )
+
+            # Construct the overall prompt
+            prompt = f"The question paper is on the topic of {subject_name}. Generate {select_questions} bachelor level exam questions with the following specifications:\n"
+
+            for i in range(required_length):
+                prompt += f"\nQuestion {i + 1}:\n"
+                prompt += f"Topic: {question_topics[i]}\n"
+                prompt += f"Keywords: {question_keywords[i]}\n"
+                prompt += f"Complexity: {question_complexities[i].capitalize()}\n"
+                prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
+            
+            # Log the generated prompt
+            logger.info(f"Generated prompt: {prompt}")
+
+            # Call ChatGPT API to generate response
+            api_key = "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"
+            endpoint_url = "https://api.openai.com/v1/chat/completions"
+            payload = {
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 2000,
+                # Add other parameters as needed
+            }
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            }
+            response = requests.post(endpoint_url, json=payload, headers=headers)
+
+            # Log the ChatGPT API response
+            logger.info(f"ChatGPT API response: {response.text}")
+
+            # Process response from ChatGPT API
+            if response.status_code == 200:
+                response_data = response.json()
+                paper_prompts = []
+                for choice in response_data.get("choices", []):
+                    content = choice.get("message", {}).get("content", "").strip()
+                    if content:
+                        # Split content into individual questions based on "Question X:" pattern
+                        questions = re.split(r'\n(?=Question \d+:)', content)
+                        # Append each question's prompt to the paper_prompts list
+                        for question in questions:
+                            paper_prompts.append(question)
+               
+
+                return JsonResponse({"success": True, "paper_prompts": paper_prompts})
+            else:
+                logger.error(
+                    f"Failed to generate paper: {response.status_code} - {response.text}"
+                )
+                return JsonResponse(
+                    {"success": False, "error": "Failed to generate paper"}, status=500
+                )
+
+        # Return error if request method is not POST
+        return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+    except Exception as e:
+        logger.error(f"Error in generate_paper view: {e}")
+        return JsonResponse(
+            {"success": False, "error": "An error occurred while generating the paper"},
+            status=500,
+        )
+
+
+@csrf_exempt
+def generate_chatgpt_response(request):
+    # This view is not needed anymore since the response is already generated in the generate_paper view
+    pass
+
+
+# views.py
+@csrf_exempt
+def regenerate_question(request):
+    if request.method == "POST":
+        # Extract question data from AJAX request
+        question_data = json.loads(request.body)
+        topic = question_data.get("topic")
+        keywords = question_data.get("keywords")
+        complexity = question_data.get("complexity")
+        parts = question_data.get("parts")
+        question_index = question_data.get("questionIndex")
+
+        # Construct the prompt based on the received question data
+        prompt = f"Regenerate the question based on the following points.\n Topic: {topic}\nKeywords: {', '.join(keywords)}\nComplexity: {complexity.capitalize()}\nGenerate a {complexity} question with {parts} parts.\n Clearly mention all parts like Part 1, Part 2 and each part should begin at new line."
+
+        # Log the generated prompt
+        logger.info(f"Generated prompt: {prompt}")
+
+        # Call ChatGPT API to generate response
+        api_key = "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"
+        endpoint_url = "https://api.openai.com/v1/chat/completions"
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 2000,
+            # Add other parameters as needed
+        }
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        }
+        response = requests.post(endpoint_url, json=payload, headers=headers)
+
+        # Log the ChatGPT API response
+        logger.info(f"ChatGPT API response: {response.text}")
+
+        # Return the new question prompt as JSON response
+        if response.status_code == 200:
+            response_data = response.json()
+            question_prompt = (
+                response_data.get("choices", [])[0]
+                .get("message", {})
+                .get("content", "")
+                .strip()
+            )
+            print("Question Prompt")
+            print(question_prompt)
+            return JsonResponse(
+                {
+                    "success": True,
+                    "question_prompt": question_prompt,
+                    "questionIndex": question_index,
+                }
+            )
+        else:
+            logger.error(
+                f"Failed to regenerate question: {response.status_code} - {response.text}"
+            )
+            return JsonResponse(
+                {"success": False, "error": "Failed to regenerate question"}, status=500
+            )
+
+    # Return error if request method is not POST
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)

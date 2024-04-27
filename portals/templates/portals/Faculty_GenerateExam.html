@@ -5,16 +5,62 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
+<link rel="stylesheet" href="{% static 'css/Faculty_GenerateExam.css' %}">
+<link rel="stylesheet" href="{% static '/css/style.css' %}" />
+
 
 {% endblock %}
 
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
 
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Generate Exam</h3>
+                </div>
+                <div class="form-container">
+                    <form id="paperForm" action="{% url 'portals:generate_paper' %}" method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="subject">Select Subject:</label>
+                        <select name="subject" id="subject">
+                            <option value="">Choose your subject</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <label for="selectQuestions">Select Number of Questions:</label>
+
+                        <select name="selectQuestions" id="selectQuestions">
+                            <option value="">Select Questions</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <br>
+                        <div id="questionDropdowns"></div>
+                        <div id="message"></div>
+                        <br>
+                        <button type="submit" id="generateButton" class="btn btn-primary">Generate Paper</button>
+                    </form>
+                </div>
+                <br><br><br>
+                <div id="paperPrompts"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 <!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
+<script src="{% static 'js/generatepaper.js' %}"></script>
 
 {% endblock %}
