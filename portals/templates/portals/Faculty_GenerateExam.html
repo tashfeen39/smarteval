@@ -6,6 +6,8 @@
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
 <link rel="stylesheet" href="{% static 'css/Faculty_GenerateExam.css' %}">
+<link rel="stylesheet" href="{% static '/css/style.css' %}" />
+
 
 {% endblock %}
 
@@ -45,7 +47,7 @@
                         <div id="questionDropdowns"></div>
                         <div id="message"></div>
                         <br>
-                        <button type="submit" id="generateButton">Generate Paper</button>
+                        <button type="submit" id="generateButton" class="btn btn-primary">Generate Paper</button>
                     </form>
                 </div>
                 <br><br><br>
