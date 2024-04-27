@@ -98,19 +98,45 @@ def read_users_from_csv(request):
         for row in reader:
             # Create a new User object for each row in the CSV file
             user = User.objects.create_user(
-                first_name=row["First Name"],
-                last_name=row["Last Name"],
-                phone_number=row["Phone Number"],
-                email=row["Email"],
-                password=(row["Password"]),
-                username=row["Username"],
-                is_student=True if reader.line_num <= 495 else False,
-                is_teacher=False if reader.line_num <= 495 else True,
+                first_name=row['First Name'],
+                last_name=row['Last Name'],
+                phone_number=row['Phone Number'],
+                email=row['Email'],
+                password=(row['Password']),  
+                username=row['Username'],
+                is_student=True if reader.line_num < 495 else False,  
+                is_teacher=False if reader.line_num < 495 else True,
             )
-            # # Save the User object to the database
-            # user.save()
-
+           
     print("Users saved to the database.")
+
+
+
+def add_teachers_from_csv(request):
+   
+    csv_file_path = "allteachers.csv"
+
+    # Open the CSV file and iterate over its rows
+    with open(csv_file_path, "r", newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            users = User.objects.filter(is_teacher=True, teacher__isnull=True)
+            # Randomly select a user object
+            random_user = random.choice(users)
+            # Create a new Student object for each row in the CSV file
+            teacher =  Teacher.objects.create(
+                user=random_user,
+                date_of_birth=row['date_of_birth'],
+                gender=row['gender'],
+                marital_status=row['marital_status'],
+                religion=row['religion'],
+                nationality=row['nationality'],
+                cnic=row['cnic'],
+                office_number=row['office_number'],
+                address=row['address'],
+            )
+
+    print("Teachers linked to users and saved to the database.")
 
 
 def add_students_from_csv(request):
@@ -122,7 +148,7 @@ def add_students_from_csv(request):
     with open(csv_file_path, "r", newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            users = User.objects.exclude(student__isnull=False)
+            users = User.objects.filter(is_student=True, student__isnull=True)
             # Randomly select a user object
             random_user = random.choice(users)
             # Create a new Student object for each row in the CSV file
@@ -191,7 +217,7 @@ def change_date_of_birth(request):
 
 def change_phone_numbers(request):
     # Define the path to your CSV file
-    csv_file_path = "allteachers.csv"
+    csv_file_path = "allnewusers.csv"
 
     # Read the CSV file and generate random 11-digit phone numbers for each entry
     updated_rows = []
@@ -200,13 +226,13 @@ def change_phone_numbers(request):
         reader = csv.DictReader(file)
         for row in reader:
             # Generate a random 11-digit phone number
-            phone_number = "".join(random.choices(string.digits, k=4))
+            phone_number = '03' + ''.join(random.choices(string.digits, k=9))
             # phone_number = 000
-            row["office_number"] = phone_number
+            row['Phone Number'] = phone_number
             updated_rows.append(row)
 
     # Write the updated rows to a new CSV file
-    output_file_path = "allnewteachers.csv"
+    output_file_path = "allcorrusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -216,7 +242,7 @@ def change_phone_numbers(request):
 
 def remove_duplicate_users(request):
     # Define the path to your CSV file
-    csv_file_path = "allusers.csv"
+    csv_file_path = "allcorrectusers.csv"
 
     # Read the CSV file and remove duplicates based on username
     unique_usernames = set()
@@ -225,13 +251,13 @@ def remove_duplicate_users(request):
     with open(csv_file_path, mode="r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            username = row["Username"]
+            username = row['Phone Number']
             if username not in unique_usernames:
                 unique_usernames.add(username)
                 unique_rows.append(row)
 
     # Write the unique rows to a new CSV file
-    output_file_path = "allnewusers.csv"
+    output_file_path = "allusers.csv"
 
     with open(output_file_path, mode="w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
@@ -243,44 +269,6 @@ def remove_duplicate_users(request):
     #     response = HttpResponse(file.read(), content_type='text/csv')
     #     response['Content-Disposition'] = 'attachment; filename="unique_users.csv"'
     #     return response
-
-
-def generate_username(first_name, last_name):
-    return (first_name + last_name).lower().replace(" ", "")
-
-
-def generate_unique_data(num_students, filename):
-    unique_emails = set()
-    unique_usernames = set()
-    unique_phone_numbers = set()
-
-    with open(filename, "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(
-            ["first_name", "last_name", "phone_number", "email", "password", "username"]
-        )
-
-        while len(unique_emails) < num_students:
-            first_name = fake.first_name()
-            last_name = fake.last_name()
-            email = fake.email()
-            phone_number = fake.phone_number()
-            username = generate_username(first_name, last_name)
-
-            # Check if email, username, and phone number are unique
-            if (
-                email not in unique_emails
-                and username not in unique_usernames
-                and phone_number not in unique_phone_numbers
-            ):
-                unique_emails.add(email)
-                unique_usernames.add(username)
-                unique_phone_numbers.add(phone_number)
-
-                # Write data to the CSV file
-                writer.writerow(
-                    [first_name, last_name, phone_number, email, "1234", username]
-                )
 
 
 def import_semester_courses(request):
@@ -719,6 +707,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # add_teachers_from_csv(request)
     # add_students_from_csv(request)
     # read_users_from_csv(request)
     # change_date_of_birth(request)
