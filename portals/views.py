@@ -41,7 +41,8 @@ def faculty_feedback_view(request):
 
 
 def faculty_generate_exam_view(request):
-    return render(request, "portals/Faculty_GenerateExam.html")
+    subjects = Course.objects.all()
+    return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
 
 
 def faculty_grading_view(request):
