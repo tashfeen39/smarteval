@@ -61,6 +61,10 @@
 
 <!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
-<script src="{% static 'js/generatepaper.js' %}"></script>
+<script>
+    const generatePaperUrl = "{% url 'portals:generate_paper' %}";
+    const regenerateQuestionUrl = "{% url 'portals:regenerate_question' %}";
+</script>
+<script src="{% static 'js/Faculty_GenerateExam.js' %}"></script>
 
 {% endblock %}
