@@ -31,6 +31,7 @@ urlpatterns = [
     path("student/subjectwisereport/", views.student_subjectwisereport_view, name="student-subjectwisereport"),
     path("student/registration/", views.student_registration, name="student-registration"),
     path('get_programs/', views.get_programs, name='get_programs'),
+    path("logout/", views.log_out, name="logout"),
 
 
 ]

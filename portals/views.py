@@ -1,6 +1,6 @@
 import csv
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 import requests
 import re
@@ -843,6 +843,12 @@ def faculty_login_view(request):
             )
 
     return render(request, "portals/Faculty_login.html")
+
+
+def log_out(request):
+    logout(request)
+    return redirect('portals:faculty-login')
+
 
 
 def get_programs(request):
