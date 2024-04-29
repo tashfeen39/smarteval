@@ -18,6 +18,7 @@ from datetime import datetime
 import json
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from .models import Course
 
 
 
@@ -41,9 +42,17 @@ def faculty_feedback_view(request):
     return render(request, "portals/Faculty_Feedbacks.html")
 
 
+# def faculty_generate_exam_view(request):
+#     subjects = Course.objects.all()
+#     return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
+
 def faculty_generate_exam_view(request):
     subjects = Course.objects.all()
+
+    if request.method == "POST":
+        subject_id = request.POST.get("subject")
     return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
+    
 
 
 def faculty_grading_view(request):

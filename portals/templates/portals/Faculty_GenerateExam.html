@@ -1,22 +1,15 @@
 {% extends "portals/dashboard_template.html" %}
-
-
 {% load static %}
 
-<!-- ---------------- Block for Header ---------------- -->
 {% block header %}
-<link rel="stylesheet" href="{% static 'css/Faculty_GenerateExam.css' %}">
 <link rel="stylesheet" href="{% static '/css/style.css' %}" />
-
+<link rel="stylesheet" href="{% static 'css/Faculty_GenerateExam.css' %}">
 
 {% endblock %}
 
-
-<!-- ---------------- Block for Body ---------------- -->
 {% block body %}
 <div class="page-wrapper">
     <div class="content container-fluid">
-
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -27,15 +20,18 @@
                         enctype="multipart/form-data">
                         {% csrf_token %}
                         <label for="subject">Select Subject:</label>
+                        {% if subjects %}
                         <select name="subject" id="subject">
                             <option value="">Choose your subject</option>
                             {% for subject in subjects %}
-                            <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            <option value="{{ subject.id }}">{{ subject.course_name }}</option>
                             {% endfor %}
                         </select>
+                        {% else %}
+                        <p>There are no subjects available at the moment. Please try again later or contact the administrator.</p>
+                        {% endif %}
                         <br>
                         <label for="selectQuestions">Select Number of Questions:</label>
-
                         <select name="selectQuestions" id="selectQuestions">
                             <option value="">Select Questions</option>
                             <option value="1">1</option>
@@ -52,19 +48,16 @@
                 </div>
                 <br><br><br>
                 <div id="paperPrompts"></div>
-
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
-<!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
 <script>
     const generatePaperUrl = "{% url 'portals:generate_paper' %}";
     const regenerateQuestionUrl = "{% url 'portals:regenerate_question' %}";
 </script>
 <script src="{% static 'js/Faculty_GenerateExam.js' %}"></script>
-
 {% endblock %}
