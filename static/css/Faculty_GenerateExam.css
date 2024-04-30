@@ -90,3 +90,26 @@ button:hover {
   padding-right: 30px;
   padding-left: 2px !important;
 }
+
+.custom-textarea {
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  resize: vertical; /* Allow vertical resizing */
+  /* Add more styles as needed */
+}
+
+.question-input{
+    border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.question-container{
+    margin-bottom: 18px;
+    margin-top: 5px;
+}
+.regenerate-button{
+   
+    margin-top: 5px;
+}

@@ -17,11 +17,13 @@ document
       topicInput.type = "text";
       topicInput.name = `question_${i}_topic`;
       topicInput.placeholder = "Enter question topic";
+      topicInput.classList.add("form-control", "mb-3", "question-input"); // Add Bootstrap classes
       questionDiv.appendChild(topicInput);
 
       var keywordsTextarea = document.createElement("textarea");
       keywordsTextarea.name = `question_${i}_keywords`;
       keywordsTextarea.placeholder = "Enter keywords separated by commas";
+      keywordsTextarea.classList.add("form-control", "mb-3", "custom-textarea"); // Add custom class
       questionDiv.appendChild(keywordsTextarea);
 
       var complexitySelect = document.createElement("select");
@@ -58,7 +60,7 @@ document
 
       var regenerateButton = document.createElement("button");
       regenerateButton.textContent = "Regenerate";
-      regenerateButton.classList.add("regenerate-button");
+      regenerateButton.classList.add("btn", "btn-primary", "regenerate-button");
       regenerateButton.addEventListener(
         "click",
         (function (index) {
