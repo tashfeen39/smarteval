@@ -180,3 +180,14 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+
+
+class TeacherCoursesTaught(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    courses = models.ManyToManyField(Course)
+
+    def __str__(self):
+        return f"{self.teacher.user.first_name} {self.teacher.user.last_name}"
+
+    class Meta:
+        verbose_name_plural = "Teacher Courses Taught"

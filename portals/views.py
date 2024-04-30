@@ -9,7 +9,7 @@ import random
 import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
-from .models import Degree, Program, SemesterCourses, SemesterDetails
+from .models import Degree, Program, SemesterCourses, SemesterDetails, TeacherCoursesTaught
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
@@ -102,6 +102,51 @@ def student_subjectwisereport_view(request):
 
 
 
+def assign_courses_to_teachers(request):
+    # Fetch all teachers and their departments
+    teachers = Teacher.objects.select_related('department').all()
+    
+    # Fetch all departments and their courses
+    departments = Department.objects.prefetch_related('course_set').all()
+    
+    # Initialize a dictionary to hold courses for each department
+    department_courses = {department.DepartmentID: list(department.course_set.all()) for department in departments}
+    
+    # Iterate over each department
+    for department_id, courses in department_courses.items():
+        # Fetch all teachers in the department
+        department_teachers = teachers.filter(department_id=department_id)
+        
+        # If there are no teachers in the department or no courses, continue to the next department
+        if not department_teachers or not courses:
+            continue
+        
+        # Calculate the number of courses each teacher should get and handle uneven division
+        num_teachers = len(department_teachers)
+        num_courses = len(courses)
+        courses_per_teacher = num_courses // num_teachers
+        extra_courses = num_courses % num_teachers
+        
+        # Create an iterator to cycle through the courses
+        course_iterator = cycle(courses)
+        
+        # Iterate over each teacher and assign courses
+        for teacher in department_teachers:
+            teacher_courses_taught, _ = TeacherCoursesTaught.objects.get_or_create(teacher=teacher)
+            
+            # Assign courses to the teacher
+            assigned_courses = []
+            for _ in range(courses_per_teacher):
+                assigned_courses.append(next(course_iterator))
+                
+            # If there are extra courses, assign them to teachers one by one
+            if extra_courses > 0:
+                assigned_courses.append(next(course_iterator))
+                extra_courses -= 1
+            
+            teacher_courses_taught.courses.set(assigned_courses)
+            teacher_courses_taught.save()
+    print("Courses assigned to teachers successfully.")
 
 def assign_departments_to_teachers():
     # Fetch all teachers and departments
@@ -830,6 +875,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # assign_courses_to_teachers(request)
     # assign_departments_to_teachers()
     # update_departments(request)
     # add_teachers_from_csv(request)

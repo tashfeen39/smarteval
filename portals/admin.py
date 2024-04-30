@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, User, Student, Teacher, SemesterDetails
+from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, User, Student, Teacher, SemesterDetails
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -15,6 +15,9 @@ class StudentAdmin(admin.ModelAdmin):
 class TeacherAdmin(admin.ModelAdmin):
     list_filter = ('user__is_student', 'user__is_teacher', 'department')
     
+
+class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
+    pass
 
 
 class CustomUserAdmin(admin.ModelAdmin):
@@ -89,3 +92,4 @@ admin.site.register(SemesterDetails, SemesterDetailsAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(SemesterCourses, SemesterCoursesAdmin)
 admin.site.register(CoursePrerequisite, CoursePrerequisiteAdmin)
+admin.site.register(TeacherCoursesTaught, TeacherCoursesTaughtAdmin)
