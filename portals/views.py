@@ -101,6 +101,37 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+
+def update_departments(request):
+    # Fetch all departments and courses
+    departments = Department.objects.all()
+    courses = Course.objects.all()
+
+    # Calculate the number of courses per department
+    num_courses_per_department = len(courses) // len(departments)
+    remainder = len(courses) % len(departments)
+
+    # Initialize counters
+    course_count = 0
+
+    # Iterate over departments
+    for department in departments:
+        # Determine the number of courses for this department
+        if remainder > 0:
+            num_courses = num_courses_per_department + 1
+            remainder -= 1
+        else:
+            num_courses = num_courses_per_department
+        
+        # Assign courses to this department
+        for _ in range(num_courses):
+            course = courses[course_count]
+            course.department = department
+            course.save()
+            course_count += 1
+
+
 def add_random_digit_to_username(request):
     input_file_path = 'moreusers.csv'  # Replace '/path/to/allusers.csv' with the actual path to your input file
     output_file_path = 'morenewusers.csv'  # Replace '/path/to/allnewusers.csv' with the desired path for the output file
@@ -764,6 +795,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # update_departments(request)
     # add_teachers_from_csv(request)
     # add_students_from_csv(request)
     # read_users_from_csv(request)
