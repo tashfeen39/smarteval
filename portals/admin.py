@@ -13,7 +13,8 @@ class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ('StudentID',)
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_filter = ('user__is_student', 'user__is_teacher')
+    list_filter = ('user__is_student', 'user__is_teacher', 'department')
+    
 
 
 class CustomUserAdmin(admin.ModelAdmin):

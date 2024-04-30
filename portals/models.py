@@ -12,8 +12,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField(unique=True)
-    # profile_picture = models.ImageField(
-    # upload_to='profile_pictures', null=True, blank=True)
+    profile_picture = models.ImageField(
+    upload_to='profile_pictures', null=True, blank=True)
     password = models.CharField(max_length=128)
     username = models.CharField(max_length=150, unique=True, null=True)
 
@@ -64,35 +64,6 @@ class Student(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class Teacher(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True, related_name="teacher"
-    )
-
-    date_of_birth = models.DateField(null=True, blank=True)
-    GENDER_CHOICES = (
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-        ('Other', 'Other')
-    )
-    gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
-    MARITAL_STATUS_CHOICES = (
-        ('Single', 'Single'),
-        ('Married', 'Married'),
-        ('Other', 'Other')
-    )
-    marital_status = models.CharField(max_length=10, null=True, blank=True, choices=MARITAL_STATUS_CHOICES)
-    religion = models.CharField(max_length=100, null=True, blank=True)
-    nationality = models.CharField(max_length=100, null=True, blank=True)
-    cnic = models.CharField(max_length=15, null=True, blank=True)
-    office_number = models.CharField(max_length=20, null=True, blank=True)
-    address = models.TextField(max_length=200, blank=True, null=True)
-
-   
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class School(models.Model):
@@ -179,3 +150,33 @@ class CoursePrerequisite(models.Model):
     class Meta:
         verbose_name_plural = "Course Prerequisites"
 
+class Teacher(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True, related_name="teacher"
+    )
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+
+    date_of_birth = models.DateField(null=True, blank=True)
+    GENDER_CHOICES = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other')
+    )
+    gender = models.CharField(max_length=10, null=True, blank=True, choices=GENDER_CHOICES)
+    MARITAL_STATUS_CHOICES = (
+        ('Single', 'Single'),
+        ('Married', 'Married'),
+        ('Other', 'Other')
+    )
+    marital_status = models.CharField(max_length=10, null=True, blank=True, choices=MARITAL_STATUS_CHOICES)
+    religion = models.CharField(max_length=100, null=True, blank=True)
+    nationality = models.CharField(max_length=100, null=True, blank=True)
+    cnic = models.CharField(max_length=15, null=True, blank=True)
+    office_number = models.CharField(max_length=20, null=True, blank=True)
+    address = models.TextField(max_length=200, blank=True, null=True)
+
+   
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"

@@ -19,6 +19,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import logging
 from .models import Course
+from itertools import cycle
 
 
 
@@ -42,9 +43,6 @@ def faculty_feedback_view(request):
     return render(request, "portals/Faculty_Feedbacks.html")
 
 
-# def faculty_generate_exam_view(request):
-#     subjects = Course.objects.all()
-#     return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
 
 def faculty_generate_exam_view(request):
     subjects = Course.objects.all()
@@ -101,6 +99,43 @@ def student_profile_view(request):
 
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+
+
+
+def assign_departments_to_teachers():
+    # Fetch all teachers and departments
+    teachers = Teacher.objects.all()
+    departments = Department.objects.all()
+
+    # Calculate the number of teachers and departments
+    num_teachers = len(teachers)
+    num_departments = len(departments)
+
+    # Calculate how many teachers each department should ideally have
+    ideal_teachers_per_department = num_teachers // num_departments
+    remainder = num_teachers % num_departments
+
+    # Create an iterator to cycle through departments
+    department_iterator = cycle(departments)
+
+    # Assign departments to teachers
+    for teacher in teachers:
+        # Get the next department from the iterator
+        department = next(department_iterator)
+
+        # Assign the department to the teacher
+        teacher.department = department
+        teacher.save()
+
+        # If there are remaining teachers, distribute them
+        if remainder > 0:
+            remainder -= 1
+            # Move to the next department in the iterator
+            department = next(department_iterator)
+
+    print("Departments assigned to teachers successfully.")
+
 
 
 def update_departments(request):
@@ -795,6 +830,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # assign_departments_to_teachers()
     # update_departments(request)
     # add_teachers_from_csv(request)
     # add_students_from_csv(request)
