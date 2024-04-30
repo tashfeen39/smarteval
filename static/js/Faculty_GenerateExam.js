@@ -71,7 +71,20 @@ document
 
       questionDropdownsDiv.appendChild(questionDiv);
     }
+    // Disable all regenerate buttons initially
+    var regenerateButtons = document.querySelectorAll(".regenerate-button");
+    regenerateButtons.forEach(function (button) {
+      button.disabled = true;
+    });
   });
+
+// Function to enable regenerate buttons after paper generation
+function enableRegenerateButtons() {
+  var regenerateButtons = document.querySelectorAll(".regenerate-button");
+  regenerateButtons.forEach(function (button) {
+    button.disabled = false;
+  });
+}
 
 const controller = new AbortController();
 
@@ -168,6 +181,8 @@ document
           });
 
           paperPromptsDiv.innerHTML = paperContent;
+          // Enable regenerate buttons after paper has been generated
+          enableRegenerateButtons();
         } else {
           console.error("Error:", data.error);
         }
@@ -261,3 +276,16 @@ function regenerateQuestion(event, questionIndex) {
       console.error("Error:", error);
     });
 }
+
+$(function () {
+  // Initialize Select2 for the subject dropdown
+  $("#subject").select2({
+    theme: "bootstrap-5",
+    width: $(this).data("width")
+      ? $(this).data("width")
+      : $(this).hasClass("w-100")
+      ? "100%"
+      : "style",
+    placeholder: $(this).data("placeholder"),
+  });
+});
