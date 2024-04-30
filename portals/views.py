@@ -879,7 +879,7 @@ def generate_paper(request):
             # Extract data from AJAX request
             data = json.loads(request.body)
             subject_id = data.get("subject_id")
-            subject_name = data.get("subject_name")
+            subject_name = subject_id
             select_questions = data.get("selectQuestions")
             question_parts = data.get("questionParts") or []
             question_topics = data.get("questionTopics") or []
@@ -962,7 +962,7 @@ def generate_paper(request):
                             paper_prompts.append(question)
                
 
-                return JsonResponse({"success": True, "paper_prompts": paper_prompts})
+                return JsonResponse({"success": True, "paper_prompts": paper_prompts, "subject_name": subject_name})
             else:
                 logger.error(
                     f"Failed to generate paper: {response.status_code} - {response.text}"

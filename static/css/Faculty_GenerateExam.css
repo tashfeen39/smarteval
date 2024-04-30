@@ -73,7 +73,7 @@ button:hover {
 
 .select2-container--bootstrap-5 .select2-selection--single {
   padding: 0.375rem 0.75rem 0.375rem 0.75rem;
-  background-position: right .75rem center;
+  background-position: right 0.75rem center;
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
@@ -83,7 +83,7 @@ button:hover {
 
 .select2-container--bootstrap-5 .select2-selection--single {
   padding: 0.375rem 0.75rem 0.375rem 0.75rem;
-  background-position: right .75rem center;
+  background-position: right 0.75rem center;
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
@@ -99,17 +99,28 @@ button:hover {
   /* Add more styles as needed */
 }
 
-.question-input{
-    border-radius: 5px;
+.question-input {
+  border-radius: 5px;
   padding: 10px;
   font-size: 16px;
 }
 
-.question-container{
-    margin-bottom: 18px;
-    margin-top: 5px;
+.question-container {
+  margin-bottom: 18px;
+  margin-top: 5px;
 }
-.regenerate-button{
-   
-    margin-top: 5px;
+.regenerate-button {
+  margin-top: 5px;
+}
+#downloadContainer {
+  width: 100%;
+}
+
+.downloadbutton {
+  float: right;
+  width: 300px;
+}
+
+.question-div{
+    border: none;
 }
