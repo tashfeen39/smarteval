@@ -71,7 +71,20 @@ document
 
       questionDropdownsDiv.appendChild(questionDiv);
     }
+    // Disable all regenerate buttons initially
+    var regenerateButtons = document.querySelectorAll(".regenerate-button");
+    regenerateButtons.forEach(function (button) {
+      button.disabled = true;
+    });
   });
+
+// Function to enable regenerate buttons after paper generation
+function enableRegenerateButtons() {
+  var regenerateButtons = document.querySelectorAll(".regenerate-button");
+  regenerateButtons.forEach(function (button) {
+    button.disabled = false;
+  });
+}
 
 const controller = new AbortController();
 
@@ -168,6 +181,8 @@ document
           });
 
           paperPromptsDiv.innerHTML = paperContent;
+          // Enable regenerate buttons after paper has been generated
+          enableRegenerateButtons();
         } else {
           console.error("Error:", data.error);
         }
@@ -274,4 +289,3 @@ $(function () {
     placeholder: $(this).data("placeholder"),
   });
 });
-
