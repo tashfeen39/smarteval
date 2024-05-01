@@ -102,6 +102,36 @@ def student_subjectwisereport_view(request):
 
 
 
+def distribute_students_evenly():
+    degrees = Degree.objects.all()
+    students = list(Student.objects.all())
+
+    # Calculate students per degree
+    students_per_degree = len(students) // len(degrees)
+    remaining_students = len(students) % len(degrees)
+
+    # Distribute students evenly among degrees
+    student_index = 0
+    for degree in degrees:
+        # Assign students_per_degree to this degree
+        for _ in range(students_per_degree):
+            student = students[student_index]
+            student.degree = degree
+            student.save()
+            student_index += 1
+
+        # Distribute remaining students
+        if remaining_students > 0:
+            student = students[student_index]
+            student.degree = degree
+            student.save()
+            student_index += 1
+            remaining_students -= 1
+
+    return "Students distributed evenly among degrees"
+
+
+
 def assign_courses_to_teachers(request):
     # Fetch all teachers and their departments
     teachers = Teacher.objects.select_related('department').all()
@@ -875,6 +905,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # distribute_students_evenly()
     # assign_courses_to_teachers(request)
     # assign_departments_to_teachers()
     # update_departments(request)
