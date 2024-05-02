@@ -341,7 +341,7 @@ def add_teachers_from_csv(request):
 def add_students_from_csv(request):
 
     # File path for allstudents.csv
-    csv_file_path = "allstudents.csv"
+    csv_file_path = "morestudents.csv"
 
     # Open the CSV file and iterate over its rows
     with open(csv_file_path, "r", newline="") as csvfile:
