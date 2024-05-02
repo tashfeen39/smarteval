@@ -9,7 +9,7 @@ from .models import Course, CoursePrerequisite, Degree, Department, Program, Sch
 class StudentAdmin(admin.ModelAdmin):
     # list_display = ['user', 'StudentID', 'date_of_birth', 'gender', 'marital_status', 'religion', 'nationality', 'cnic', 'father_name', 'father_occupation', 'semester', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'StudentID']
-    list_filter = ('user__is_student', 'user__is_teacher', 'degree')
+    list_filter = ('user__is_student', 'user__is_teacher', 'degree', 'semester')
     readonly_fields = ('StudentID',)
 
 class TeacherAdmin(admin.ModelAdmin):

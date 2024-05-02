@@ -101,6 +101,43 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 
+def distribute_students_semesters():
+    # Get all degrees
+    degrees = Degree.objects.all()
+
+    # Iterate over each degree
+    for degree in degrees:
+        # Get all students in the current degree
+        students = Student.objects.filter(degree=degree)
+        
+        # Calculate students per semester and remaining students
+        students_per_semester = len(students) // 8
+        remaining_students = len(students) % 8
+        
+        # Distribute students across 8 semesters
+        semester_count = 1
+        student_index = 0
+        for semester in range(1, 9):
+            # Assign students_per_semester to this semester
+            for _ in range(students_per_semester):
+                student = students[student_index]
+                student.semester = semester_count
+                student.save()
+                student_index += 1
+
+            # Distribute remaining students
+            if remaining_students > 0:
+                student = students[student_index]
+                student.semester = semester_count
+                student.save()
+                student_index += 1
+                remaining_students -= 1
+
+            # Increment semester count
+            semester_count += 1
+
+    return "Students distributed across 8 semesters for each degree"
+
 
 def distribute_students_evenly():
     degrees = Degree.objects.filter(degree_name__startswith='B')
@@ -906,6 +943,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # distribute_students_semesters()
     # distribute_students_evenly()
     # assign_courses_to_teachers(request)
     # assign_departments_to_teachers()
