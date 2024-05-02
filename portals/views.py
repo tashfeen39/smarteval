@@ -103,7 +103,7 @@ def student_subjectwisereport_view(request):
 
 
 def distribute_students_evenly():
-    degrees = Degree.objects.all()
+    degrees = Degree.objects.filter(degree_name__startswith='B')
     students = list(Student.objects.all())
 
     # Calculate students per degree

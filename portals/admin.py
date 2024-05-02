@@ -13,6 +13,7 @@ class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ('StudentID',)
 
 class TeacherAdmin(admin.ModelAdmin):
+    search_fields = ['user__username', 'user__first_name', 'user__last_name']
     list_filter = ('user__is_student', 'user__is_teacher', 'department')
     
 
@@ -22,7 +23,7 @@ class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
 
 class CustomUserAdmin(admin.ModelAdmin):
     # list_display = ('username', 'email', 'first_name', 'last_name', 'is_student', 'is_teacher', 'phone_number', 'profile_picture')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'phone_number')
     list_filter = ('is_staff', 'is_superuser', 'is_student', 'is_teacher')
 
 
@@ -31,9 +32,11 @@ class CustomAdminSite(admin.AdminSite):
 
 
 class SchoolAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('school_name',)
+
 
 class DepartmentAdmin(admin.ModelAdmin):
+    search_fields = ('department_name',)
     list_filter = ('school',)
 
 class ProgramAdmin(admin.ModelAdmin):
@@ -43,24 +46,12 @@ class ProgramAdmin(admin.ModelAdmin):
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
     form = DegreeForm
+    search_fields = ('degree_name',)
     list_filter = ('department',)
 
 
-# class DepartmentFilter(admin.RelatedFieldListFilter):
-#     def field_choices(self, field, request, model_admin):
-#         # Get all unique departments associated with degrees that have semester details
-#         queryset = field.related_model.objects.filter(degree__isnull=False).distinct()
-#         print(queryset)
-#         departments = set([str(department) for department in queryset])
-
-#         return [(department, department) for department in departments]
-
-        
-
-
 class SemesterDetailsAdmin(admin.ModelAdmin):
-    # list_filter = (('degree__department', DepartmentFilter),)
-      list_filter = ('degree__department',)
+    list_filter = ('degree__department',)
 
 
 
@@ -70,7 +61,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class SemesterCoursesAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['courses__course_name']
+    list_filter = ('semester_details__semester_number','semester_details__degree__department')
 
 class CoursePrerequisiteAdmin(admin.ModelAdmin):
     pass
