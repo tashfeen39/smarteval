@@ -288,7 +288,7 @@ def add_random_digits_to_email(request):
 
 def read_users_from_csv(request):
     # File path for allusers.csv
-    csv_file_path = "allusers.csv"
+    csv_file_path = "moreusers.csv"
 
     # Open the CSV file and iterate over its rows
     with open(csv_file_path, "r", newline="") as csvfile:
@@ -915,7 +915,7 @@ def student_login_view(request):
     # read_users_from_csv(request)
     # change_date_of_birth(request)
     # change_phone_numbers(request)
-    remove_duplicate_users(request)
+    # remove_duplicate_users(request)
     # generate_unique_data(100, 'student_data.csv')
     # import_semester_courses(request)
     # create_semester_details(request)
