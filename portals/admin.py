@@ -22,6 +22,7 @@ class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
 
 
 class SectionAdmin(admin.ModelAdmin):
+    search_fields = ('semester', 'section_name')
     list_filter = ('semester', 'section_name', 'degree')
 
 
