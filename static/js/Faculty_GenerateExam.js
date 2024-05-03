@@ -1,3 +1,4 @@
+let paperContent = "";
 document
   .getElementById("selectQuestions")
   .addEventListener("change", function () {
@@ -266,6 +267,12 @@ function regenerateQuestion(event, questionIndex) {
     questionIndex: questionIndex,
   };
 
+  // Remove the existing question prompt
+  var questionPromptElement = questionPromptContainer.querySelector("p");
+  if (questionPromptElement) {
+    questionPromptElement.remove();
+  }
+
   // Make an AJAX call to the backend with the updated question data and question index
   fetch(regenerateQuestionUrl, {
     method: "POST",
@@ -278,20 +285,20 @@ function regenerateQuestion(event, questionIndex) {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
+        throw new Error(`HTTP error ${response.status_code}`);
       }
       return response.json();
     })
     .then((questionData) => {
       console.log("Response Question Data:", questionData);
       if (questionData.success) {
-        // Update the corresponding question prompt in the frontend
-        var questionPromptElement = questionPromptContainer.querySelector("p");
-        console.log("To be changed question:", questionPromptElement);
-        questionPromptElement.innerHTML = questionData.question_prompt.replace(
-          /\n/g,
-          "<br>"
-        );
+        // Create a new paragraph element for the updated question prompt
+        var newQuestionPromptElement = document.createElement("p");
+        newQuestionPromptElement.innerHTML =
+          questionData.question_prompt.replace(/\n/g, "<br>");
+
+        // Append the new paragraph element to the question prompt container
+        questionPromptContainer.appendChild(newQuestionPromptElement);
       } else {
         console.error("Error:", questionData.error);
       }
@@ -317,6 +324,13 @@ $(function () {
 // Download Button
 function createDownloadButton(paperContent) {
   const downloadContainer = document.getElementById("downloadContainer");
+
+  // Remove any existing download button
+  const existingButton = downloadContainer.querySelector("button");
+  if (existingButton) {
+    existingButton.remove();
+  }
+
   const downloadButton = document.createElement("button");
   downloadButton.textContent = "Download Paper";
   downloadButton.classList.add("btn", "btn-primary");
