@@ -3,13 +3,13 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, User, Student, Teacher, SemesterDetails
+from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, User, Student, Teacher, SemesterDetails, Section
 
 
 class StudentAdmin(admin.ModelAdmin):
     # list_display = ['user', 'StudentID', 'date_of_birth', 'gender', 'marital_status', 'religion', 'nationality', 'cnic', 'father_name', 'father_occupation', 'semester', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'StudentID']
-    list_filter = ('user__is_student', 'user__is_teacher', 'degree', 'semester')
+    list_filter = ('user__is_student', 'user__is_teacher', 'degree', 'semester', 'section__section_name')
     readonly_fields = ('StudentID',)
 
 class TeacherAdmin(admin.ModelAdmin):
@@ -18,6 +18,10 @@ class TeacherAdmin(admin.ModelAdmin):
     
 
 class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
+    pass
+
+
+class SectionAdmin(admin.ModelAdmin):
     pass
 
 
@@ -85,3 +89,4 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(SemesterCourses, SemesterCoursesAdmin)
 admin.site.register(CoursePrerequisite, CoursePrerequisiteAdmin)
 admin.site.register(TeacherCoursesTaught, TeacherCoursesTaughtAdmin)
+admin.site.register(Section, SectionAdmin)

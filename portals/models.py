@@ -12,8 +12,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField(unique=True)
-    # profile_picture = models.ImageField(
-    # upload_to='profile_pictures', null=True, blank=True)
+    profile_picture = models.ImageField(
+    upload_to='profile_pictures', null=True, blank=True)
     password = models.CharField(max_length=128)
     username = models.CharField(max_length=150, unique=True, null=True)
 
@@ -105,6 +105,16 @@ class CoursePrerequisite(models.Model):
     class Meta:
         verbose_name_plural = "Course Prerequisites"
 
+
+class Section(models.Model):
+    section_name = models.CharField(max_length=100)
+    degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+    semester = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.degree.degree_name} - Semester {self.semester} - Section {self.section_name}"
+    
+
 class Teacher(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True, related_name="teacher"
@@ -142,6 +152,7 @@ class Student(models.Model):
         User, on_delete=models.CASCADE, primary_key=True, related_name="student"
     )
     degree = models.ForeignKey(Degree, on_delete=models.SET_NULL, null=True, blank=True)
+    section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, blank=True)
    
     date_of_birth = models.DateField(null=True, blank=True)
     GENDER_CHOICES = (
@@ -162,7 +173,7 @@ class Student(models.Model):
     father_name = models.CharField(max_length=255, null=True, blank=True)
     father_occupation = models.CharField(max_length=100, null=True, blank=True)
     semester = models.CharField(max_length=100, null=True, blank=True)
-    address = models.TextField(max_length=200, blank=True, null=True)
+    semester = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     StudentID = models.CharField("Registration ID", max_length=6, unique=True, editable=False)

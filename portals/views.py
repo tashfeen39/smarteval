@@ -9,7 +9,7 @@ import random
 import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
-from .models import Degree, Program, SemesterCourses, SemesterDetails, TeacherCoursesTaught
+from .models import Degree, Program, Section, SemesterCourses, SemesterDetails, TeacherCoursesTaught
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
@@ -101,9 +101,48 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 
-def distribute_students_semesters():
+def assign_sections_to_students(request):
     # Get all degrees
     degrees = Degree.objects.all()
+    
+    for degree in degrees:
+        # Get all semesters of the degree
+        semesters = set(Student.objects.filter(degree=degree).values_list('semester', flat=True))
+        
+        for semester in semesters:
+            # Get all students in the current semester of the degree
+            students = Student.objects.filter(degree=degree, semester=semester)
+            
+            # Sort students by date of birth or any other criteria you prefer
+            sorted_students = students.order_by('StudentID')
+            
+            # Calculate the total number of students
+            total_students = sorted_students.count()
+            
+            # Calculate the number of sections needed
+            num_sections = (total_students // 30) + (1 if total_students % 30 != 0 else 0)
+            
+            # Create sections and assign students to each section
+            for i in range(num_sections):
+                section_name = chr(65 + i)  # Convert integer to corresponding alphabet (A, B, C, ...)
+                section = Section.objects.create(section_name=section_name, degree=degree, semester=semester)
+                
+                # Calculate the range of students to assign to this section
+                start_index = i * 30
+                end_index = min((i + 1) * 30, total_students)
+                
+                # Assign students to the section
+                students_to_assign = sorted_students[start_index:end_index]
+                for student in students_to_assign:
+                    student.section = section
+                    student.save()
+
+    return "Students assigned sections successfully"
+
+
+def distribute_students_semesters():
+    # Get all degrees
+    degrees = Degree.objects.filter(degree_name__startswith='B')
 
     # Iterate over each degree
     for degree in degrees:
@@ -943,6 +982,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # assign_sections_to_students(request)
     # distribute_students_semesters()
     # distribute_students_evenly()
     # assign_courses_to_teachers(request)
