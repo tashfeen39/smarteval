@@ -22,7 +22,7 @@ class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
 
 
 class SectionAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('semester', 'section_name', 'degree')
 
 
 class CustomUserAdmin(admin.ModelAdmin):
