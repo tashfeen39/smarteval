@@ -55,9 +55,10 @@ class Degree(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, blank=True, null=True)
     degree_name = models.CharField(max_length=100)
+    degree_abbreviation = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return self.degree_name
+        return f"{self.degree_abbreviation } - {self.degree_name}"
     
 
 class SemesterDetails(models.Model):

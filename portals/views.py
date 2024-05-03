@@ -103,7 +103,7 @@ def student_subjectwisereport_view(request):
 
 def assign_sections_to_students(request):
     # Get all degrees
-    degrees = Degree.objects.filter(degree_name = 'BS Information Technology')
+    degrees = Degree.objects.filter(degree_name__startswith='B')
     
     for degree in degrees:
         # Get all semesters of the degree
@@ -189,7 +189,7 @@ def assign_sections_to_students(request):
 
 def distribute_students_semesters():
     # Get all degrees
-    degrees = Degree.objects.filter(degree_name = 'BS Information Technology')
+    degrees = Degree.objects.filter(degree_name__startswith='B')
 
     # Iterate over each degree
     for degree in degrees:
