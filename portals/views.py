@@ -9,11 +9,13 @@ import random
 import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
+from portals.decorators import student_required, teacher_required
 from .models import Degree, Program, Section, SemesterCourses, SemesterDetails, TeacherCoursesTaught
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -22,28 +24,39 @@ from .models import Course
 from itertools import cycle
 
 
-
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def home(request):
     return render(request, "portals/Faculty_Profile.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_class_info_view(request):
     return render(request, "portals/Faculty_ClassInfo.html")
+    
 
-
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_dashboard_view(request):
     return render(request, "portals/Faculty_Dashboard.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_display_classes_view(request):
     return render(request, "portals/Faculty_DisplayClasses.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_feedback_view(request):
     return render(request, "portals/Faculty_Feedbacks.html")
 
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_generate_exam_view(request):
     subjects = Course.objects.all()
 
@@ -53,50 +66,73 @@ def faculty_generate_exam_view(request):
     
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_grading_view(request):
     return render(request, "portals/Faculty_Grading.html")
 
 
+@login_required(login_url='portals:faculty-login')
 def faculty_marks_entry_view(request):
     return render(request, "portals/Faculty_MarksEntry.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_profile_view(request):
     return render(request, "portals/Faculty_Profile.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_student_info_view(request):
     return render(request, "portals/Faculty_StudentInfo.html")
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_student_marks_entry_view(request):
     return render(request, "portals/Faculty_StudentsMarksEntry.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_dashboard_view(request):
     return render(request, "portals/Student_Dashboard.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_registeredcourses_view(request):
     return render(request, "portals/Student_RegisteredCourses.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_timetable_view(request):
     return render(request, "portals/Student_TimeTable.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_report_view(request):
     return render(request, "portals/Student_Report.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_feedback_view(request):
     return render(request, "portals/Student_Feedback.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_profile_view(request):
     return render(request, "portals/Student_Profile.html")
 
 
+@login_required(login_url='portals:student-login') 
+@student_required()
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
