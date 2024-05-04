@@ -1164,8 +1164,14 @@ def faculty_login_view(request):
 
 
 def log_out(request):
+    user = request.user
     logout(request)
-    return redirect('portals:faculty-login')
+    if user.is_student:
+        return redirect('portals:student-login')  
+    elif user.is_teacher:
+        return redirect('portals:faculty-login')  
+    else: 
+        return redirect('portals:student-login') 
 
 
 
