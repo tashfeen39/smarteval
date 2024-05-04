@@ -24,10 +24,10 @@ from .models import Course
 from itertools import cycle
 
 
-@login_required(login_url='portals:faculty-login')
-@teacher_required()
-def home(request):
-    return render(request, "portals/Faculty_Profile.html")
+# @login_required(login_url='portals:faculty-login')
+# @teacher_required()
+# def home(request):
+#     return render(request, "portals/Faculty_Profile.html")
 
 
 @login_required(login_url='portals:faculty-login')

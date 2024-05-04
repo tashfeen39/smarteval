@@ -5,7 +5,7 @@ from .views import generate_paper
 
 app_name = 'portals'
 urlpatterns = [
-    path("", views.home, name="home"),
+    path("", views.faculty_profile_view, name="my-profile"),
     path("faculty/login/", views.faculty_login_view, name="faculty-login"),
     path("faculty/dashboard/", views.faculty_dashboard_view, name="dashboard"),
     path("faculty/class-info/", views.faculty_class_info_view, name="class-info"),

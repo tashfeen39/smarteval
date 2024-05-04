@@ -24,7 +24,7 @@ from smarteval import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("portals/", include('portals.urls')),
-    path("", views.home, name="home"),
+    path("", views.faculty_profile_view, name="my-profile"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.SHARED_STATIC_DIR)
