@@ -82,7 +82,7 @@ document
         "click",
         (function (index) {
           return function (event) {
-            regenerateQuestion(event, index);
+            regenerateQuestion(event, index, data);
           };
         })(i)
       );
@@ -200,6 +200,7 @@ document
           });
 
           paperPromptsDiv.innerHTML = paperContent;
+          console.log("Paper Content After Generate Button:", paperContent);
           // Enable regenerate buttons after paper has been generated
           enableRegenerateButtons();
           // Create the download button
@@ -240,7 +241,7 @@ function updatePrompt(promptText) {
   messageDiv.textContent = promptText;
 }
 
-function regenerateQuestion(event, questionIndex) {
+function regenerateQuestion(event, questionIndex, data) {
   event.preventDefault();
   // Get the question data for the given index
   var questionContainer =
@@ -299,6 +300,28 @@ function regenerateQuestion(event, questionIndex) {
 
         // Append the new paragraph element to the question prompt container
         questionPromptContainer.appendChild(newQuestionPromptElement);
+
+        // Update the paperContent variable
+        paperContent = `<h2>Subject Name: ${data.subject_name}</h2>`;
+
+        var questionPromptContainers = document.querySelectorAll(
+          ".question-prompt-container"
+        );
+        questionPromptContainers.forEach((container, index) => {
+          var questionPrompt = container.querySelector("p");
+          if (questionPrompt) {
+            paperContent += `<div class="question-prompt-container">`;
+            paperContent += `<h3><b>Question ${index + 1}:</b></h3>`;
+            paperContent += `<p>${questionPrompt.innerHTML.replace(
+              /<br>/g,
+              "\n"
+            )}</p>`;
+            paperContent += `</div>`;
+          }
+        });
+        console.log("Paper Content After Regenerate Button:", paperContent);
+
+        createDownloadButton(paperContent);
       } else {
         console.error("Error:", questionData.error);
       }
