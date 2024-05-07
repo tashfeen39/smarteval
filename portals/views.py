@@ -1231,17 +1231,18 @@ def generate_paper(request):
                 )
 
             # Construct the overall prompt
-            prompt = f"The question paper is on the topic of {subject_name}. Generate {select_questions} bachelor level exam questions with the following specifications:\n"
+            prompt = f"The question is on the topic of {subject_name}. Generate {select_questions} questions with the following specifications:\n"
 
             for i in range(required_length):
                 prompt += f"\nQuestion {i + 1}:\n"
                 prompt += f"Topic: {question_topics[i]}\n"
-                prompt += f"Keywords: {question_keywords[i]}\n"
-                prompt += f"Complexity: {question_complexities[i].capitalize()}\n"
+                prompt += f"Instructions: {question_keywords[i]}\n"
+                prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
                 prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
             
             # Log the generated prompt
-            logger.info(f"Generated prompt: {prompt}")
+            # logger.info(f"Generated prompt: {prompt}")
+            print("Generated Prompt: ", prompt)
 
             # Call ChatGPT API to generate response
             api_key = "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"
@@ -1250,7 +1251,7 @@ def generate_paper(request):
                 "model": "gpt-3.5-turbo",
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 2000,
-                # Add other parameters as needed
+                
             }
             headers = {
                 "Content-Type": "application/json",
