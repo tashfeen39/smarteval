@@ -18,11 +18,11 @@ class TeacherAdmin(admin.ModelAdmin):
     
 
 class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
-    search_fields = ['courses__course_name','teacher__user__first_name', 'teacher__user__last_name']
+    search_fields = ['courses__course_name','teacher__user__first_name', 'teacher__user__last_name', 'teacher__user__username']
 
 
 class TeacherSectionsTaughtAdmin(admin.ModelAdmin):
-     search_fields = ['teacher__user__first_name', 'teacher__user__last_name']
+     search_fields = ['teacher__user__first_name', 'teacher__user__last_name', 'teacher__user__username']
      list_filter = ('sections__semester', 'sections__section_name', 'sections__degree', 'sections__degree__department')
 
 

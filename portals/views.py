@@ -24,6 +24,7 @@ import logging
 from .models import Course
 from itertools import cycle
 import itertools
+from django.db.models import Q
 
 
 
@@ -138,6 +139,87 @@ def student_profile_view(request):
 @student_required()
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
+
+
+
+def generate_random_class_timing():
+    # Generate random start time between 8:00 AM and 4:00 PM
+    start_hour = random.randint(8, 16)
+    start_minute = 0
+    start_time = time(hour=start_hour, minute=start_minute)
+
+    # Calculate end time (1 hour duration)
+    end_time = (start_time.hour + 1) % 24
+    end_time = time(hour=end_time, minute=start_minute)
+
+    # Generate random weekday
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    weekday = random.choice(weekdays)
+
+    return start_time, end_time, weekday
+
+def assign_classes_to_sections(request):
+    # Get all sections
+    # sections = Section.objects.all()
+    sections = Section.objects.filter(section_name = "A", semester = 1,  degree__degree_name = "BS Biomedical Engineering")
+
+        
+    # Iterate over each section
+    for section in sections:
+        # Get all teachers who teach in this section
+        teachers_taught = TeacherSectionsTaught.objects.filter(sections=section)
+        
+        # Iterate over each teacher teaching in the section
+        for teacher_taught in teachers_taught:
+            # Get the teacher
+            teacher = teacher_taught.teacher
+
+            # Get all courses taught by this teacher
+            courses_taught = teacher.teachercoursestaught_set.all().values_list('courses', flat=True)
+            
+            # Iterate over each course taught by the teacher
+            for course_id in courses_taught:
+                course = Course.objects.get(pk=course_id)
+
+                # Generate random class timing
+                start_time, end_time, weekday = generate_random_class_timing()
+
+                # Check if there's a clash with existing classes
+                clash = Class.objects.filter(
+                    Q(section=section),
+                    Q(class_timing__weekday=weekday),
+                    Q(class_timing__start_time__lte=end_time, class_timing__end_time__gte=start_time) |
+                    Q(class_timing__start_time__gte=start_time, class_timing__end_time__lte=end_time) |
+                    Q(class_timing__start_time__lte=start_time, class_timing__end_time__gte=end_time)
+                ).exists()
+
+                if clash:
+                    print(f"Clash found for {course} in section {section}")
+                    continue
+
+                # Check classroom availability
+                classroom = ClassRoom.objects.filter(class_room_number__isnull=True).order_by('?').first()
+
+                if not classroom:
+                    print(f"No available classrooms for {course} in section {section}")
+                    continue
+
+                # Create class
+                new_class = Class.objects.create(
+                    course=course,
+                    teacher=teacher,
+                    section=section,
+                    classroom=ClassRoom.objects.order_by('?').first(),  # Random classroom
+                    class_timing=ClassTiming.objects.create(
+                        start_time=start_time,
+                        end_time=end_time,
+                        weekday=weekday
+                    )
+                )
+
+                print(f"Assigned class: {new_class}")
+
+    print("Classes assigned successfully")
 
 
 
@@ -1308,6 +1390,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    assign_classes_to_sections(request)
     # assign_teachers_to_sections(request)
     # assign_courses_to_semesters(request)
     # generate_classes(request)

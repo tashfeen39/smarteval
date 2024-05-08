@@ -201,7 +201,7 @@ class TeacherCoursesTaught(models.Model):
     courses = models.ManyToManyField(Course, blank=True)
 
     def __str__(self):
-        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - Courses"
+        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - {self.teacher.user.username} - Courses"
 
     class Meta:
         verbose_name_plural = "Teacher Courses Taught"
