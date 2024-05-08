@@ -197,11 +197,68 @@ class Student(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 class TeacherCoursesTaught(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    courses = models.ManyToManyField(Course)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, blank=True, null=True)
+    courses = models.ManyToManyField(Course, blank=True)
 
     def __str__(self):
-        return f"{self.teacher.user.first_name} {self.teacher.user.last_name}"
+        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - Courses"
 
     class Meta:
         verbose_name_plural = "Teacher Courses Taught"
+
+
+class TeacherSectionsTaught(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, blank=True, null=True)
+    sections = models.ManyToManyField(Section, blank=True)
+
+    def __str__(self):
+        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - {self.teacher.user.username} - Sections"
+
+    class Meta:
+        verbose_name_plural = "Teacher Sections Taught"
+
+
+
+class ClassRoom(models.Model):
+    class_room_number = models.CharField(max_length=50, blank=True, null=True)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        if self.department:
+            return f"{self.class_room_number} - {self.department.department_name}"
+        else:
+            return self.class_room_number
+        
+    class Meta:
+        verbose_name_plural = "Class Rooms"
+
+
+class ClassTiming(models.Model):
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    weekday = models.CharField(max_length=10, choices=[
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+    ])
+
+    def __str__(self):
+        return f"{self.weekday} {self.start_time} - {self.end_time}"
+    
+    class Meta:
+        verbose_name_plural = "Class Timings"
+
+class Class(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class_timing = models.ForeignKey(ClassTiming, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.course} - {self.section} - {self.teacher}"
+
+    class Meta:
+        verbose_name_plural = "Classes"

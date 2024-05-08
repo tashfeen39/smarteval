@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, User, Student, Teacher, SemesterDetails, Section
+from .models import ClassRoom, ClassTiming, Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, TeacherSectionsTaught, User, Student, Teacher, SemesterDetails, Section, Class
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -18,12 +18,17 @@ class TeacherAdmin(admin.ModelAdmin):
     
 
 class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['courses__course_name','teacher__user__first_name', 'teacher__user__last_name']
+
+
+class TeacherSectionsTaughtAdmin(admin.ModelAdmin):
+     search_fields = ['teacher__user__first_name', 'teacher__user__last_name']
+     list_filter = ('sections__semester', 'sections__section_name', 'sections__degree', 'sections__degree__department')
 
 
 class SectionAdmin(admin.ModelAdmin):
     search_fields = ('semester', 'section_name')
-    list_filter = ('semester', 'section_name', 'degree')
+    list_filter = ('semester', 'section_name', 'degree', 'degree__department')
 
 
 class CustomUserAdmin(admin.ModelAdmin):
@@ -56,7 +61,7 @@ class DegreeAdmin(admin.ModelAdmin):
 
 
 class SemesterDetailsAdmin(admin.ModelAdmin):
-    list_filter = ('degree__department',)
+    list_filter = ('degree__department','semester_number', 'degree')
 
 
 
@@ -67,9 +72,19 @@ class CourseAdmin(admin.ModelAdmin):
 
 class SemesterCoursesAdmin(admin.ModelAdmin):
     search_fields = ['courses__course_name']
-    list_filter = ('semester_details__semester_number','semester_details__degree__department')
+    list_filter = ('semester_details__semester_number','semester_details__degree__department', 'semester_details__degree', 'semester_details')
 
 class CoursePrerequisiteAdmin(admin.ModelAdmin):
+    pass
+
+class ClassRoomAdmin(admin.ModelAdmin):
+    search_fields = ['class_room_number', 'deparment__department_name']
+
+class ClassAdmin(admin.ModelAdmin):
+     search_fields = ['course__course_name']
+     list_filter = ('section__section_name','section__semester', 'classroom__department')
+
+class ClassTimingAdmin(admin.ModelAdmin):
     pass
 
 
@@ -91,3 +106,7 @@ admin.site.register(SemesterCourses, SemesterCoursesAdmin)
 admin.site.register(CoursePrerequisite, CoursePrerequisiteAdmin)
 admin.site.register(TeacherCoursesTaught, TeacherCoursesTaughtAdmin)
 admin.site.register(Section, SectionAdmin)
+admin.site.register(ClassRoom, ClassRoomAdmin)
+admin.site.register(Class, ClassAdmin)
+admin.site.register(ClassTiming, ClassTimingAdmin)
+admin.site.register(TeacherSectionsTaught, TeacherSectionsTaughtAdmin)
