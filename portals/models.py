@@ -209,13 +209,15 @@ class TeacherCoursesTaught(models.Model):
 
 class TeacherSectionsTaught(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, blank=True, null=True)
-    sections = models.ManyToManyField(Section, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, blank=True, null=True)
+    section = models.ForeignKey(Section, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - {self.teacher.user.username} - Sections"
+        return f"{self.teacher.user.first_name} {self.teacher.user.last_name} - {self.course} - {self.section}"
 
     class Meta:
         verbose_name_plural = "Teacher Sections Taught"
+
 
 
 
