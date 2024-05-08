@@ -26,13 +26,18 @@ document
 
       var keywordsTextarea = document.createElement("textarea");
       keywordsTextarea.name = `question_${i}_keywords`;
-      keywordsTextarea.placeholder = "Enter keywords separated by commas";
+      keywordsTextarea.placeholder = "Enter instructions";
       keywordsTextarea.classList.add("form-control", "mb-3", "custom-textarea"); // Add custom class
       keywordsTextarea.style.borderRadius = "5px"; // Add custom styles
       keywordsTextarea.style.padding = "10px";
       keywordsTextarea.style.fontSize = "16px";
       keywordsTextarea.style.resize = "vertical"; // Allow vertical resizing
       questionDiv.appendChild(keywordsTextarea);
+
+      // Complexity Level Heading
+      var heading = document.createElement("h5");
+      heading.textContent = `Complexity Level`;
+      questionDiv.appendChild(heading);
 
       var complexitySelect = document.createElement("select");
       complexitySelect.name = `question_${i}_complexity`;
@@ -58,6 +63,11 @@ document
       complexitySelect.appendChild(complexOption);
 
       questionDiv.appendChild(complexitySelect);
+
+      // Number of Parts Heading
+      var heading = document.createElement("h5");
+      heading.textContent = `Number of Parts`;
+      questionDiv.appendChild(heading);
 
       var select = document.createElement("select");
       select.name = `question_${i}_parts`;
