@@ -1441,51 +1441,21 @@ def generate_paper(request):
             subject_id = data.get("subject_id")
             subject_name = subject_id
             select_questions = data.get("selectQuestions")
-            question_parts = data.get("questionParts") or []
-            question_topics = data.get("questionTopics") or []
-            question_complexities = data.get("questionComplexities") or []
-            question_keywords = data.get("questionKeywords") or []
-
-            # Check if the question topics, complexities, and keywords have the required length
-            if (
-                not question_parts
-                or not question_topics
-                or not question_complexities
-                or not question_keywords
-            ):
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Incomplete data for question topics, complexities, keywords, or parts",
-                    },
-                    status=400,
-                )
-
-            # Ensure the lists have the same length as select_questions
-            required_length = int(select_questions)
-            if (
-                len(question_parts) != required_length
-                or len(question_topics) != required_length
-                or len(question_complexities) != required_length
-                or len(question_keywords) != required_length
-            ):
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Inconsistent data length for question topics, complexities, keywords, or parts",
-                    },
-                    status=400,
-                )
+            question_parts = data.get("questionParts") or ['N/A'] * int(select_questions)
+            question_topics = data.get("questionTopics") or [''] * int(select_questions)
+            question_complexities = data.get("questionComplexities") or ['N/A'] * int(select_questions)
+            question_keywords = data.get("questionKeywords") or [[''] * int(select_questions)]
 
             # Construct the overall prompt
             prompt = f"The question is on the topic of {subject_name}. Generate {select_questions} questions with the following specifications:\n"
 
-            for i in range(required_length):
+            for i in range(int(select_questions)):
                 prompt += f"\nQuestion {i + 1}:\n"
                 prompt += f"Topic: {question_topics[i]}\n"
-                prompt += f"Instructions: {question_keywords[i]}\n"
+                prompt += f"Instructions: {', '.join(question_keywords[i])}\n"
                 prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
                 prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
+
             
             # Log the generated prompt
             # logger.info(f"Generated prompt: {prompt}")

@@ -47,6 +47,11 @@ document
         "question-complexity"
       );
 
+      var notApplicable = document.createElement("option");
+      notApplicable.value = "n/a";
+      notApplicable.textContent = "N/A";
+      complexitySelect.appendChild(notApplicable);
+
       var easyOption = document.createElement("option");
       easyOption.value = "easy";
       easyOption.textContent = "Easy";
@@ -72,6 +77,12 @@ document
       var select = document.createElement("select");
       select.name = `question_${i}_parts`;
       select.classList.add("form-select", "mb-3", "question-parts");
+
+      var notApplicable = document.createElement("option");
+      notApplicable.value = "n/a";
+      notApplicable.textContent = "N/A";
+      select.appendChild(notApplicable);
+
       for (var j = 1; j <= 4; j++) {
         var option = document.createElement("option");
         option.value = j;
@@ -154,15 +165,45 @@ document
       );
       var partsSelect = questionContainer.querySelector(".question-parts");
 
-      if (
-        !topicInput.value ||
-        !keywordsTextarea.value ||
-        !complexitySelect.value ||
-        !partsSelect.value
-      ) {
-        console.error("Missing data for one or more questions");
-        return;
-      }
+     if (
+       !topicInput.value &&
+       !keywordsTextarea.value &&
+       !complexitySelect.value &&
+       !partsSelect.value
+     ) {
+       // Skip this question, do not add it to the arrays
+       return;
+     }
+
+     if (!topicInput.value) {
+       console.warn("Topic input field is empty for one of the questions.");
+       questionTopics.push(""); // Add an empty string to the array
+     } else {
+       questionTopics.push(topicInput.value);
+     }
+
+     if (!keywordsTextarea.value) {
+       console.warn("Keywords textarea is empty for one of the questions.");
+       questionKeywords.push([]); // Add an empty array to the array
+     } else {
+       questionKeywords.push(
+         keywordsTextarea.value.split(",").map((keyword) => keyword.trim())
+       );
+     }
+
+     if (!complexitySelect.value) {
+       console.warn("Complexity select is empty for one of the questions.");
+       questionComplexities.push(""); // Add an empty string to the array
+     } else {
+       questionComplexities.push(complexitySelect.value);
+     }
+
+     if (!partsSelect.value) {
+       console.warn("Parts select is empty for one of the questions.");
+       questionParts.push(0); // Add a default value (e.g., 0) to the array
+     } else {
+       questionParts.push(parseInt(partsSelect.value));
+     }
 
       questionTopics.push(topicInput.value);
       questionKeywords.push(
