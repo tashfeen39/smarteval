@@ -261,23 +261,21 @@ function updatePrompt(promptText) {
   messageDiv.textContent = promptText;
 }
 
-function regenerateQuestion(event, questionIndex, data) {
+function regenerateQuestion(event, questionIndex) {
   event.preventDefault();
-  // Get the question data for the given index
+
+  // Find the specific question div by the provided index
   var questionContainer =
     document.querySelectorAll(".question-div")[questionIndex - 1];
-  var questionPromptContainer = document.querySelectorAll(
-    ".question-prompt-container"
-  )[questionIndex - 1];
-  console.log("Supposed question container:", questionContainer);
-  console.log("Supposed question Prompt Container:", questionPromptContainer);
   var topicInput = questionContainer.querySelector('input[type="text"]');
   var keywordsTextarea = questionContainer.querySelector("textarea");
   var complexitySelect = questionContainer.querySelector(
     ".question-complexity"
   );
   var partsSelect = questionContainer.querySelector(".question-parts");
+  var btSelect = questionContainer.querySelector(".question-bt-level");
 
+  // Gather the data for the selected question
   var questionData = {
     topic: topicInput.value,
     keywords: keywordsTextarea.value
@@ -286,15 +284,9 @@ function regenerateQuestion(event, questionIndex, data) {
     complexity: complexitySelect.value,
     parts: parseInt(partsSelect.value),
     questionIndex: questionIndex,
+    bt_level: btSelect.value, // Include the selected BT level
   };
 
-  // Remove the existing question prompt
-  var questionPromptElement = questionPromptContainer.querySelector("p");
-  if (questionPromptElement) {
-    questionPromptElement.remove();
-  }
-
-  // Make an AJAX call to the backend with the updated question data and question index
   fetch(regenerateQuestionUrl, {
     method: "POST",
     headers: {
@@ -302,82 +294,51 @@ function regenerateQuestion(event, questionIndex, data) {
       "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
     },
     body: JSON.stringify(questionData),
-    signal: controller.signal,
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error ${response.status_code}`);
+        throw new Error(`HTTP error ${response.status}`);
       }
       return response.json();
     })
     .then((questionData) => {
-      console.log("Response Question Data:", questionData);
       if (questionData.success) {
-        // Get the selected BT level and complexity level for the regenerated question
-        let questionContainer =
-          document.querySelectorAll(".question-div")[
-            questionData.questionIndex - 1
-          ];
-        let btSelect = questionContainer.querySelector(".question-bt-level");
-        let complexitySelect = questionContainer.querySelector(
-          ".question-complexity"
-        );
-
-        let selectedBTLevel = btSelect.options[btSelect.selectedIndex].text;
-        let selectedComplexityLevel =
-          complexitySelect.options[complexitySelect.selectedIndex].text;
-
-        // Create a new paragraph element for the updated question prompt
-        var newQuestionPromptElement = document.createElement("p");
-        newQuestionPromptElement.innerHTML = `<strong>BT Level:</strong> ${selectedBTLevel}<br><strong>Complexity Level:</strong> ${selectedComplexityLevel}<br>${questionData.question_prompt.replace(
-          /\n/g,
-          "<br>"
-        )}`;
-
-        // Append the new paragraph element to the question prompt container
-        questionPromptContainer.appendChild(newQuestionPromptElement);
-
-        // Update the paperContent variable
-        paperContent = `<h2>Subject Name: ${data.subject_name}</h2>`;
-
-        var questionPromptContainers = document.querySelectorAll(
+        // Update the specific question prompt with the new generated prompt
+        var questionPromptContainer = document.querySelectorAll(
           ".question-prompt-container"
-        );
-        questionPromptContainers.forEach((container, index) => {
-          let questionContainer =
-            document.querySelectorAll(".question-div")[index];
-          let btSelect = questionContainer.querySelector(".question-bt-level");
-          let complexitySelect = questionContainer.querySelector(
-            ".question-complexity"
+        )[questionIndex - 1];
+        var questionPromptElement = questionPromptContainer.querySelector("p");
+
+        if (questionPromptElement) {
+          questionPromptElement.innerHTML =
+            questionData.question_prompt.replace(/\n/g, "<br>");
+        } else {
+          var newPromptElement = document.createElement("p");
+          newPromptElement.innerHTML = questionData.question_prompt.replace(
+            /\n/g,
+            "<br>"
           );
+          questionPromptContainer.appendChild(newPromptElement);
+        }
 
-          let selectedBTLevel = btSelect.options[btSelect.selectedIndex].text;
-          let selectedComplexityLevel =
-            complexitySelect.options[complexitySelect.selectedIndex].text;
-
-          var questionPrompt = container.querySelector("p");
-          if (questionPrompt) {
-            paperContent += `<div class="question-prompt-container">`;
-            paperContent += `<h3><b>Question ${index + 1}:</b></h3>`;
-            paperContent += `<p><strong>BT Level:</strong> ${selectedBTLevel}<br><strong>Complexity Level:</strong> ${selectedComplexityLevel}</p>`;
-            paperContent += `<p>${questionPrompt.innerHTML.replace(
-              /<br>/g,
-              "\n"
-            )}</p>`;
-            paperContent += `</div>`;
-          }
-        });
-        console.log("Paper Content After Regenerate Button:", paperContent);
-
-        createDownloadButton(paperContent);
+        console.log(
+          `Updated Question ${questionIndex}:`,
+          questionData.question_prompt
+        );
       } else {
         console.error("Error:", questionData.error);
       }
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    .catch((error) => console.error("Error:", error));
 }
+
+// Example of attaching the regenerate function to the regenerate button
+document.querySelectorAll(".regenerate-button").forEach((button, index) => {
+  button.addEventListener("click", function (event) {
+    regenerateQuestion(event, index + 1);
+  });
+});
+
 
 $(function () {
   // Initialize Select2 for the subject dropdown

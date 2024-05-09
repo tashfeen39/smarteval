@@ -1627,69 +1627,60 @@ def generate_chatgpt_response(request):
 # views.py
 @csrf_exempt
 def regenerate_question(request):
-    if request.method == "POST":
-        # Extract question data from AJAX request
-        question_data = json.loads(request.body)
-        topic = question_data.get("topic")
-        keywords = question_data.get("keywords")
-        complexity = question_data.get("complexity")
-        parts = question_data.get("parts")
-        question_index = question_data.get("questionIndex")
+    try:
+        if request.method == "POST":
+            question_data = json.loads(request.body)
+            topic = question_data.get("topic")
+            keywords = question_data.get("keywords")
+            complexity = question_data.get("complexity")
+            parts = question_data.get("parts")
+            question_index = question_data.get("questionIndex")
+            bt_level = question_data.get("bt_level", "N/A").capitalize()
 
-        # Construct the prompt for regenerating a specific question
-        prompt = f"Regenerate the question based on the following points.\\n Topic: {topic}\\nKeywords: {', '.join(keywords)}\\nComplexity: {complexity.capitalize()}\\nGenerate a {complexity} question with {parts} parts.\\n Clearly mention all parts like Part 1, Part 2 and each part should begin at new line.\\n"
-        # Add BT Level
-        prompt += "BT Level (Choose one):\\n"
-        bt_levels = ["N/A" "Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"]
-        for level in bt_levels:
-            prompt += f"- {level}\\n"
-        prompt += f"Selected BT Level: {bt_levels.capitalize()}\\n"
-        # Log the generated prompt
-        logger.info(f"Generated prompt: {prompt}")
+            # Construct the prompt for regenerating the specific question
+            prompt = f"Question {question_index}:\n"
+            prompt += f"Topic: {topic}\n"
+            prompt += f"Instructions: {', '.join(keywords)}\n"
+            prompt += "BT Level (Choose one):\n"
+            bt_levels = ["N/A", "Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"]
+            for level in bt_levels:
+                prompt += f"- {level}\n"
+            prompt += f"Selected BT Level: {bt_level}\n"
+            prompt += f"Complexity Level: {complexity.capitalize()}\n"
+            prompt += f"Generate a {complexity} question with {parts} parts.\n"
+            prompt += "Each part should be distinct and clearly numbered.\n"
 
-        # Call ChatGPT API to generate response
-        api_key = "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"
-        endpoint_url = "https://api.openai.com/v1/chat/completions"
-        payload = {
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": 2000,
-            # Add other parameters as needed
-        }
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        }
-        response = requests.post(endpoint_url, json=payload, headers=headers)
+            logger.info(f"Generated prompt: {prompt}")
 
-        # Log the ChatGPT API response
-        logger.info(f"ChatGPT API response: {response.text}")
+            # Call the API to regenerate only this specific question
+            api_key = "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"
+            endpoint_url = "https://api.openai.com/v1/chat/completions"
+            payload = {
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 1000,
+            }
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            }
+            response = requests.post(endpoint_url, json=payload, headers=headers)
 
-        # Return the new question prompt as JSON response
-        if response.status_code == 200:
-            response_data = response.json()
-            question_prompt = (
-                response_data.get("choices", [])[0]
-                .get("message", {})
-                .get("content", "")
-                .strip()
-            )
-            print("Question Prompt")
-            print(question_prompt)
-            return JsonResponse(
-                {
-                    "success": True,
-                    "question_prompt": question_prompt,
-                    "questionIndex": question_index,
-                }
-            )
-        else:
-            logger.error(
-                f"Failed to regenerate question: {response.status_code} - {response.text}"
-            )
-            return JsonResponse(
-                {"success": False, "error": "Failed to regenerate question"}, status=500
-            )
+            logger.info(f"ChatGPT API response: {response.text}")
 
-    # Return error if request method is not POST
-    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+            if response.status_code == 200:
+                response_data = response.json()
+                question_prompt = response_data.get("choices", [])[0].get("message", {}).get("content", "").strip()
+
+                return JsonResponse(
+                    {"success": True, "question_prompt": question_prompt, "questionIndex": question_index}
+                )
+            else:
+                logger.error(f"Failed to regenerate question: {response.status_code} - {response.text}")
+                return JsonResponse({"success": False, "error": "Failed to regenerate question"}, status=500)
+
+        return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+    except Exception as e:
+        logger.error(f"Error in regenerate_question view: {e}")
+        return JsonResponse({"success": False, "error": "An error occurred while regenerating the question"}, status=500)
