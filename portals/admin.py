@@ -79,13 +79,15 @@ class CoursePrerequisiteAdmin(admin.ModelAdmin):
 
 class ClassRoomAdmin(admin.ModelAdmin):
     search_fields = ['class_room_number', 'deparment__department_name']
+    list_filter = ('department',)
 
 class ClassAdmin(admin.ModelAdmin):
      search_fields = ['course__course_name']
-     list_filter = ('section__section_name','section__semester', 'classroom__department')
+     list_filter = ('section__section_name','section__semester', 'classroom__department', 'classroom__class_room_number', 'class_timing__weekday', 'class_timing__start_time')
 
 class ClassTimingAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('weekday','start_time')
+   
 
 
 custom_admin_site = CustomAdminSite()
