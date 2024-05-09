@@ -163,20 +163,103 @@ def test_mapping():
     #     print("\n\n")
             
 
+# def assign_classes_to_sections(request):
+#     # Get all teacher-section mappings
+#     teacher_section_mappings = TeacherSectionsTaught.objects.all()
+#     print(teacher_section_mappings)
+
+#     # Create a dictionary to track the availability of each classroom
+#     classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+
+#     # Initialize teacher availability dictionary
+#     weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+#     teacher_availability = {teacher: {weekday: set() for weekday in weekdays} for teacher in Teacher.objects.all()}
+#     print(teacher_availability)
+        
+#     # Iterate over each teacher-section mapping
+#     for teacher_section_mapping in teacher_section_mappings:
+#         teacher = teacher_section_mapping.teacher
+#         sections = teacher_section_mapping.section
+        
+#         # Generate random class timing for each course in each section
+#         courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
+#         for course_id in courses_taught:
+#             course = Course.objects.get(pk=course_id)
+#             print("Teacher: ", teacher)
+#             print("Course: ", course)
+            
+#             # Generate weekdays for two classes
+#             weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+#             random.shuffle(weekdays)  # Shuffle to randomize the selection
+#             class_weekdays = weekdays[:2]  # Select two random weekdays
+
+#             # Iterate over each selected weekday
+#             for weekday in class_weekdays:
+#                 # Check classroom availability
+#                 available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or not availability[weekday]]
+                
+#                 if not available_classrooms:
+#                     print(f"No available classrooms for {course} in section {sections} on {weekday}")
+#                     continue
+                
+#                 # Randomly select a classroom
+#                 classroom_number = random.choice(available_classrooms)
+
+#                 # Select start hour sequentially for the classroom
+#                 start_hour = 8  # Starting hour
+#                 for _ in range(5):  # Assuming classes from 8 AM to 4 PM
+#                     # Check if the teacher is available at the specified time slot
+#                     if start_hour not in teacher_availability[teacher][weekday]:
+#                         # Calculate end time (1 hour duration)
+#                         end_hour = (start_hour + 1) % 24
+#                         start_time = time(hour=start_hour, minute=0)
+#                         end_time = time(hour=end_hour, minute=0)
+                        
+#                         # Create class
+#                         new_class = Class.objects.create(
+#                             course=course,
+#                             teacher=teacher,
+#                             section=sections,
+#                             classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
+#                             class_timing=ClassTiming.objects.create(
+#                                 start_time=start_time,
+#                                 end_time=end_time,
+#                                 weekday=weekday
+#                             )
+#                         )
+#                         # Update classroom availability
+#                         if weekday not in classroom_availability[classroom_number]:
+#                             classroom_availability[classroom_number][weekday] = []
+#                         classroom_availability[classroom_number][weekday].append(start_hour)
+
+#                         # Update teacher availability
+#                         teacher_availability[teacher][weekday].add(start_hour)
+
+#                         print(f"Assigned class: {new_class}\n")
+#                         break  # Break loop once class is assigned
+
+#                     print(f"Teacher {teacher} is not available on {weekday} at {start_time}\n")
+#                     # Increment start hour for the next class
+#                     start_hour += 1
+
+
 def assign_classes_to_sections(request):
     # Get all teacher-section mappings
     teacher_section_mappings = TeacherSectionsTaught.objects.all()
     print(teacher_section_mappings)
+
     # Create a dictionary to track the availability of each classroom
     classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
-    teacher_availability = {teachers: {} for teachers in Teacher.objects.all()}
 
+    # Initialize teacher availability dictionary
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    teacher_availability = {teacher: {weekday: set() for weekday in weekdays} for teacher in Teacher.objects.all()}
         
     # Iterate over each teacher-section mapping
-        # Iterate over each teacher-section mapping
     for teacher_section_mapping in teacher_section_mappings:
         teacher = teacher_section_mapping.teacher
         sections = teacher_section_mapping.section
+        
         # Generate random class timing for each course in each section
         courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
         for course_id in courses_taught:
@@ -184,67 +267,150 @@ def assign_classes_to_sections(request):
             print("Teacher: ", teacher)
             print("Course: ", course)
             
-            # Generate random start time between 8:00 AM and 4:00 PM
-            start_hour = random.randint(8, 16) 
-            start_minute = 0
-            start_time = time(hour=start_hour, minute=start_minute)
-
-            # Calculate end time (1 hour duration)
-            end_time = (start_time.hour + 1) % 24
-            end_time = time(hour=end_time, minute=start_minute)
-
             # Generate random weekdays for two classes
             weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
             random.shuffle(weekdays)  # Shuffle to randomize the selection
             class_weekdays = weekdays[:2]  # Select two random weekdays
 
-            # Check if there's a clash with existing classes for each selected weekday
+            # Iterate over each selected weekday
             for weekday in class_weekdays:
                 # Check classroom availability
-                available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or start_time not in availability[weekday]]
-                # print("Available Classrooms: ", available_classrooms)
-                available_teachers = [teachers for teachers, availabilityteacher in teacher_availability.items() if weekday not in availabilityteacher or start_time not in availabilityteacher[weekday]]
-                # print("Available Teachers: ", available_teachers)
-        
+                available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or not availability[weekday]]
+                
                 if not available_classrooms:
                     print(f"No available classrooms for {course} in section {sections} on {weekday}")
                     continue
-                if not available_teachers:
-                    print(f"No available teachers for {course} in section {sections} on {weekday}")
-                    continue
-
+                
                 # Randomly select a classroom
                 classroom_number = random.choice(available_classrooms)
-                available_teacher = random.choice(available_teachers)
 
+                # Initialize flag to check if the class is assigned
+                class_assigned = False
 
-                # Create class
-                new_class = Class.objects.create(
-                    course=course,
-                    teacher=available_teacher,
-                    section=sections,
-                    classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
-                    class_timing=ClassTiming.objects.create(
-                        start_time=start_time,
-                        end_time=end_time,
-                        weekday=weekday
-                    )
-                )
-                 # Update classroom availability
-                if weekday not in classroom_availability[classroom_number]:
-                    classroom_availability[classroom_number][weekday] = []
-                classroom_availability[classroom_number][weekday].append(start_time)
+                # Initialize start time
+                start_time = None
 
-                 # Update teacher availability
-                if weekday not in teacher_availability[available_teacher]:
-                    teacher_availability[available_teacher][weekday] = []
-                teacher_availability[available_teacher][weekday].append(start_time)
+                # Keep trying until a class is assigned
+                for start_hour in range(8, 17):
+                    # Generate random start time between 8:00 AM and 4:00 PM
+                    # start_hour = random.randint(8, 16) 
+                    start_minute = 0
+                    start_time = time(hour=start_hour, minute=start_minute)
 
-                print(f"Assigned class: {new_class}")
-        print("\n\n")
-            
+                    # Calculate end time (1 hour duration)
+                    end_time = (start_time.hour + 1) % 24
+                    end_time = time(hour=end_time, minute=start_minute)
 
+                    # Check if the teacher is available at the specified time slot
+                    if start_time not in teacher_availability[teacher][weekday]:
+                        # Create class
+                        new_class = Class.objects.create(
+                            course=course,
+                            teacher=teacher,
+                            section=sections,
+                            classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
+                            class_timing=ClassTiming.objects.create(
+                                start_time=start_time,
+                                end_time=end_time,
+                                weekday=weekday
+                            )
+                        )
+                        # Update classroom availability
+                        if weekday not in classroom_availability[classroom_number]:
+                            classroom_availability[classroom_number][weekday] = []
+                        classroom_availability[classroom_number][weekday].append(start_time)
+
+                        # Update teacher availability
+                        teacher_availability[teacher][weekday].add(start_time)
+
+                        print(f"Assigned class: {new_class}")
+                        break
+                        class_assigned = True  # Set flag to True to exit loop
+                    else:
+                        # Teacher is not available at the specified time slot, try again
+                        print(f"Teacher {teacher} is not available on {weekday} at {start_time}. Trying again...")
+                    
     print("Classes assigned successfully")
+
+# def assign_classes_to_sections(request):
+#     # Get all teacher-section mappings
+#     teacher_section_mappings = TeacherSectionsTaught.objects.all()
+#     print(teacher_section_mappings)
+
+#     # Create a dictionary to track the availability of each classroom
+#     classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+
+#     # Initialize teacher availability dictionary
+#     weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+#     teacher_availability = {teacher: {weekday: set() for weekday in weekdays} for teacher in Teacher.objects.all()}
+        
+#     # Iterate over each teacher-section mapping
+#     for teacher_section_mapping in teacher_section_mappings:
+#         teacher = teacher_section_mapping.teacher
+#         sections = teacher_section_mapping.section
+        
+#         # Generate random class timing for each course in each section
+#         courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
+#         for course_id in courses_taught:
+#             course = Course.objects.get(pk=course_id)
+#             print("Teacher: ", teacher)
+#             print("Course: ", course)
+            
+#             # Generate random start time between 8:00 AM and 4:00 PM
+#             start_hour = random.randint(8, 16) 
+#             start_minute = 0
+#             start_time = time(hour=start_hour, minute=start_minute)
+
+#             # Calculate end time (1 hour duration)
+#             end_time = (start_time.hour + 1) % 24
+#             end_time = time(hour=end_time, minute=start_minute)
+
+#             # Generate random weekdays for two classes
+#             weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+#             random.shuffle(weekdays)  # Shuffle to randomize the selection
+#             class_weekdays = weekdays[:2]  # Select two random weekdays
+
+#             # Check if there's a clash with existing classes for each selected weekday
+#             for weekday in class_weekdays:
+#                 # Check classroom availability
+#                 available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or start_time not in availability[weekday]]
+                
+#                 if not available_classrooms:
+#                     print(f"No available classrooms for {course} in section {sections} on {weekday}")
+#                     continue
+                
+#                 # Randomly select a classroom
+#                 classroom_number = random.choice(available_classrooms)
+
+#                 # Check if the teacher is available at the specified time slot
+#                 if start_time not in teacher_availability[teacher][weekday]:
+#                     # Create class
+#                     new_class = Class.objects.create(
+#                         course=course,
+#                         teacher=teacher,
+#                         section=sections,
+#                         classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
+#                         class_timing=ClassTiming.objects.create(
+#                             start_time=start_time,
+#                             end_time=end_time,
+#                             weekday=weekday
+#                         )
+#                     )
+#                     # Update classroom availability
+#                     if weekday not in classroom_availability[classroom_number]:
+#                         classroom_availability[classroom_number][weekday] = []
+#                     classroom_availability[classroom_number][weekday].append(start_time)
+
+#                     # Update teacher availability
+#                     teacher_availability[teacher][weekday].add(start_time)
+
+#                     print(f"Assigned class: {new_class}")
+#                 else:
+#                     # Teacher is not available at the specified time slot
+#                     print(f"Teacher {teacher} is not available on {weekday} at {start_time}")
+                    
+#     print("Classes assigned successfully")
+
 
 
 
@@ -355,91 +521,6 @@ def assign_courses_to_semesters(request):
     print("Semester Courses for Semester Details generated successfully")
 
 
-
-def generate_classes(request):
-    # Define available weekdays
-    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-
-    # Define available class timings (assuming classes start from 8:00 AM to 5:00 PM)
-    start_time = time(8, 0)  # 8:00 AM
-    end_time = time(17, 0)   # 5:00 PM
-    class_duration = timedelta(hours=1)  # 1 hour duration for each class
-
-    # Get all departments
-    # departments = Department.objects.all()
-    departments = Department.objects.filter(department_name="Department of Biomedical Engineering")
-
-    # Iterate through each department
-    for department in departments:
-        # Get all sections in the department
-        sections = Section.objects.filter(degree__department=department)
-
-        # Iterate through each section
-        for section in sections:
-            # Get semester details for the section
-            semester_details = SemesterDetails.objects.filter(degree=section.degree, semester_number=section.semester).first()
-
-            if not semester_details:
-                continue
-
-            # Get semester courses for the section
-            semester_courses = SemesterCourses.objects.filter(semester_details=semester_details).first()
-
-            if not semester_courses:
-                continue
-
-            # Get all courses for the semester
-            courses = semester_courses.courses.all()
-
-            # Get all teachers in the department who can teach the courses
-            qualified_teachers = Teacher.objects.filter(department=department, teachercoursestaught__courses__in=courses).distinct()
-
-            if not qualified_teachers:
-                continue
-
-            # Get all class rooms in the department
-            class_rooms = ClassRoom.objects.filter(department=department)
-
-            # Generate class timings for the section
-            for weekday in weekdays:
-                # Generate random start time for the class
-                start_hour = random.randint(start_time.hour, end_time.hour - 1)
-                start_minute = 0
-                start_time = time(start_hour, start_minute)
-
-                # Calculate end time based on class duration
-                end_time = (datetime.combine(datetime.today(), start_time) + class_duration).time()
-
-                # Create class timing instance
-                class_timing, created = ClassTiming.objects.get_or_create(
-                    start_time=start_time,
-                    end_time=end_time,
-                    weekday=weekday
-                )
-
-                # Assign class timings to class rooms
-                for class_room in class_rooms:
-                    # Check if the class room is already occupied at the specified timings
-                    occupied = Class.objects.filter(
-                        classroom=class_room,
-                        class_timing=class_timing
-                    ).exists()
-
-                    if not occupied:
-                        # If class room is available, select a random teacher and course
-                        teacher = qualified_teachers.order_by('?').first()
-                        course = courses.order_by('?').first()
-
-                        # Create class instance
-                        Class.objects.create(
-                            course=course,
-                            teacher=teacher,
-                            section=section,
-                            classroom=class_room,
-                            class_timing=class_timing
-                        )
-
-    print("Classes generated successfully")
 
 
 def create_class_rooms(request):
