@@ -31,8 +31,7 @@
                                 <tbody>
                                     {% for section in section_instances %}
                                     <tr>
-                                        <td><a class="table_height" href="{% url 'portals:class-info' %}">{{ section }}</a>
-                                        </td>
+                                        <td><a class="table_height" href="{% url 'portals:class-info' section.pk %}">{{ section }}</a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

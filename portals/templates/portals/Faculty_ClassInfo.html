@@ -9,72 +9,15 @@
 
 {% endblock %}
 
-
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
 <div class="page-wrapper">
     <div class="content container-fluid">
         <div class="page-header">
             <div class="row">
-                <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                    <div class="card bg-comman w-100">
-                        <div class="card-body">
-                            <div class="db-widgets d-flex justify-content-between align-items-center">
-                                <div class="db-info">
-                                    <h6>Quizes</h6>
-                                    <h3>04/06</h3>
-                                </div>
-                                <div class="db-icon">
-                                    <img src="{% static 'img/icons/teacher-icon-01.svg' %}" alt="Dashboard Icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                    <div class="card bg-comman w-100">
-                        <div class="card-body">
-                            <div class="db-widgets d-flex justify-content-between align-items-center">
-                                <div class="db-info">
-                                    <h6>Assignments</h6>
-                                    <h3>02/04</h3>
-                                </div>
-                                <div class="db-icon">
-                                    <img src="{% static 'img/icons/dash-icon-01.svg' %}" alt="Dashboard Icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                    <div class="card bg-comman w-100">
-                        <div class="card-body">
-                            <div class="db-widgets d-flex justify-content-between align-items-center">
-                                <div class="db-info">
-                                    <h6>Mids Average</h6>
-                                    <h3>20/50</h3>
-                                </div>
-                                <div class="db-icon">
-                                    <img src="{%static 'img/icons/teacher-icon-02.svg' %} " alt="Dashboard Icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                    <div class="card bg-comman w-100">
-                        <div class="card-body">
-                            <div class="db-widgets d-flex justify-content-between align-items-center">
-                                <div class="db-info">
-                                    <h6>Final Average</h6>
-                                    <h3>15/20</h3>
-                                </div>
-                                <div class="db-icon">
-                                    <img src="{% static 'img/icons/teacher-icon-03.svg' %}" alt="Dashboard Icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-sm-12">
+                    <h3 class="page-title">Students</h3>
+                    <button type="btn" class="btn btn-primary" style="float: right; right:20px;">View Report</button>
                 </div>
             </div>
         </div>
@@ -83,20 +26,7 @@
             <div class="col-sm-12">
                 <div class="card card-table comman-shadow">
                     <div class="card-body">
-                        <div class="page-header">
-                            <div class="row align-items-center">
-                                <div class="col-md-12">
-                                    <h3 class="page-title">Students</h3>
-                                    <button type="btn" class="btn btn-primary" style="float: right; right:20px;">View
-                                        Report</button>
-                                </div>
-
-
-                            </div>
-
-                        </div>
-
-                        <div class="table-responsive ">
+                        <div class="table-responsive">
                             <table class="table border-0  table-center table-hover">
                                 <thead class="student-thread">
                                     <tr>
@@ -107,47 +37,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for student in students %}
                                     <tr>
                                         <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
+                                            <a href="{% url 'portals:student-info' %}" class="avatar avatar-sm me-2">
+                                                <img class="avatar-img rounded-circle"
+                                                    src="{% static 'img/profiles/avatar-01.jpg' %}" alt="User Image" />
+                                            </a>
                                         </td>
-
-                                        <td class="table_width">200819</td>
+                                        <td class="table_width">{{ student.StudentID }}</td>
                                         <td>
                                             <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
+                                                <a href="{% url 'portals:student-info' %}">{{ student.user.first_name }}</a>
                                             </h2>
                                         </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
                                         <td class="text-end">
                                             <div class="actions">
                                                 <a href="{% url 'portals:student-info' %}"
@@ -157,222 +60,10 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image"></a></td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image"></a></td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src=" {%static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image"></a></td>
-                                        <td>200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-
-                  
-
-
-
                     </div>
                 </div>
             </div>
@@ -382,6 +73,7 @@
 {% endblock %}
 
 <!-- ---------------- Block for Footer ---------------- -->
+
 {% block footer %}
 <script src="{% static 'plugins/datatables/datatables.min.js' %}"></script>
 

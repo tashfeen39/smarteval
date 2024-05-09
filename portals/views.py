@@ -36,8 +36,19 @@ from django.shortcuts import get_object_or_404
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_class_info_view(request):
-    return render(request, "portals/Faculty_ClassInfo.html")
+def faculty_class_info_view(request, section_pk):
+    # Get the section instance
+    section = get_object_or_404(Section, pk=section_pk)
+
+    # Get all students in the section
+    students = Student.objects.filter(section=section)
+
+    context = {
+        'section': section,
+        'students': students,
+    }
+
+    return render(request, "portals/Faculty_ClassInfo.html", context)
     
 
 @login_required(login_url='portals:faculty-login')
@@ -70,7 +81,7 @@ def faculty_dashboard_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_display_classes_view(request):
-    teacher = request.user.teacher
+    # teacher = request.user.teacher
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
 
     # Get the Section instances for the sections taught
@@ -109,8 +120,17 @@ def faculty_grading_view(request):
 
 
 @login_required(login_url='portals:faculty-login')
+@teacher_required()
 def faculty_marks_entry_view(request):
-    return render(request, "portals/Faculty_MarksEntry.html")
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+
+    # Get the Section instances for the sections taught
+    section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
+
+    context = {
+        'section_instances': section_instances,
+    }
+    return render(request, "portals/Faculty_MarksEntry.html", context)
 
 
 @login_required(login_url='portals:faculty-login')
