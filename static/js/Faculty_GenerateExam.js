@@ -34,6 +34,45 @@ document
       keywordsTextarea.style.resize = "vertical"; // Allow vertical resizing
       questionDiv.appendChild(keywordsTextarea);
 
+      // -------------------- BT LEVEL -------------------
+
+      // BT Level Heading
+      var btHeading = document.createElement("h5");
+      btHeading.textContent = "BT Level";
+      questionDiv.appendChild(btHeading);
+
+      // Create a new select element for BT levels
+      var btSelect = document.createElement("select");
+      btSelect.name = `question_${i}_bt_level`;
+      btSelect.classList.add("form-select", "mb-3", "question-bt-level");
+
+      // Add an option for "N/A"
+      var notApplicable = document.createElement("option");
+      notApplicable.value = "n/a";
+      notApplicable.textContent = "N/A";
+      btSelect.appendChild(notApplicable);
+
+      // Add options for Bloom's Taxonomy levels
+      var levels = [
+        "Remember",
+        "Understand",
+        "Apply",
+        "Analyze",
+        "Evaluate",
+        "Create",
+      ];
+      levels.forEach(function (level) {
+        var option = document.createElement("option");
+        option.value = level.toLowerCase();
+        option.textContent = level;
+        btSelect.appendChild(option);
+      });
+
+      // Append the BT level select to the question div
+      questionDiv.appendChild(btSelect);
+
+      // ---------------- BT LEVEL END -------------------
+
       // Complexity Level Heading
       var heading = document.createElement("h5");
       heading.textContent = `Complexity Level`;
@@ -140,83 +179,27 @@ document
         document.getElementById("subject").selectedIndex
       ].text;
     var selectQuestions = document.getElementById("selectQuestions").value;
+
+    // Prepare data to send to the backend
     var data = {
       subject_id: subjectId,
-      subject_name: subjectName,
       selectQuestions: selectQuestions,
+      questionParts: Array.from(
+        document.querySelectorAll(".question-parts")
+      ).map((el) => el.value),
+      questionTopics: Array.from(
+        document.querySelectorAll('input[name*="question_"]')
+      ).map((el) => el.value),
+      questionBTLevels: Array.from(
+        document.querySelectorAll(".question-bt-level")
+      ).map((el) => el.value),
+      questionComplexities: Array.from(
+        document.querySelectorAll(".question-complexity")
+      ).map((el) => el.value),
+      questionKeywords: Array.from(
+        document.querySelectorAll('textarea[name*="question_"]')
+      ).map((el) => el.value.split(",").map((kw) => kw.trim())),
     };
-
-    var questionParts = [];
-    var questionTopics = [];
-    var questionComplexities = [];
-    var questionKeywords = [];
-    var questionSelects = document.querySelectorAll(".question-div");
-
-    if (questionSelects.length !== parseInt(selectQuestions)) {
-      console.error("Inconsistent number of question containers");
-      return;
-    }
-
-    questionSelects.forEach(function (questionContainer) {
-      var topicInput = questionContainer.querySelector('input[type="text"]');
-      var keywordsTextarea = questionContainer.querySelector("textarea");
-      var complexitySelect = questionContainer.querySelector(
-        ".question-complexity"
-      );
-      var partsSelect = questionContainer.querySelector(".question-parts");
-
-     if (
-       !topicInput.value &&
-       !keywordsTextarea.value &&
-       !complexitySelect.value &&
-       !partsSelect.value
-     ) {
-       // Skip this question, do not add it to the arrays
-       return;
-     }
-
-     if (!topicInput.value) {
-       console.warn("Topic input field is empty for one of the questions.");
-       questionTopics.push(""); // Add an empty string to the array
-     } else {
-       questionTopics.push(topicInput.value);
-     }
-
-     if (!keywordsTextarea.value) {
-       console.warn("Keywords textarea is empty for one of the questions.");
-       questionKeywords.push([]); // Add an empty array to the array
-     } else {
-       questionKeywords.push(
-         keywordsTextarea.value.split(",").map((keyword) => keyword.trim())
-       );
-     }
-
-     if (!complexitySelect.value) {
-       console.warn("Complexity select is empty for one of the questions.");
-       questionComplexities.push(""); // Add an empty string to the array
-     } else {
-       questionComplexities.push(complexitySelect.value);
-     }
-
-     if (!partsSelect.value) {
-       console.warn("Parts select is empty for one of the questions.");
-       questionParts.push(0); // Add a default value (e.g., 0) to the array
-     } else {
-       questionParts.push(parseInt(partsSelect.value));
-     }
-
-      questionTopics.push(topicInput.value);
-      questionKeywords.push(
-        keywordsTextarea.value.split(",").map((keyword) => keyword.trim())
-      );
-      questionComplexities.push(complexitySelect.value);
-      questionParts.push(parseInt(partsSelect.value));
-    });
-
-    data["questionParts"] = questionParts;
-    data["questionTopics"] = questionTopics;
-    data["questionComplexities"] = questionComplexities;
-    data["questionKeywords"] = questionKeywords;
 
     fetch(generatePaperUrl, {
       method: "POST",
@@ -226,7 +209,6 @@ document
           .value,
       },
       body: JSON.stringify(data),
-      signal: controller.signal,
     })
       .then((response) => {
         if (!response.ok) {
@@ -235,35 +217,22 @@ document
         return response.json();
       })
       .then((data) => {
-        console.log("Response Data:", data);
+        var paperPromptsDiv = document.getElementById("paperPrompts");
+        paperPromptsDiv.innerHTML = `<h2>Subject Name: ${data.subject_name}</h2>`;
 
-        if (data.success) {
-          var paperPromptsDiv = document.getElementById("paperPrompts");
-          paperPromptsDiv.innerHTML = "";
+        data.paper_prompts.forEach((prompt, index) => {
+          paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
+                <h3><b>Question ${index + 1}:</b></h3>
+                <p>${prompt.replace(/\n/g, "<br>")}</p>
+            </div>`;
+        });
 
-          var paperContent = `<h2>Subject Name: ${data.subject_name}</h2>`;
-
-          data.paper_prompts.forEach((prompt, index) => {
-            paperContent += `<div class="question-prompt-container">`;
-            paperContent += `<h3><b>Question ${index + 1}:</b></h3>`;
-            paperContent += `<p>${prompt.replace(/\n/g, "<br>")}</p>`;
-            paperContent += `</div>`;
-          });
-
-          paperPromptsDiv.innerHTML = paperContent;
-          console.log("Paper Content After Generate Button:", paperContent);
-          // Enable regenerate buttons after paper has been generated
-          enableRegenerateButtons();
-          // Create the download button
-          createDownloadButton(paperContent);
-        } else {
-          console.error("Error:", data.error);
-        }
+        enableRegenerateButtons();
+        createDownloadButton(paperPromptsDiv.innerHTML);
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.error("Error:", error));
   });
+
 
 window.addEventListener("unload", () => {
   controller.abort();
@@ -344,10 +313,26 @@ function regenerateQuestion(event, questionIndex, data) {
     .then((questionData) => {
       console.log("Response Question Data:", questionData);
       if (questionData.success) {
+        // Get the selected BT level and complexity level for the regenerated question
+        let questionContainer =
+          document.querySelectorAll(".question-div")[
+            questionData.questionIndex - 1
+          ];
+        let btSelect = questionContainer.querySelector(".question-bt-level");
+        let complexitySelect = questionContainer.querySelector(
+          ".question-complexity"
+        );
+
+        let selectedBTLevel = btSelect.options[btSelect.selectedIndex].text;
+        let selectedComplexityLevel =
+          complexitySelect.options[complexitySelect.selectedIndex].text;
+
         // Create a new paragraph element for the updated question prompt
         var newQuestionPromptElement = document.createElement("p");
-        newQuestionPromptElement.innerHTML =
-          questionData.question_prompt.replace(/\n/g, "<br>");
+        newQuestionPromptElement.innerHTML = `<strong>BT Level:</strong> ${selectedBTLevel}<br><strong>Complexity Level:</strong> ${selectedComplexityLevel}<br>${questionData.question_prompt.replace(
+          /\n/g,
+          "<br>"
+        )}`;
 
         // Append the new paragraph element to the question prompt container
         questionPromptContainer.appendChild(newQuestionPromptElement);
@@ -359,10 +344,22 @@ function regenerateQuestion(event, questionIndex, data) {
           ".question-prompt-container"
         );
         questionPromptContainers.forEach((container, index) => {
+          let questionContainer =
+            document.querySelectorAll(".question-div")[index];
+          let btSelect = questionContainer.querySelector(".question-bt-level");
+          let complexitySelect = questionContainer.querySelector(
+            ".question-complexity"
+          );
+
+          let selectedBTLevel = btSelect.options[btSelect.selectedIndex].text;
+          let selectedComplexityLevel =
+            complexitySelect.options[complexitySelect.selectedIndex].text;
+
           var questionPrompt = container.querySelector("p");
           if (questionPrompt) {
             paperContent += `<div class="question-prompt-container">`;
             paperContent += `<h3><b>Question ${index + 1}:</b></h3>`;
+            paperContent += `<p><strong>BT Level:</strong> ${selectedBTLevel}<br><strong>Complexity Level:</strong> ${selectedComplexityLevel}</p>`;
             paperContent += `<p>${questionPrompt.innerHTML.replace(
               /<br>/g,
               "\n"
