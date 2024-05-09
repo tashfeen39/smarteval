@@ -1436,39 +1436,37 @@ def get_programs(request):
 def generate_paper(request):
     try:
         if request.method == "POST":
-            # Extract data from AJAX request
             data = json.loads(request.body)
             subject_id = data.get("subject_id")
-            subject_name = subject_id
-            select_questions = data.get("selectQuestions")
-            question_parts = data.get("questionParts") or ['N/A'] * int(select_questions)
-            question_topics = data.get("questionTopics") or [''] * int(select_questions)
-            question_complexities = data.get("questionComplexities") or ['N/A'] * int(select_questions)
-            question_keywords = data.get("questionKeywords") or [[''] * int(select_questions)]
+            select_questions = int(data.get("selectQuestions"))
+            question_parts = data.get("questionParts") or ['N/A'] * select_questions
+            question_topics = data.get("questionTopics") or [''] * select_questions
+            question_bt_levels = data.get("questionBTLevels") or ['N/A'] * select_questions
+            question_complexities = data.get("questionComplexities") or ['N/A'] * select_questions
+            question_keywords = data.get("questionKeywords") or [[''] * select_questions]
 
-            # Construct the overall prompt
-            prompt = f"The question is on the topic of {subject_name}. Generate {select_questions} questions with the following specifications:\n"
+            prompts = []
 
-            for i in range(int(select_questions)):
-                prompt += f"\nQuestion {i + 1}:\n"
-                prompt += f"Topic: {question_topics[i]}\n"
-                prompt += f"Instructions: {', '.join(question_keywords[i])}\n"
-                prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
-                prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
+            for i in range(select_questions):
+                question_prompt = f"Question {i + 1}:\n"
+                question_prompt += f"Topic: {question_topics[i]}\n"
+                question_prompt += f"Instructions: {', '.join(question_keywords[i])}\n"
+                question_prompt += f"BT Level: {question_bt_levels[i].capitalize()}\n"
+                question_prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
+                question_prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
+                question_prompt += "Each part should be distinct and clearly numbered.\n"
+                prompts.append(question_prompt)
 
-            
-            # Log the generated prompt
-            # logger.info(f"Generated prompt: {prompt}")
+            prompt = "\n".join(prompts)
             print("Generated Prompt: ", prompt)
 
-            # Call ChatGPT API to generate response
+            # Make API call to ChatGPT or any other service to generate the questions
             api_key = "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"
             endpoint_url = "https://api.openai.com/v1/chat/completions"
             payload = {
                 "model": "gpt-3.5-turbo",
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 2000,
-                
             }
             headers = {
                 "Content-Type": "application/json",
@@ -1488,28 +1486,20 @@ def generate_paper(request):
                     if content:
                         # Split content into individual questions based on "Question X:" pattern
                         questions = re.split(r'\n(?=Question \d+:)', content)
-                        # Append each question's prompt to the paper_prompts list
                         for question in questions:
                             paper_prompts.append(question)
-               
 
-                return JsonResponse({"success": True, "paper_prompts": paper_prompts, "subject_name": subject_name})
+                return JsonResponse({"success": True, "paper_prompts": paper_prompts, "subject_name": subject_id})
             else:
-                logger.error(
-                    f"Failed to generate paper: {response.status_code} - {response.text}"
-                )
-                return JsonResponse(
-                    {"success": False, "error": "Failed to generate paper"}, status=500
-                )
+                logger.error(f"Failed to generate paper: {response.status_code} - {response.text}")
+                return JsonResponse({"success": False, "error": "Failed to generate paper"}, status=500)
 
-        # Return error if request method is not POST
         return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
     except Exception as e:
         logger.error(f"Error in generate_paper view: {e}")
-        return JsonResponse(
-            {"success": False, "error": "An error occurred while generating the paper"},
-            status=500,
-        )
+        return JsonResponse({"success": False, "error": "An error occurred while generating the paper"}, status=500)
+
 
 
 @csrf_exempt
@@ -1530,9 +1520,14 @@ def regenerate_question(request):
         parts = question_data.get("parts")
         question_index = question_data.get("questionIndex")
 
-        # Construct the prompt based on the received question data
-        prompt = f"Regenerate the question based on the following points.\n Topic: {topic}\nKeywords: {', '.join(keywords)}\nComplexity: {complexity.capitalize()}\nGenerate a {complexity} question with {parts} parts.\n Clearly mention all parts like Part 1, Part 2 and each part should begin at new line."
-
+        # Construct the prompt for regenerating a specific question
+        prompt = f"Regenerate the question based on the following points.\\n Topic: {topic}\\nKeywords: {', '.join(keywords)}\\nComplexity: {complexity.capitalize()}\\nGenerate a {complexity} question with {parts} parts.\\n Clearly mention all parts like Part 1, Part 2 and each part should begin at new line.\\n"
+        # Add BT Level
+        prompt += "BT Level (Choose one):\\n"
+        bt_levels = ["N/A" "Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"]
+        for level in bt_levels:
+            prompt += f"- {level}\\n"
+        prompt += f"Selected BT Level: {bt_levels.capitalize()}\\n"
         # Log the generated prompt
         logger.info(f"Generated prompt: {prompt}")
 
