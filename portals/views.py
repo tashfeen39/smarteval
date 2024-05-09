@@ -25,6 +25,7 @@ from .models import Course
 from itertools import cycle
 import itertools
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 
 # @login_required(login_url='portals:faculty-login')
@@ -69,14 +70,25 @@ def faculty_dashboard_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_display_classes_view(request):
-    return render(request, "portals/Faculty_DisplayClasses.html")
+    teacher = request.user.teacher
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+
+    # Get the Section instances for the sections taught
+    section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
+
+    # print("Teacher: ", teacher)
+    # print("\nSection: ", sections_taught)
+
+    context = {
+        'section_instances': section_instances,
+    }
+    return render(request, "portals/Faculty_DisplayClasses.html", context)
 
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_feedback_view(request):
     return render(request, "portals/Faculty_Feedbacks.html")
-
 
 
 @login_required(login_url='portals:faculty-login')

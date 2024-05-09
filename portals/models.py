@@ -102,7 +102,7 @@ class Section(models.Model):
     semester = models.IntegerField()
 
     def __str__(self):
-        return f"{self.degree.degree_name} - Semester {self.semester} - Section {self.section_name}"
+        return f"{self.degree.degree_abbreviation} - Semester {self.semester} - Section {self.section_name}"
     
 
 class Teacher(models.Model):
