@@ -24,6 +24,7 @@ import logging
 from .models import Course
 from itertools import cycle
 import itertools
+from django.db.models import Q
 
 
 
@@ -139,106 +140,190 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+def test_mapping():
+    # classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    # teacher_availability = {teachers.user.username: {} for teachers in Teacher.objects.all()}
+    # print("Teachers: ", teacher_availability)
+    ClassTiming.objects.all().delete()
+    # teacher_section_mappings = TeacherSectionsTaught.objects.all()
+    # print(teacher_section_mappings)
+    # # Create a dictionary to track the availability of each classroom
+    # # classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    # # teacher_availability = {teachers: {} for teachers in Teacher.objects.all()}
+    # for teacher_section_mapping in teacher_section_mappings:
+    #     teacher = teacher_section_mapping.teacher
+    #     sections = teacher_section_mapping.section
+    #     # Generate random class timing for each course in each section
+    #     courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
+    #     # print(courses_taught)
+    #     for course_id in courses_taught:
+    #         course = Course.objects.get(pk=course_id)
+    #         print("Teacher: ", teacher)
+    #         print("Course: ", course)
+    #     print("\n\n")
+            
 
+def assign_classes_to_sections(request):
+    # Get all teacher-section mappings
+    teacher_section_mappings = TeacherSectionsTaught.objects.all()
+    print(teacher_section_mappings)
+    # Create a dictionary to track the availability of each classroom
+    classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    teacher_availability = {teachers: {} for teachers in Teacher.objects.all()}
 
-def assign_teachers_to_sections(request):
-
-    # departments = Department.objects.filter(department_name="Department of Biomedical Engineering")
-    departments = Department.objects.all()
-    # Iterate over each department
-    for department in departments:
-        # Get all degrees in the department
-        degrees = Degree.objects.filter(department=department)
-        print("\n Degree: ", degrees)
-
-        # Get all teachers for the department
-        teachers = Teacher.objects.filter(department=department)
-
-        # Iterate over each degree and section
-        for degree in degrees:
-            for section in Section.objects.filter(degree=degree):
-                print("\n Degree: ", degree)
-                print("\n Section: ", section)
-
-                # Iterate over each semester
-                for semester in range(1, 9):
-                    print("\n Semester: ", semester)
-
-                    # Get semester details for the current degree and semester
-                    semester_details = SemesterDetails.objects.filter(degree=degree, semester_number=semester)
-                    print("\n Semester Details: ", semester_details)
-
-                    # Get courses for the semester details
-                    semester_courses = SemesterCourses.objects.filter(semester_details=semester_details[0])
-                    print("\n Semester Courses: ", semester_courses[0].courses.all())
-
-                    # If no courses, continue to the next iteration
-                    if not semester_courses.exists():
-                        continue
-
-                    # Iterate over each course in semester_courses
-                    for course in semester_courses[0].courses.all():
-                        # Get available teachers for the course
-                        available_teachers = TeacherCoursesTaught.objects.get(courses=course)
-                        print("\n Available Teachers: ", available_teachers)
-
-                        # If there are available teachers, assign one to the section
-                        # if available_teachers.exists():
-                        teacher = available_teachers.teacher
-                        teacher_sections, created = TeacherSectionsTaught.objects.get_or_create(teacher=teacher)
-                        teacher_sections.sections.add(section)
-
-    print("Assigned sections to teachers successfully")
-
-
-
-# def assign_teachers_to_sections(request):
-#     # Get all departments
-#     departments = Department.objects.filter(department_name="Department of Biomedical Engineering").all()
-
-#     # Iterate over each department
-#     for department in departments:
-#         # Get all degrees in the department
-#         degrees = Degree.objects.filter(department=department).all()
-
-#         # Get all teachers for the department
-#         teachers = Teacher.objects.filter(department=department).all()
         
-#         for degree in degrees:
-#             # Get all sections for the department
-#             print("Degree: ", degree)
-#             sections = list(Section.objects.filter(degree=degree).all())
-#             # print("Sections: ", sections[0])
-#             # print("\n", sections[1])
+    # Iterate over each teacher-section mapping
+        # Iterate over each teacher-section mapping
+    for teacher_section_mapping in teacher_section_mappings:
+        teacher = teacher_section_mapping.teacher
+        sections = teacher_section_mapping.section
+        # Generate random class timing for each course in each section
+        courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
+        for course_id in courses_taught:
+            course = Course.objects.get(pk=course_id)
+            print("Teacher: ", teacher)
+            print("Course: ", course)
+            
+            # Generate random start time between 8:00 AM and 4:00 PM
+            start_hour = random.randint(8, 16) 
+            start_minute = 0
+            start_time = time(hour=start_hour, minute=start_minute)
 
-#             # for semester in range(1, 9):
-#                 # Iterate over each section
-#             for section in sections:
-#                 print("Section: ", section)
-#                 for semester in range(1, 9):
-#                     print("Semester: ", semester)
-#                     break
-#                     # Get all courses for that section
-#                     semester_details = SemesterDetails.objects.filter(degree=degree, semester_number=semester).first()
-#                     # print("\nSemester: ", semester)
-#                     # print("Semester Details:", semester_details)
-#                     semester_courses = SemesterCourses.objects.get(semester_details=semester_details)
-#                     # if not semester_courses.exists():
-#                     #     continue
-#                     courses = semester_courses.courses.all()
+            # Calculate end time (1 hour duration)
+            end_time = (start_time.hour + 1) % 24
+            end_time = time(hour=end_time, minute=start_minute)
 
-#                     # Iterate over each course
-#                     for course in courses:
-#                         # Get available teachers for the course
-#                         available_teachers = TeacherCoursesTaught.objects.filter(courses=course, teacher__in=teachers)
+            # Generate random weekdays for two classes
+            weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+            random.shuffle(weekdays)  # Shuffle to randomize the selection
+            class_weekdays = weekdays[:2]  # Select two random weekdays
 
-#                         # If there are available teachers, assign one to the section
-#                         if available_teachers.exists():
-#                             teacher = available_teachers[0].teacher
-#                             teacher_sections, created = TeacherSectionsTaught.objects.get_or_create(teacher=teacher)
-#                             teacher_sections.sections.add(section)
+            # Check if there's a clash with existing classes for each selected weekday
+            for weekday in class_weekdays:
+                # Check classroom availability
+                available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or start_time not in availability[weekday]]
+                # print("Available Classrooms: ", available_classrooms)
+                available_teachers = [teachers for teachers, availabilityteacher in teacher_availability.items() if weekday not in availabilityteacher or start_time not in availabilityteacher[weekday]]
+                # print("Available Teachers: ", available_teachers)
+        
+                if not available_classrooms:
+                    print(f"No available classrooms for {course} in section {sections} on {weekday}")
+                    continue
+                if not available_teachers:
+                    print(f"No available teachers for {course} in section {sections} on {weekday}")
+                    continue
 
-#     print("Assigned sections to teachers successfully")
+                # Randomly select a classroom
+                classroom_number = random.choice(available_classrooms)
+                available_teacher = random.choice(available_teachers)
+
+
+                # Create class
+                new_class = Class.objects.create(
+                    course=course,
+                    teacher=available_teacher,
+                    section=sections,
+                    classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
+                    class_timing=ClassTiming.objects.create(
+                        start_time=start_time,
+                        end_time=end_time,
+                        weekday=weekday
+                    )
+                )
+                 # Update classroom availability
+                if weekday not in classroom_availability[classroom_number]:
+                    classroom_availability[classroom_number][weekday] = []
+                classroom_availability[classroom_number][weekday].append(start_time)
+
+                 # Update teacher availability
+                if weekday not in teacher_availability[available_teacher]:
+                    teacher_availability[available_teacher][weekday] = []
+                teacher_availability[available_teacher][weekday].append(start_time)
+
+                print(f"Assigned class: {new_class}")
+        print("\n\n")
+            
+
+    print("Classes assigned successfully")
+
+
+
+def create_course_teacher_mapping():
+    course_teacher_mapping = {}
+    
+    # Iterate over each record in TeacherCoursesTaught
+    for teacher_course in TeacherCoursesTaught.objects.all():
+        teacher = teacher_course.teacher
+        courses = teacher_course.courses.all()
+        
+        # Iterate over each course
+        for course in courses:
+            if course not in course_teacher_mapping:
+                # If the course is not in the dictionary, add it with an empty list
+                course_teacher_mapping[course] = []
+            
+            # Append the teacher to the list of teachers for this course
+            course_teacher_mapping[course].append(teacher)
+    
+    # print(course_teacher_mapping)
+    
+    return course_teacher_mapping
+
+
+def create_section_courses_mapping():
+    section_courses_mapping = {}
+    
+    for section in Section.objects.all():
+        # print("\nSection: ", section)
+        semester_details = SemesterDetails.objects.filter(degree=section.degree, semester_number=section.semester)
+        # print("\nSemester Detail All: ", semester_details)
+        courses_for_section = []
+        for semester_detail in semester_details:
+            # print("\nSemester Detail: ", semester_details)
+            semester_courses = SemesterCourses.objects.filter(semester_details=semester_detail)
+            # print("\nSemester Courses all: ", semester_courses)
+            for semester_course in semester_courses:
+                # print("\nSemester Courses: ", semester_course)
+                courses_for_section.extend(list(semester_course.courses.all()))
+        section_courses_mapping[section] = courses_for_section
+
+    # print(section_courses_mapping)
+    return section_courses_mapping
+
+def populate_teacher_sections_taught():
+    course_teacher_mapping = create_course_teacher_mapping()
+
+    section_courses_mapping = create_section_courses_mapping()
+    
+    
+    # Iterate over each semester course
+    for semester_course in SemesterCourses.objects.all():
+        semester_details = semester_course.semester_details
+        courses = semester_course.courses.all()
+        
+        # Iterate over each course in the semester
+        for course in courses:
+            # Get the teachers who teach this course
+            teachers = course_teacher_mapping.get(course, [])
+            
+            # If there are teachers for this course
+            if teachers:
+                # Iterate over each section and assign a teacher to it
+                for section, section_courses in section_courses_mapping.items():
+                    # If the section still needs to take this course
+                    if course in section_courses:
+                        # Choose a random teacher for this course
+                        random_teacher = random.choice(teachers)
+                        
+                        # Create a TeacherSectionsTaught entry with the random teacher and section
+                        teacher_section_taught, created = TeacherSectionsTaught.objects.get_or_create(
+                            teacher=random_teacher,
+                            course=course,
+                            section=section
+                        )
+                        
+                        # Remove the course from the section's list of courses
+                        section_courses.remove(course)
 
 
 
@@ -357,28 +442,54 @@ def generate_classes(request):
     print("Classes generated successfully")
 
 
-
 def create_class_rooms(request):
     # Get all departments
     departments = Department.objects.all()
     
-    # Define the number of floors and classes per floor
-    num_floors = 5
-    classes_per_floor = 5
+    # Define the number of class rooms per department
+    class_rooms_per_department = 30
+    
+    # Initialize the starting room number
+    starting_room_number = 1
     
     # Iterate over each department
     for department in departments:
-        # Iterate over each floor
-        for floor in range(1, num_floors + 1):
-            # Iterate over each class room on the floor
-            for room_number in range(1, classes_per_floor + 1):
+        # Iterate over each class room for the department
+        for floor in range(starting_room_number, starting_room_number+1):
+            for room_number in range(1, class_rooms_per_department + 1):
                 # Generate the class room number
                 class_room_number = f"{floor}{room_number:02}"
                 
-                # Create the class room for the department and floor
+                # Create the class room for the department
                 ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+                
+                # Increment the room number
+            starting_room_number += 1
     
-    print("Students assigned sections successfully")
+    print("Class rooms created successfully")
+
+
+# def create_class_rooms(request):
+#     # Get all departments
+#     departments = Department.objects.all()
+    
+#     # Define the number of floors and classes per floor
+#     num_floors = 5
+#     classes_per_floor = 5
+    
+#     # Iterate over each department
+#     for department in departments:
+#         # Iterate over each floor
+#         for floor in range(1, num_floors + 1):
+#             # Iterate over each class room on the floor
+#             for room_number in range(1, classes_per_floor + 1):
+#                 # Generate the class room number
+#                 class_room_number = f"{floor}{room_number:02}"
+                
+#                 # Create the class room for the department and floor
+#                 ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+    
+#     print("Students assigned sections successfully")
 
 def assign_sections_to_students(request):
     # Get all degrees
@@ -1308,6 +1419,11 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # test_mapping()
+    # assign_classes_to_sections(request)
+    # create_section_courses_mapping()
+    # create_course_teacher_mapping()
+    # populate_teacher_sections_taught()
     # assign_teachers_to_sections(request)
     # assign_courses_to_semesters(request)
     # generate_classes(request)

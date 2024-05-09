@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import ClassRoom, ClassTiming, Course, CoursePrerequisite, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, TeacherSectionsTaught, User, Student, Teacher, SemesterDetails, Section, Class
+from .models import ClassRoom, ClassTiming, Course, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, TeacherSectionsTaught, User, Student, Teacher, SemesterDetails, Section, Class
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -18,12 +18,12 @@ class TeacherAdmin(admin.ModelAdmin):
     
 
 class TeacherCoursesTaughtAdmin(admin.ModelAdmin):
-    search_fields = ['courses__course_name','teacher__user__first_name', 'teacher__user__last_name']
-
+    search_fields = ['courses__course_name','teacher__user__first_name', 'teacher__user__last_name', 'teacher__user__username']
+    list_filter = ('courses',)
 
 class TeacherSectionsTaughtAdmin(admin.ModelAdmin):
-     search_fields = ['teacher__user__first_name', 'teacher__user__last_name']
-     list_filter = ('sections__semester', 'sections__section_name', 'sections__degree', 'sections__degree__department')
+     search_fields = ['teacher__user__first_name', 'teacher__user__last_name', 'teacher__user__username']
+     list_filter = ('section__semester', 'section__section_name', 'section__degree', 'section__degree__department')
 
 
 class SectionAdmin(admin.ModelAdmin):
@@ -74,18 +74,18 @@ class SemesterCoursesAdmin(admin.ModelAdmin):
     search_fields = ['courses__course_name']
     list_filter = ('semester_details__semester_number','semester_details__degree__department', 'semester_details__degree', 'semester_details')
 
-class CoursePrerequisiteAdmin(admin.ModelAdmin):
-    pass
 
 class ClassRoomAdmin(admin.ModelAdmin):
     search_fields = ['class_room_number', 'deparment__department_name']
+    list_filter = ('department',)
 
 class ClassAdmin(admin.ModelAdmin):
      search_fields = ['course__course_name']
-     list_filter = ('section__section_name','section__semester', 'classroom__department')
+     list_filter = ('teacher', 'section__section_name','section__semester', 'classroom__department', 'classroom__class_room_number', 'class_timing__weekday', 'class_timing__start_time')
 
 class ClassTimingAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('weekday','start_time')
+   
 
 
 custom_admin_site = CustomAdminSite()
@@ -103,7 +103,6 @@ admin.site.register(Degree, DegreeAdmin)
 admin.site.register(SemesterDetails, SemesterDetailsAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(SemesterCourses, SemesterCoursesAdmin)
-admin.site.register(CoursePrerequisite, CoursePrerequisiteAdmin)
 admin.site.register(TeacherCoursesTaught, TeacherCoursesTaughtAdmin)
 admin.site.register(Section, SectionAdmin)
 admin.site.register(ClassRoom, ClassRoomAdmin)
