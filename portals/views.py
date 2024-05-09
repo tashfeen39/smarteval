@@ -141,30 +141,27 @@ def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
 def test_mapping():
-    classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
-    print("Class rooms: ", classroom_availability)
-    # classroom_availability = {(classroom.class_room_number, classroom.department): {} for classroom in ClassRoom.objects.all()}
-        # courses_taught = TeacherCoursesTaught.objects.filter(teacher=teacher, courses__in=section.semester_details.semestercourses_set.values_list('courses', flat=True))
-                # clash = Class.objects.filter(
-                #     Q(section=sections),
-                #     Q(class_timing__weekday=weekday),
-                #     Q(class_timing__start_time__lte=end_time, class_timing__end_time__gte=start_time) |
-                #     Q(class_timing__start_time__gte=start_time, class_timing__end_time__lte=end_time) |
-                #     Q(class_timing__start_time__lte=start_time, class_timing__end_time__gte=end_time)
-                # ).exists()
-
-                # if clash:
-                #     print(f"Clash found for {course} in section {sections} on {weekday}")
-                #     continue
-
-                # # Check classroom availability
-                # classroom = ClassRoom.objects.filter(class_room_number__isnull=True).order_by('?').first()
-
-                # if not classroom:
-                #     print(f"No available classrooms for {course} in section {sections} on {weekday}")
-                #     continue
-
-    
+    # classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    # teacher_availability = {teachers.user.username: {} for teachers in Teacher.objects.all()}
+    # print("Teachers: ", teacher_availability)
+    ClassTiming.objects.all().delete()
+    # teacher_section_mappings = TeacherSectionsTaught.objects.all()
+    # print(teacher_section_mappings)
+    # # Create a dictionary to track the availability of each classroom
+    # # classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    # # teacher_availability = {teachers: {} for teachers in Teacher.objects.all()}
+    # for teacher_section_mapping in teacher_section_mappings:
+    #     teacher = teacher_section_mapping.teacher
+    #     sections = teacher_section_mapping.section
+    #     # Generate random class timing for each course in each section
+    #     courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
+    #     # print(courses_taught)
+    #     for course_id in courses_taught:
+    #         course = Course.objects.get(pk=course_id)
+    #         print("Teacher: ", teacher)
+    #         print("Course: ", course)
+    #     print("\n\n")
+            
 
 def assign_classes_to_sections(request):
     # Get all teacher-section mappings
@@ -172,6 +169,8 @@ def assign_classes_to_sections(request):
     print(teacher_section_mappings)
     # Create a dictionary to track the availability of each classroom
     classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
+    teacher_availability = {teachers: {} for teachers in Teacher.objects.all()}
+
         
     # Iterate over each teacher-section mapping
         # Iterate over each teacher-section mapping
@@ -182,6 +181,9 @@ def assign_classes_to_sections(request):
         courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
         for course_id in courses_taught:
             course = Course.objects.get(pk=course_id)
+            print("Teacher: ", teacher)
+            print("Course: ", course)
+            
             # Generate random start time between 8:00 AM and 4:00 PM
             start_hour = random.randint(8, 16) 
             start_minute = 0
@@ -200,18 +202,26 @@ def assign_classes_to_sections(request):
             for weekday in class_weekdays:
                 # Check classroom availability
                 available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or start_time not in availability[weekday]]
+                # print("Available Classrooms: ", available_classrooms)
+                available_teachers = [teachers for teachers, availabilityteacher in teacher_availability.items() if weekday not in availabilityteacher or start_time not in availabilityteacher[weekday]]
+                # print("Available Teachers: ", available_teachers)
+        
                 if not available_classrooms:
                     print(f"No available classrooms for {course} in section {sections} on {weekday}")
+                    continue
+                if not available_teachers:
+                    print(f"No available teachers for {course} in section {sections} on {weekday}")
                     continue
 
                 # Randomly select a classroom
                 classroom_number = random.choice(available_classrooms)
+                available_teacher = random.choice(available_teachers)
 
 
                 # Create class
                 new_class = Class.objects.create(
                     course=course,
-                    teacher=teacher,
+                    teacher=available_teacher,
                     section=sections,
                     classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
                     class_timing=ClassTiming.objects.create(
@@ -225,7 +235,14 @@ def assign_classes_to_sections(request):
                     classroom_availability[classroom_number][weekday] = []
                 classroom_availability[classroom_number][weekday].append(start_time)
 
+                 # Update teacher availability
+                if weekday not in teacher_availability[available_teacher]:
+                    teacher_availability[available_teacher][weekday] = []
+                teacher_availability[available_teacher][weekday].append(start_time)
+
                 print(f"Assigned class: {new_class}")
+        print("\n\n")
+            
 
     print("Classes assigned successfully")
 

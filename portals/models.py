@@ -96,17 +96,6 @@ class SemesterCourses(models.Model):
         verbose_name_plural = "Semester Courses"
 
 
-class CoursePrerequisite(models.Model):
-    CoursePrerequisiteID = models.AutoField(primary_key=True)
-    courses = models.ManyToManyField(Course)
-
-    def __str__(self):
-        return f"Course Prerequisite: {self.CoursePrerequisiteID}"
-
-    class Meta:
-        verbose_name_plural = "Course Prerequisites"
-
-
 class Section(models.Model):
     section_name = models.CharField(max_length=100)
     degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
