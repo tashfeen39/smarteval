@@ -24,8 +24,7 @@ import logging
 from .models import Course
 from itertools import cycle
 import itertools
-from django.db.models import Q
-
+from django.utils import timezone
 
 
 # @login_required(login_url='portals:faculty-login')
@@ -43,7 +42,28 @@ def faculty_class_info_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_dashboard_view(request):
-    return render(request, "portals/Faculty_Dashboard.html")
+    # Get the current date
+    current_date = timezone.now().date()
+    
+    # Get the logged-in teacher
+    teacher = request.user.teacher
+    teacher_name = f"{request.user.first_name}"
+    
+    # Retrieve the upcoming classes for the teacher on the current day
+    upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
+    # Convert time format to display "12 pm" instead of "noon"
+    for class_obj in upcoming_classes:
+        class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
+        class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
+
+    context = {
+        'teacher_name': teacher_name,
+        'upcoming_classes': upcoming_classes,
+        'current_date': current_date,
+    }
+
+    return render(request, "portals/Faculty_Dashboard.html", context)
+
 
 
 @login_required(login_url='portals:faculty-login')
