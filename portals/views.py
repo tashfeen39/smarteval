@@ -30,15 +30,17 @@ from django.shortcuts import get_object_or_404
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_class_info_view(request, section_pk):
+def faculty_class_info_view(request, sectioncourse_pk):
     # Get the section instance
-    section = get_object_or_404(Section, pk=section_pk)
+    sectioncourse = get_object_or_404(TeacherSectionsTaught, pk=sectioncourse_pk)
+    
 
     # Get all students in the section
-    students = Student.objects.filter(section=section)
+    students = Student.objects.filter(section=sectioncourse.section)
 
     context = {
-        'section': section,
+        'sectioncourse':sectioncourse,
+        'course': sectioncourse.course,
         'students': students,
     }
 
@@ -79,13 +81,13 @@ def faculty_display_classes_view(request):
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
 
     # Get the Section instances for the sections taught
-    section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
+    # section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     # print("Teacher: ", teacher)
     # print("\nSection: ", sections_taught)
 
     context = {
-        'section_instances': section_instances,
+        'sections_taught': sections_taught
     }
     return render(request, "portals/Faculty_DisplayClasses.html", context)
 
@@ -135,8 +137,63 @@ def faculty_profile_view(request):
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_student_info_view(request):
-    return render(request, "portals/Faculty_StudentInfo.html")
+def faculty_student_info_view(request, student_id, teachersectioncourse_id):
+    student = get_object_or_404(Student, StudentID=student_id)
+    teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+    course=teachersectioncourse.course
+    # print(course)
+
+    # Get the relevant marks data for the student and course
+    semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+    quiz_marks = list(QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course))
+    assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+    presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+    # print("semester_marks_data: ", semester_marks_data)
+
+    print("Quiz Marks: ", quiz_marks[3].quiz_marks)
+    # print("Finals: ", semester_marks_data.final_marks)
+
+    # Pass the student object, course, and marks data to the template context
+    context = {
+        'student': student,
+        'course': course,
+        'semester_marks_data': semester_marks_data,
+        'quiz_marks': quiz_marks,
+        'assignment_marks': assignment_marks,
+        'presentation_marks': presentation_marks
+    }
+
+    return render(request, "portals/Faculty_StudentInfo.html", context)
+
+
+
+
+# @login_required(login_url='portals:faculty-login')
+# @teacher_required()
+# def faculty_student_info_view(request, student_id):
+#     # print("Student Id: ", student_id)
+#     student = get_object_or_404(Student, StudentID=student_id)
+#     # print("Student: ", student)
+        
+#     # Get the relevant marks data for the student
+#     semester_marks_data = SemesterMarksData.objects.filter(student=student)
+#     quiz_marks = QuizMarks.objects.filter(semester_marks_data__student=student)
+#     assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student)
+#     presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student)
+
+#     print(semester_marks_data)
+    
+#     # Pass the student object and marks data to the template context
+#     context = {
+#         'student': student,
+#         'semester_marks': semester_marks_data,
+#         'quiz_marks': quiz_marks,
+#         'assignment_marks': assignment_marks,
+#         'presentation_marks': presentation_marks
+#     }
+
+#     return render(request, "portals/Faculty_StudentInfo.html", context)
 
 
 @login_required(login_url='portals:faculty-login')
@@ -1502,7 +1559,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    generate_marks_view(request)
+    # generate_marks_view(request)
     # test_mapping()
     # assign_classes_to_sections(request)
     # create_section_courses_mapping()

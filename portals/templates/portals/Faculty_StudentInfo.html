@@ -6,6 +6,8 @@
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
 <link rel="stylesheet" href="{% static 'plugins/scrollbar/scroll.min.css' %}">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,1,200" />
 
 {% endblock %}
 
@@ -28,12 +30,19 @@
                             <div class="col-lg-4 col-md-4">
                                 <div class="profile-user-box">
                                     <div class="profile-user-img">
-                                        <img src="{% static 'img/profiles/avatar-01.jpg' %}" alt="Profile">
+                                        {% if student.user.profile_picture %}
+                                        <img class="avatar-img rounded-circle"
+                                            src="{{ student.user.profile_picture.url }}">
+                                        {% else %}
+                                        <span class="material-symbols-outlined">
+                                            person
+                                        </span>
+                                        {% endif %}
 
                                     </div>
                                     <div class="names-profiles">
-                                        <h4>Muhammad Ali Raza</h4>
-                                        <h5>Computer Science</h5>
+                                        <h4>{{ student.user.first_name }} {{ student.user.last_name }}</h4>
+                                        <h5>{{ student.degree.degree_abbreviation }} - {{ student.section.semester }} {{ student.section.section_name }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -45,88 +54,74 @@
                             <table class="table border-0 table-center table-hover">
                                 <thead class="student-thread sticky-header">
                                     <tr>
-                                        <th></th>
                                         <th>Roll No.</th>
-                                        <th>Name</th>
-                                        <th>Quiz 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Assignment 1</th>
-                                        <th>Assignment 2</th>
-                                        <th>Assignment 3</th>
-                                        <th>Assignment 4</th>
+                                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</th>
+                                        {% for quiz_mark in quiz_marks %}
+                                        <th>&nbsp;&nbsp;Quiz {{ quiz_mark.quiz_num }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        {% endfor %}
+
+                                        {% for assignment_mark in assignment_marks %}
+                                        <th>Assignment {{ assignment_mark.assignment_num }}</th>
+                                        {% endfor %}
+
+                                        {% for presentation_mark in presentation_marks %}
+                                        <th>Presentation {{ presentation_mark.presentation_num }}</th>
+                                        {% endfor %}
+
+                                        <th>Semester Project</th>
                                         <th>Mid-term Marks</th>
                                         <th>Final Marks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
+                                        <td class="table_width">{{ student.StudentID }}</td>
                                         <td>
                                             <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
+                                                {{ student.user.first_name }} {{ student.user.last_name }}
                                             </h2>
                                         </td>
+                                        {% for quiz_mark in quiz_marks %}
+                                        <td>
+                                            <input type="float" name="quiz" value="{{ quiz_mark.quiz_marks }}"
+                                                class="form-control">
+                                        </td>
+                                        {% endfor %}
+                                        {% for assignment_mark in assignment_marks %}
+                                        <td>
+                                            <input type="float" name="assignment" value="{{ assignment_mark.assignment_marks }}"class="form-control">
+                                        </td>
+                                        {% endfor %}
+                                        {% for presentation_mark in presentation_marks %}
+                                        <td>
+                                            <input type="float" name="presentation" value="{{ presentation_mark.presentation_marks }}"class="form-control">
+                                        </td>
+                                        {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10 " readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6" readonly>
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6" readonly>
-                                        </td>
+                                   
                                         <td>
                                             <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70 " readonly>
+                                            <input type="float" name="project_marks"
+                                                value="{{ semester_marks_data.semester_project_marks }}" class="form-control"
+                                                readonly>
+                                        </td>
+                                       
+                                        <td>
+                                            <!-- Editable input field for Mid-term Marks -->
+                                            <input type="float" name="midterm_marks"
+                                                value="{{ semester_marks_data.mids_marks }}" class="form-control"
+                                                readonly>
                                         </td>
                                         <td>
                                             <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80 " readonly>
-                                        </td>
+                                            <input type="float" name="final_marks"
+                                                value="{{ semester_marks_data.final_marks }}" class="form-control"
+                                                readonly>
+                                        </td 
                                     </tr>
 
+
+                                
                                 </tbody>
                             </table>
                         </div>
