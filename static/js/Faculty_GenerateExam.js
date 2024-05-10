@@ -167,23 +167,15 @@ function enableRegenerateButtons() {
 
 const controller = new AbortController();
 
-// After the user clicks the "Generate Paper" button
 document
   .getElementById("paperForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
 
-    var subjectId = document.getElementById("subject").value;
-    var subjectName =
-      document.getElementById("subject").options[
-        document.getElementById("subject").selectedIndex
-      ].text;
-    var selectQuestions = document.getElementById("selectQuestions").value;
-
-    // Prepare data to send to the backend
+    // Construct the data object from form fields
     var data = {
-      subject_id: subjectId,
-      selectQuestions: selectQuestions,
+      subject_id: document.getElementById("subject").value,
+      selectQuestions: document.getElementById("selectQuestions").value,
       questionParts: Array.from(
         document.querySelectorAll(".question-parts")
       ).map((el) => el.value),
@@ -201,6 +193,7 @@ document
       ).map((el) => el.value.split(",").map((kw) => kw.trim())),
     };
 
+    // Sending data to the server
     fetch(generatePaperUrl, {
       method: "POST",
       headers: {
@@ -210,28 +203,40 @@ document
       },
       body: JSON.stringify(data),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        var paperPromptsDiv = document.getElementById("paperPrompts");
-        paperPromptsDiv.innerHTML = `<h2>Subject Name: ${data.subject_name}</h2>`;
-
-        data.paper_prompts.forEach((prompt, index) => {
-          paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
-                <h3><b>Question ${index + 1}:</b></h3>
-                <p>${prompt.replace(/\n/g, "<br>")}</p>
-            </div>`;
-        });
-
-        enableRegenerateButtons();
-        createDownloadButton(paperPromptsDiv.innerHTML);
-      })
-      .catch((error) => console.error("Error:", error));
+      .then(handleResponse)
+      .then((data) => displayQuestions(data)) // Use data from handleResponse to display questions
+      .catch(handleError);
   });
+
+function handleResponse(response) {
+  if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+  return response.json();
+}
+
+function displayQuestions(data) {
+  var paperPromptsDiv = document.getElementById("paperPrompts");
+  paperPromptsDiv.innerHTML = `<h2>Subject Name: ${data.subject_name}</h2>`;
+
+  data.paper_prompts.forEach((prompt, index) => {
+    var btLevel = data.questionBTLevels[index];
+    var complexity = data.questionComplexities[index];
+
+    paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
+            <h3><b>Question ${index + 1}:</b></h3>
+            <p>BT Level: ${btLevel}</p>
+            <p>Complexity: ${complexity}</p>
+            <p>${prompt.replace(/\n/g, "<br>")}</p>
+        </div>`;
+  });
+
+  enableRegenerateButtons();
+  createDownloadButton(paperPromptsDiv.innerHTML);
+}
+
+function handleError(error) {
+  console.error("Fetch error:", error);
+}
+
 
 
 window.addEventListener("unload", () => {

@@ -1698,9 +1698,13 @@ def generate_paper(request):
             select_questions = int(data.get("selectQuestions"))
             question_parts = data.get("questionParts") or ['N/A'] * select_questions
             question_topics = data.get("questionTopics") or [''] * select_questions
+            # Check if all topics are provided
+            if any(not topic.strip() for topic in question_topics):
+                return JsonResponse({"success": False, "error": "All question topics are mandatory."}, status=400)
             question_bt_levels = data.get("questionBTLevels") or ['N/A'] * select_questions
             question_complexities = data.get("questionComplexities") or ['N/A'] * select_questions
             question_keywords = data.get("questionKeywords") or [[''] * select_questions]
+            
 
             prompts = []
 
@@ -1746,7 +1750,13 @@ def generate_paper(request):
                         for question in questions:
                             paper_prompts.append(question)
 
-                return JsonResponse({"success": True, "paper_prompts": paper_prompts, "subject_name": subject_id})
+                return JsonResponse({
+                        "success": True,
+                        "paper_prompts": paper_prompts,
+                        "questionBTLevels": question_bt_levels,
+                        "questionComplexities": question_complexities,
+                        "subject_name": subject_id
+                    })            
             else:
                 logger.error(f"Failed to generate paper: {response.status_code} - {response.text}")
                 return JsonResponse({"success": False, "error": "Failed to generate paper"}, status=500)
