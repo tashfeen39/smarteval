@@ -20,6 +20,7 @@ urlpatterns = [
     path("faculty/my-profile/", views.faculty_profile_view, name="my-profile"),
     path('faculty/student-info/<str:student_id>/<str:teachersectioncourse_id>/', views.faculty_student_info_view, name='student-info'),
     path('faculty/student-marks-entry/<str:teachersectioncourse_id>/', views.faculty_student_marks_entry_view, name='student-marksentry'),
+    path('faculty/save-marks/<int:teachersectioncourse_id>/', views.faculty_save_marks_view, name='save-marks'),
     path("faculty/registration/", views.faculty_registration, name="faculty-registration"),
     path("student/login/", views.student_login_view, name="student-login"),
     path("student/dashboard/", views.student_dashboard_view, name="student-dashboard"),

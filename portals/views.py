@@ -165,7 +165,74 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
+def faculty_save_marks_view(request, teachersectioncourse_id):
+    if request.method == 'POST':
+        teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+        # Iterate through the submitted form data and update the corresponding database records
+        for key, value in request.POST.items():
+            if key.startswith('quiz_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, quiz_num = key_parts[2], key_parts[1]
+                    semester_marks_data=SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the QuizMarks object for the student with the new marks
+                    quiz_mark = QuizMarks.objects.get(semester_marks_data=semester_marks_data, quiz_num=quiz_num)
+                    quiz_mark.quiz_marks = value
+                    quiz_mark.save()
+            elif key.startswith('assignment_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, assignment_num = key_parts[2], key_parts[1]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the AssignmentMarks object for the student with the new marks
+                    assignment_mark = AssignmentMarks.objects.get(semester_marks_data=semester_marks_data, assignment_num=assignment_num)
+                    assignment_mark.assignment_marks = value
+                    assignment_mark.save()
 
+            elif key.startswith('presentation_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, presentation_num = key_parts[2], key_parts[1]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    presentation_mark = PresentationMarks.objects.get(semester_marks_data=semester_marks_data, presentation_num=presentation_num)
+                    presentation_mark.presentation_marks = value
+                    presentation_mark.save()
+
+            elif key.startswith('project_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.semester_project_marks = value
+                    semester_marks_data.save()
+
+            elif key.startswith('midterm_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.mids_marks = value
+                    semester_marks_data.save()
+
+            elif key.startswith('final_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.final_marks = value
+                    semester_marks_data.save()
+           
+           
+        
+        # Redirect back to the same page after saving the changes
+        return redirect('portals:student-marksentry', teachersectioncourse_id=teachersectioncourse_id)
+    return render(request, 'portals/Faculty_StudentMarksEntry.html')
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
@@ -199,6 +266,7 @@ def faculty_student_marks_entry_view(request, teachersectioncourse_id):
 
     # Pass the list of students marks data and course to the template context
     context = {
+        'teachersectioncourse':teachersectioncourse,
         'single_student': students_marks_data[0],
         'students_marks_data': students_marks_data,
         'course': course
