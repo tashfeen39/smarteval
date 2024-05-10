@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin import RelatedFieldListFilter
 from portals.forms import DegreeForm
-from .models import ClassRoom, ClassTiming, Course, Degree, Department, Program, School, SemesterCourses, SemesterDetails, TeacherCoursesTaught, TeacherSectionsTaught, User, Student, Teacher, SemesterDetails, Section, Class
+from .models import AssignmentMarks, ClassRoom, ClassTiming, Course, Degree, Department, PresentationMarks, Program, QuizMarks, School, SemesterCourses, SemesterDetails, SemesterMarksData, TeacherCoursesTaught, TeacherSectionsTaught, User, Student, Teacher, SemesterDetails, Section, Class
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -85,6 +85,19 @@ class ClassAdmin(admin.ModelAdmin):
 
 class ClassTimingAdmin(admin.ModelAdmin):
     list_filter = ('weekday','start_time')
+
+
+class SemesterMarksDataAdmin(admin.ModelAdmin): pass
+
+class AssignmentMarksAdmin(admin.ModelAdmin): pass
+class QuizMarksAdmin(admin.ModelAdmin):
+    pass
+
+class PresentationMarksAdmin(admin.ModelAdmin): pass
+
+
+
+
    
 
 
@@ -109,3 +122,7 @@ admin.site.register(ClassRoom, ClassRoomAdmin)
 admin.site.register(Class, ClassAdmin)
 admin.site.register(ClassTiming, ClassTimingAdmin)
 admin.site.register(TeacherSectionsTaught, TeacherSectionsTaughtAdmin)
+admin.site.register(SemesterMarksData, SemesterMarksDataAdmin)
+admin.site.register(AssignmentMarks, AssignmentMarksAdmin)
+admin.site.register(QuizMarks, QuizMarksAdmin)
+admin.site.register(PresentationMarks, PresentationMarksAdmin)
