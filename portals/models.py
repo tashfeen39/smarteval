@@ -253,3 +253,55 @@ class Class(models.Model):
 
     class Meta:
         verbose_name_plural = "Classes"
+
+
+class SemesterMarksData(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
+    mids_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    final_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    semester_project_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    semester_number = models.PositiveSmallIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.student.user.first_name} {self.student.user.last_name} - {self.course.course_name} - Semester {self.semester_number} Marks"
+    
+    class Meta:
+        verbose_name_plural = "Semester Marks Data"
+    
+
+class AssignmentMarks(models.Model):
+    semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
+    assignment_num = models.CharField(max_length=20, blank=True, null=True) 
+    assignment_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.semester_marks_data} - Assignment {self.assignment_num} - Marks: {self.assignment_marks}"
+    
+    class Meta:
+        verbose_name_plural = "Assignments Marks"
+    
+
+class QuizMarks(models.Model):
+    semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
+    quiz_num = models.CharField(max_length=20, blank=True, null=True)  
+    quiz_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.semester_marks_data} - Quiz {self.quiz_num} - Marks: {self.quiz_marks}"
+    
+    class Meta:
+        verbose_name_plural = "Quizzes Marks"
+
+
+
+class PresentationMarks(models.Model):
+    semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
+    presentation_num = models.CharField(max_length=20, blank=True, null=True) 
+    presentation_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.semester_marks_data} - Presentation {self.presentation_num} - Marks: {self.presentation_marks}"
+    
+    class Meta:
+        verbose_name_plural = "Presentations Marks"
