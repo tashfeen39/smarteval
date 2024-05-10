@@ -80,9 +80,6 @@ def faculty_display_classes_view(request):
     # teacher = request.user.teacher
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
 
-    # Get the Section instances for the sections taught
-    # section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
-
     # print("Teacher: ", teacher)
     # print("\nSection: ", sections_taught)
 
@@ -119,11 +116,13 @@ def faculty_grading_view(request):
 @teacher_required()
 def faculty_marks_entry_view(request):
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+    
 
     # Get the Section instances for the sections taught
     section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     context = {
+        'sections_taught': sections_taught,
         'section_instances': section_instances,
     }
     return render(request, "portals/Faculty_MarksEntry.html", context)
@@ -151,7 +150,7 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
 
     # print("semester_marks_data: ", semester_marks_data)
 
-    print("Quiz Marks: ", quiz_marks[3].quiz_marks)
+    # print("Quiz Marks: ", quiz_marks[3].quiz_marks)
     # print("Finals: ", semester_marks_data.final_marks)
 
     # Pass the student object, course, and marks data to the template context
@@ -168,38 +167,44 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
 
 
 
-
-# @login_required(login_url='portals:faculty-login')
-# @teacher_required()
-# def faculty_student_info_view(request, student_id):
-#     # print("Student Id: ", student_id)
-#     student = get_object_or_404(Student, StudentID=student_id)
-#     # print("Student: ", student)
-        
-#     # Get the relevant marks data for the student
-#     semester_marks_data = SemesterMarksData.objects.filter(student=student)
-#     quiz_marks = QuizMarks.objects.filter(semester_marks_data__student=student)
-#     assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student)
-#     presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student)
-
-#     print(semester_marks_data)
-    
-#     # Pass the student object and marks data to the template context
-#     context = {
-#         'student': student,
-#         'semester_marks': semester_marks_data,
-#         'quiz_marks': quiz_marks,
-#         'assignment_marks': assignment_marks,
-#         'presentation_marks': presentation_marks
-#     }
-
-#     return render(request, "portals/Faculty_StudentInfo.html", context)
-
-
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_student_marks_entry_view(request):
-    return render(request, "portals/Faculty_StudentsMarksEntry.html")
+def faculty_student_marks_entry_view(request, teachersectioncourse_id):
+    # Get the teacher's section taught course
+    teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+    course = teachersectioncourse.course
+
+    # Get all students in the section
+    students = Student.objects.filter(section=teachersectioncourse.section)
+
+    # Get marks data for all students in the section
+    students_marks_data = []
+    for student in students:
+        # Get the relevant marks data for each student and course
+        semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+        quiz_marks = list(QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course))
+        # print(len(quiz_marks))
+        assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+        presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+        # Append marks data to the list
+        students_marks_data.append({
+            'student': student,
+            'semester_marks_data': semester_marks_data,
+            'quiz_marks': quiz_marks,
+            'assignment_marks': assignment_marks,
+            'presentation_marks': presentation_marks
+        })
+        # print(students_marks_data[0])
+
+    # Pass the list of students marks data and course to the template context
+    context = {
+        'single_student': students_marks_data[0],
+        'students_marks_data': students_marks_data,
+        'course': course
+    }
+
+    return render(request, "portals/Faculty_StudentsMarksEntry.html", context)
 
 
 @login_required(login_url='portals:student-login') 

@@ -30,9 +30,9 @@
 
                             <table class="table table-striped ">
                                 <tbody>
-                                    {% for section in section_instances %}
+                                    {% for sectioncourse in sections_taught %}
                                     <tr>
-                                        <td><a class="table_height" href="{% url 'portals:student-marksentry' %}">{{ section }}</a>
+                                        <td><a class="table_height" href="{% url 'portals:student-marksentry' sectioncourse.pk %}">{{ sectioncourse.section.degree.degree_abbreviation }} {{ sectioncourse.section.semester }} {{ sectioncourse.section.section_name }} - {{ sectioncourse.course }}</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
