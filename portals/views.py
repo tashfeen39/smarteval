@@ -1766,8 +1766,15 @@ def get_programs(request):
 def generate_paper(request):
     try:
         if request.method == "POST":
+            print(request.body)  # Print raw data received to check if CLOs are present
+            data = json.loads(request.body)
+            print("Processed Data:", data)  # Check structured data
+            print("Received CLOs:", data.get('questionCLOs'))
+            print("Received GAs:", data.get('questionGAs'))
+
             data = json.loads(request.body)
             subject_id = data.get("subject_id")
+            subject_name = subject_id
             select_questions = int(data.get("selectQuestions"))
             question_parts = data.get("questionParts") or ['N/A'] * select_questions
             question_topics = data.get("questionTopics") or [''] * select_questions
@@ -1780,6 +1787,12 @@ def generate_paper(request):
             
 
             prompts = []
+            subject_name = data.get("subject_id", "the subject")  # Assuming you fetch subject_name from data
+            select_questions = int(data.get("selectQuestions", 0))
+
+            prompt = f"The question paper is on the topic of {subject_name}. Generate {select_questions} questions with the following specifications:\n"
+
+            prompts.append(prompt)
 
             for i in range(select_questions):
                 question_prompt = f"Question {i + 1}:\n"
@@ -1787,11 +1800,23 @@ def generate_paper(request):
                 question_prompt += f"Instructions: {', '.join(question_keywords[i])}\n"
                 question_prompt += f"BT Level: {question_bt_levels[i].capitalize()}\n"
                 question_prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
-                question_prompt += f"Generate a {question_complexities[i]} question with {question_parts[i]} parts.\n"
+                question_prompt += f"Number of parts: {question_parts[i]} parts.\n"
                 question_prompt += "Each part should be distinct and clearly numbered.\n"
                 prompts.append(question_prompt)
 
             prompt = "\n".join(prompts)
+
+            prompt2 = []
+
+            for i in range(select_questions):
+                question_prompt = f"Question {i + 1}:\n"
+                question_prompt += f"Topic: {question_topics[i]}\n"
+                question_prompt += f"Instructions: {', '.join(question_keywords[i])}\n"
+                question_prompt += f"BT Level: {question_bt_levels[i].capitalize()}\n"
+                question_prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
+                question_prompt += f"Number of parts: {question_parts[i]} parts.\n"
+                question_prompt += "Each part should be distinct and clearly numbered.\n"
+                prompts.append(question_prompt)
             print("Generated Prompt: ", prompt)
 
             # Make API call to ChatGPT or any other service to generate the questions
@@ -1882,7 +1907,7 @@ def regenerate_question(request):
             payload = {
                 "model": "gpt-3.5-turbo",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 1000,
+                "max_tokens": 2000,
             }
             headers = {
                 "Content-Type": "application/json",
