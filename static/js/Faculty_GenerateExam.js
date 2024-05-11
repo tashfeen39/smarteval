@@ -101,9 +101,19 @@ document
       var gaSelect = document.createElement("select");
       gaSelect.name = `question_${i}_ga`;
       gaSelect.classList.add("form-select", "mb-3", "question-ga");
-      ["N/A", "ga 1", "ga 2", "ga 3", "ga 4", "ga 5"].forEach(function (
-        ga
-      ) {
+      [
+        "N/A",
+        "GA 1",
+        "GA 2",
+        "GA 3",
+        "GA 4",
+        "GA 5",
+        "GA 6",
+        "GA 7",
+        "GA 8",
+        "GA 9",
+        "GA 10",
+      ].forEach(function (ga) {
         var option = document.createElement("option");
         option.value = ga.toLowerCase();
         option.textContent = ga;
@@ -265,19 +275,18 @@ document
       .catch(handleError);
   });
 
-
 function handleResponse(response) {
   if (!response.ok) throw new Error(`HTTP error ${response.status}`);
   return response.json();
 }
 
 function displayQuestions(data) {
-   console.log("Received data:", data); // Log the entire data object
+  console.log("Received data:", data); // Log the entire data object
 
-   if (!data.paper_prompts || !Array.isArray(data.paper_prompts)) {
-     console.error("Invalid or no prompts received:", data.paper_prompts);
-     return; // Exit if no valid prompts received
-   }
+  if (!data.paper_prompts || !Array.isArray(data.paper_prompts)) {
+    console.error("Invalid or no prompts received:", data.paper_prompts);
+    return; // Exit if no valid prompts received
+  }
 
   var paperPromptsDiv = document.getElementById("paperPrompts");
   paperPromptsDiv.innerHTML = `<h2>Subject Name: ${
@@ -301,8 +310,6 @@ function displayQuestions(data) {
         ? data.questionGAs[index]
         : "n/a";
 
-      
-
     paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
     <h3><b>Question ${index + 1}:</b></h3>
     <p>BT Level: ${btLevel}</p>
@@ -314,11 +321,6 @@ function displayQuestions(data) {
   enableRegenerateButtons();
   createDownloadButton(paperPromptsDiv.innerHTML);
 }
-
-
-
-
-
 
 function handleError(error) {
   console.error("Fetch error:", error);
@@ -470,7 +472,6 @@ function createDownloadButton(paperContent) {
 
   downloadContainer.appendChild(downloadButton);
 }
-
 
 function validateQuestions() {
   var allTopicsEntered = true;

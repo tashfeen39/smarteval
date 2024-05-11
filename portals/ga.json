@@ -1,7 +1,44 @@
-{"GAs": [
-    {"id": "GA1", "description": "Ability to apply knowledge of mathematics, science, and engineering."},
-    {"id": "GA2", "description": "Ability to design and conduct experiments, as well as to analyze and interpret data."},
-    {"id": "GA3", "description": "Ability to design a system, component, or process to meet desired needs."},
-    {"id": "GA4", "description": "Ability to function on multidisciplinary teams."},
-    {"id": "GA5", "description": "Understanding of professional and ethical responsibility."}
-  ]}
+{
+  "GAs": [
+    {
+      "id": "GA1",
+      "description": "Ability to apply knowledge of mathematics, science, and engineering."
+    },
+    {
+      "id": "GA2",
+      "description": "Ability to design and conduct experiments, as well as to analyze and interpret data."
+    },
+    {
+      "id": "GA3",
+      "description": "Ability to design a system, component, or process to meet desired needs."
+    },
+    {
+      "id": "GA4",
+      "description": "Ability to function on multidisciplinary teams."
+    },
+    {
+      "id": "GA5",
+      "description": "Understanding of professional and ethical responsibility."
+    },
+    {
+      "id": "GA6",
+      "description": "Proficiency in communication skills, both oral and written."
+    },
+    {
+      "id": "GA7",
+      "description": "Capacity for critical thinking and problem-solving."
+    },
+    {
+      "id": "GA8",
+      "description": "Awareness of contemporary issues and their implications in relevant fields."
+    },
+    {
+      "id": "GA9",
+      "description": "Ability to adapt to new technologies and methodologies."
+    },
+    {
+      "id": "GA10",
+      "description": "Commitment to lifelong learning and professional development."
+    }
+  ]
+}
