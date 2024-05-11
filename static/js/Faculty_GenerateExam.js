@@ -48,7 +48,7 @@ document
 
       // Add an option for "N/A"
       var notApplicable = document.createElement("option");
-      notApplicable.value = "n/a";
+      notApplicable.value = "N/A";
       notApplicable.textContent = "N/A";
       btSelect.appendChild(notApplicable);
 
@@ -135,7 +135,7 @@ document
       );
 
       var notApplicable = document.createElement("option");
-      notApplicable.value = "n/a";
+      notApplicable.value = "N/A";
       notApplicable.textContent = "N/A";
       complexitySelect.appendChild(notApplicable);
 
@@ -166,7 +166,7 @@ document
       select.classList.add("form-select", "mb-3", "question-parts");
 
       var notApplicable = document.createElement("option");
-      notApplicable.value = "n/a";
+      notApplicable.value = "N/A";
       notApplicable.textContent = "N/A";
       select.appendChild(notApplicable);
 
@@ -304,11 +304,11 @@ function displayQuestions(data) {
     var clos =
       data.questionCLOs && data.questionCLOs[index]
         ? data.questionCLOs[index]
-        : "n/a";
+        : "N/A";
     var gas =
       data.questionGAs && data.questionGAs[index]
         ? data.questionGAs[index]
-        : "n/a";
+        : "N/A";
 
     paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
     <h3><b>Question ${index + 1}:</b></h3>

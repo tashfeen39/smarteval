@@ -113,22 +113,18 @@ button:hover {
   margin-top: 5px;
 }
 #downloadContainer {
-  width: 100%;
+  float: right !important;
+  width: 30%;
 }
 
-.downloadbutton {
-  float: right;
-  width: 300px;
-}
-
-.question-div{
-    border: none;
+.question-div {
+  border: none;
 }
 
 .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: -5px;  
-    margin-bottom: 5px;
-    font-weight: bold;
+  color: red;
+  font-size: 14px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
