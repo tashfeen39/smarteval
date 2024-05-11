@@ -1869,7 +1869,6 @@ def generate_paper(request):
 
 @csrf_exempt
 def generate_chatgpt_response(request):
-    # This view is not needed anymore since the response is already generated in the generate_paper view
     pass
 
 
