@@ -21,7 +21,7 @@
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3 class="page-title">Students</h3>
+                    <h3 class="page-title">Students - {{course.course_name}}</h3>
                     <button type="btn" class="btn btn-primary" style="float: right; right:20px;">View Report</button>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                                     {% for student in students %}
                                     <tr>
                                         <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}" class="avatar avatar-sm me-2">
+                                            <a href="{% url 'portals:student-info' student.StudentID sectioncourse.pk %}" class="avatar avatar-sm me-2">
                                                 {% if student.user.profile_picture %}
                                                 <img class="avatar-img rounded-circle"
                                                     src="{{ student.user.profile_picture.url }}">
@@ -59,13 +59,13 @@
                                         <td class="table_width">{{ student.StudentID }}</td>
                                         <td>
                                             <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">{{ student.user.first_name }}
+                                                <a href="{% url 'portals:student-info' student.StudentID sectioncourse.pk %}">{{ student.user.first_name }}
                                                     {{ student.user.last_name }}</a>
                                             </h2>
                                         </td>
                                         <td class="text-end">
                                             <div class="actions">
-                                                <a href="{% url 'portals:student-info' %}"
+                                                <a href="{% url 'portals:student-info' student.StudentID sectioncourse.pk %}"
                                                     class="btn btn-sm bg-success-light me-2">
                                                     <i class="feather-eye"></i>
                                                 </a>

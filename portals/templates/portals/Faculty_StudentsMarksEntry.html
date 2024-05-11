@@ -34,691 +34,110 @@
 
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table border-0 table-center table-hover">
-                                <thead class="student-thread sticky-header">
-                                    <tr>
-                                        <th></th>
-                                        <th>Roll No.</th>
-                                        <th>Name</th>
-                                        <th>Quiz 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Quiz 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                        <th>Assignment 1</th>
-                                        <th>Assignment 2</th>
-                                        <th>Assignment 3</th>
-                                        <th>Assignment 4</th>
-                                        <th>Mid-term Marks</th>
-                                        <th>Final Marks</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                        <form method="post" action="{% url 'portals:save-marks' teachersectioncourse.pk %}">
+                            <div class="table-responsive">
+                                {% csrf_token %}
+                                <table class="table border-0 table-center table-hover">
+                                    <thead class="student-thread sticky-header">
+                                        <tr>
+                                            <th>Roll No.</th>
+                                            <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</th>
+                                            {% for quiz_mark in single_student.quiz_marks %}
+                                            <th>&nbsp;&nbsp;Quiz {{ quiz_mark.quiz_num }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </th>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            {% for assignment_mark in single_student.assignment_marks %}
+                                            <th>Assignment {{ assignment_mark.assignment_num }}</th>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            {% for presentation_mark in single_student.presentation_marks %}
+                                            <th>Presentation {{ presentation_mark.presentation_num }}</th>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <th>Semester Project</th>
+                                            <th>Mid-term Marks</th>
+                                            <th>Final Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for student_marks_data in students_marks_data %}
+                                        <tr>
+                                            <td class="table_width">{{ student_marks_data.student.StudentID }}</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    {{ student_marks_data.student.user.first_name }}
+                                                    {{ student_marks_data.student.user.last_name }}
+                                                </h2>
+                                            </td>
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <!-- Add cells for quiz marks -->
+                                            {% for quiz_mark in student_marks_data.quiz_marks %}
+                                            <td>
+                                                <input type="float"
+                                                    name="quiz_{{ quiz_mark.quiz_num }}_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ quiz_mark.quiz_marks }}" class="form-control">
+                                            </td>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <!-- Add cells for assignment marks -->
+                                            {% for assignment_mark in student_marks_data.assignment_marks %}
+                                            <td>
+                                                <input type="float"
+                                                    name="assignment_{{ assignment_mark.assignment_num }}_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ assignment_mark.assignment_marks }}" class="form-control">
+                                            </td>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <!-- Add cells for presentation marks -->
+                                            {% for presentation_mark in student_marks_data.presentation_marks %}
+                                            <td>
+                                                <input type="float"
+                                                    name="presentation_{{ presentation_mark.presentation_num }}_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ presentation_mark.presentation_marks }}"
+                                                    class="form-control">
+                                            </td>
+                                            {% endfor %}
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <!-- Add cell for semester project marks -->
+                                            <td>
+                                                <input type="float"
+                                                    name="project_marks_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ student_marks_data.semester_marks_data.semester_project_marks }}"
+                                                    class="form-control">
+                                            </td>
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
+                                            <!-- Add cell for mid-term marks -->
+                                            <td>
+                                                <input type="float"
+                                                    name="midterm_marks_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ student_marks_data.semester_marks_data.mids_marks }}"
+                                                    class="form-control">
+                                            </td>
 
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table_width">
-                                            <a href="{% url 'portals:student-info' %}"
-                                                class="avatar avatar-sm me-2"><img class="avatar-img rounded-circle"
-                                                    src="{% static 'img/profiles/avatar-01.jpg' %}"
-                                                    alt="User Image" /></a>
-                                        </td>
-                                        <td class="table_width">200819</td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <a href="{% url 'portals:student-info' %}">Muhammad Ali Raza</a>
-                                            </h2>
-                                        </td>
-
-                                        <td>
-                                            <!-- Editable input field for Quiz 1 -->
-                                            <input type="number" name="quiz1" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 2 -->
-                                            <input type="number" name="quiz2" value="" class="form-control"
-                                                placeholder="7">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 3 -->
-                                            <input type="number" name="quiz3" value="" class="form-control"
-                                                placeholder="8">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Quiz 4 -->
-                                            <input type="number" name="quiz4" value="" class="form-control"
-                                                placeholder="9">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 1 -->
-                                            <input type="number" name="assignment1" value="" class="form-control"
-                                                placeholder="10">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 2 -->
-                                            <input type="number" name="assignment2" value="" class="form-control"
-                                                placeholder="5">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 3 -->
-                                            <input type="number" name="assignment3" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Assignment 4 -->
-                                            <input type="number" name="assignment4" value="" class="form-control"
-                                                placeholder="6">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Mid-term Marks -->
-                                            <input type="number" name="midterm_marks" value="" class="form-control"
-                                                placeholder="70">
-                                        </td>
-                                        <td>
-                                            <!-- Editable input field for Final Marks -->
-                                            <input type="number" name="final_marks" value="" class="form-control"
-                                                placeholder="80">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <br><br>
-
-                        <div class="row align-items-center">
-                            <div class="col-md-12">
-                                <button type="btn" class="btn btn-primary" style="float: right; right:20px;">Save
-                                    Changes
-                                </button>
+                                            <!-- Add cell for final marks -->
+                                            <td>
+                                                <input type="float"
+                                                    name="final_marks_{{ student_marks_data.student.StudentID }}"
+                                                    value="{{ student_marks_data.semester_marks_data.final_marks }}"
+                                                    class="form-control">
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
+                            <br>
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary" style="float: right; right:20px;">Save
+                                        Changes
+                                    </button>
+                                </div>
+                            </div>
+                            <br>
+                        </form>
 
-
-                        </div>
 
 
 

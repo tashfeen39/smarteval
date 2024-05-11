@@ -30,15 +30,17 @@ from django.shortcuts import get_object_or_404
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_class_info_view(request, section_pk):
+def faculty_class_info_view(request, sectioncourse_pk):
     # Get the section instance
-    section = get_object_or_404(Section, pk=section_pk)
+    sectioncourse = get_object_or_404(TeacherSectionsTaught, pk=sectioncourse_pk)
+    
 
     # Get all students in the section
-    students = Student.objects.filter(section=section)
+    students = Student.objects.filter(section=sectioncourse.section)
 
     context = {
-        'section': section,
+        'sectioncourse':sectioncourse,
+        'course': sectioncourse.course,
         'students': students,
     }
 
@@ -78,14 +80,11 @@ def faculty_display_classes_view(request):
     # teacher = request.user.teacher
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
 
-    # Get the Section instances for the sections taught
-    section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
-
     # print("Teacher: ", teacher)
     # print("\nSection: ", sections_taught)
 
     context = {
-        'section_instances': section_instances,
+        'sections_taught': sections_taught
     }
     return render(request, "portals/Faculty_DisplayClasses.html", context)
 
@@ -117,11 +116,13 @@ def faculty_grading_view(request):
 @teacher_required()
 def faculty_marks_entry_view(request):
     sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+    
 
     # Get the Section instances for the sections taught
     section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     context = {
+        'sections_taught': sections_taught,
         'section_instances': section_instances,
     }
     return render(request, "portals/Faculty_MarksEntry.html", context)
@@ -135,14 +136,143 @@ def faculty_profile_view(request):
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_student_info_view(request):
-    return render(request, "portals/Faculty_StudentInfo.html")
+def faculty_student_info_view(request, student_id, teachersectioncourse_id):
+    student = get_object_or_404(Student, StudentID=student_id)
+    teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+    course=teachersectioncourse.course
+    # print(course)
 
+    # Get the relevant marks data for the student and course
+    semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+    quiz_marks = list(QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course))
+    assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+    presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+    # print("semester_marks_data: ", semester_marks_data)
+
+    # print("Quiz Marks: ", quiz_marks[3].quiz_marks)
+    # print("Finals: ", semester_marks_data.final_marks)
+
+    # Pass the student object, course, and marks data to the template context
+    context = {
+        'student': student,
+        'course': course,
+        'semester_marks_data': semester_marks_data,
+        'quiz_marks': quiz_marks,
+        'assignment_marks': assignment_marks,
+        'presentation_marks': presentation_marks
+    }
+
+    return render(request, "portals/Faculty_StudentInfo.html", context)
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
-def faculty_student_marks_entry_view(request):
-    return render(request, "portals/Faculty_StudentsMarksEntry.html")
+def faculty_save_marks_view(request, teachersectioncourse_id):
+    if request.method == 'POST':
+        teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+        # Iterate through the submitted form data and update the corresponding database records
+        for key, value in request.POST.items():
+            if key.startswith('quiz_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, quiz_num = key_parts[2], key_parts[1]
+                    semester_marks_data=SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the QuizMarks object for the student with the new marks
+                    quiz_mark = QuizMarks.objects.get(semester_marks_data=semester_marks_data, quiz_num=quiz_num)
+                    quiz_mark.quiz_marks = value
+                    quiz_mark.save()
+            elif key.startswith('assignment_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, assignment_num = key_parts[2], key_parts[1]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the AssignmentMarks object for the student with the new marks
+                    assignment_mark = AssignmentMarks.objects.get(semester_marks_data=semester_marks_data, assignment_num=assignment_num)
+                    assignment_mark.assignment_marks = value
+                    assignment_mark.save()
+
+            elif key.startswith('presentation_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id, presentation_num = key_parts[2], key_parts[1]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    presentation_mark = PresentationMarks.objects.get(semester_marks_data=semester_marks_data, presentation_num=presentation_num)
+                    presentation_mark.presentation_marks = value
+                    presentation_mark.save()
+
+            elif key.startswith('project_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.semester_project_marks = value
+                    semester_marks_data.save()
+
+            elif key.startswith('midterm_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.mids_marks = value
+                    semester_marks_data.save()
+
+            elif key.startswith('final_marks_'):
+                key_parts = key.split('_')
+                if len(key_parts) >= 3:
+                    student_id = key_parts[2]
+                    semester_marks_data = SemesterMarksData.objects.get(student__StudentID=student_id, course=teachersectioncourse.course)
+                    # Update the PresentationMarks object for the student with the new marks
+                    semester_marks_data.final_marks = value
+                    semester_marks_data.save()
+           
+           
+        
+        # Redirect back to the same page after saving the changes
+        return redirect('portals:student-marksentry', teachersectioncourse_id=teachersectioncourse_id)
+    return render(request, 'portals/Faculty_StudentMarksEntry.html')
+
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
+def faculty_student_marks_entry_view(request, teachersectioncourse_id):
+    # Get the teacher's section taught course
+    teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+    course = teachersectioncourse.course
+
+    # Get all students in the section
+    students = Student.objects.filter(section=teachersectioncourse.section)
+
+    # Get marks data for all students in the section
+    students_marks_data = []
+    for student in students:
+        # Get the relevant marks data for each student and course
+        semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+        quiz_marks = list(QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course))
+        # print(len(quiz_marks))
+        assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+        presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+        # Append marks data to the list
+        students_marks_data.append({
+            'student': student,
+            'semester_marks_data': semester_marks_data,
+            'quiz_marks': quiz_marks,
+            'assignment_marks': assignment_marks,
+            'presentation_marks': presentation_marks
+        })
+        # print(students_marks_data[0])
+
+    # Pass the list of students marks data and course to the template context
+    context = {
+        'teachersectioncourse':teachersectioncourse,
+        'single_student': students_marks_data[0],
+        'students_marks_data': students_marks_data,
+        'course': course
+    }
+
+    return render(request, "portals/Faculty_StudentsMarksEntry.html", context)
 
 
 @login_required(login_url='portals:student-login') 
@@ -1502,7 +1632,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    generate_marks_view(request)
+    # generate_marks_view(request)
     # test_mapping()
     # assign_classes_to_sections(request)
     # create_section_courses_mapping()
