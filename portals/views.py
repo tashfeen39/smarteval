@@ -159,8 +159,8 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'course': course,
         'semester_marks_data': semester_marks_data,
         'quiz_marks': quiz_marks,
-        'assignment_marks': assignment_marks,
-        'presentation_marks': presentation_marks
+        'assignment_marks': list(assignment_marks),
+        'presentation_marks': list(presentation_marks)
     }
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
