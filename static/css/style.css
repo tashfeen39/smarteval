@@ -2000,6 +2000,7 @@ div.dataTables_wrapper div.dataTables_length select {
 .header .header-left .logo img {
   max-height: 40px;
   width: auto;
+  margin-left: 40px;
 }
 .header-left .logo.logo-small {
   display: none;
@@ -2175,6 +2176,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 .user-header .user-text {
   margin-left: 10px;
+  margin-top: 14px;
 }
 .user-header .user-text h6 {
   margin-bottom: 2px;
@@ -8324,21 +8326,23 @@ body[data-layout-mode="dark"]
 @media (min-width: 992px) {
   #toggle_btn {
     align-items: center;
-    color: #fff;
+    color: black;
     display: inline-flex;
     float: left;
-    font-size: 18px;
+    font-size: 25px;
     height: 40px;
     width: 40px;
-    background: #3d5ee1;
+    background: none;
     justify-content: center;
     padding: 0 12px;
     border-radius: 10px;
+    /* border: 1px solid gray; */
     position: absolute;
-    left: -22px;
+    /* left: -50px; */
     z-index: 99;
     top: 10px;
-    box-shadow: 0 0 35px rgba(61, 47, 146, 0.1);
+    /* box-shadow: 0 0 35px rgba(61, 47, 146, 0.1); */
+    margin-left: 13px;
   }
   .mini-sidebar .menu-toggle #toggle_btn {
     left: 5px;
