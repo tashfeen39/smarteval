@@ -123,17 +123,86 @@
                                                 readonly>
                                         </td> </tr>
 
-
-
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+                <br>
+                <h2>Reports</h2>
+                <canvas id="marksChart" width="300" height="100"></canvas>
             </div>
         </div>
+
     </div>
 </div>
+<!-- chart js libraray -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+
+<!-- Inline JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var quizMarks = [{% for quiz_mark in quiz_marks %}{{ quiz_mark.quiz_marks }}, {% endfor %}];
+    var assignmentMarks = [{% for assignment_mark in assignment_marks %}{{ assignment_mark.assignment_marks }}, {% endfor %}];
+    var presentationMarks = [{% for presentation_mark in presentation_marks %}{{ presentation_mark.presentation_marks }}, {% endfor %}];
+    var semesterProjectMarks = [{{ semester_marks_data.semester_project_marks }}]
+    var midsMarks = [{{ semester_marks_data.mids_marks }}]
+    var FinalMarks = [{{ semester_marks_data.final_marks }}]
+
+    var allMarks = [
+        ...quizMarks,
+        ...assignmentMarks,
+        ...presentationMarks,
+        ...semesterProjectMarks,
+        ...midsMarks,
+        ...FinalMarks
+    ];
+
+    var labels = [];
+    {% for quiz_mark in quiz_marks %}
+    labels.push(`Quiz {{ forloop.counter }}`);
+    {% endfor %}
+    {% for assignment_mark in assignment_marks %}
+    labels.push(`Assignment {{ forloop.counter }}`);
+    {% endfor %}
+    {% for presentation_mark in presentation_marks %}
+    labels.push(`Presentation {{ forloop.counter }}`);
+    {% endfor %}
+    labels.push(`Semester Project`);
+    labels.push(`Mids`);
+    labels.push(`Finals`);
+    
+
+    var chartConfig = {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Marks',
+                data: allMarks,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    };
+
+    var ctx = document.getElementById('marksChart').getContext('2d');
+    var marksChart = new Chart(ctx, chartConfig);
+    });
+</script>
+
+
 
 
 {% endblock %}
@@ -141,111 +210,13 @@
 <!-- ---------------- Block for Footer ---------------- -->
 {% block footer %}
 
-
+<!-- <script src="{% static 'js/Faculty_StudentInfo.js' %}"></script> -->
 <script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
 <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.fillbetween.js' %}"></script>
 <script src="{% static 'plugins/flot/jquery.flot.pie.js' %}"></script>
 <script src="{% static 'plugins/flot/chart-data.js' %}"></script>
-
-<!-- Include Chart.js library -->
-<script src="
-https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-<!-- Include Chart.js library -->
-
-<!-- HTML structure for the chart -->
-<canvas id="marksChart" width="400" height="200"></canvas>
-
-<script>
-    const labels = Utils.months({ count: 7 });
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)'
-            ],
-            borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)'
-            ],
-            borderWidth: 1
-        }]
-    };
-    const config = {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        },
-    };
-    // Create the chart
-    var ctx = document.getElementById('marksChart').getContext('2d');
-    var marksChart = new Chart(ctx, chartConfig);
-
-
-    // Working graph
-
-    // Get the marks data from Django views and pass it here
-    var quizMarks = [2, 4, 5];
-    var assignmentMarks = [5, 3, 2];
-    var presentationMarks = [6, 2, 2];
-
-    // Chart configuration
-    var chartConfig = {
-        type: 'bar',
-        data: {
-            labels: ['Quiz 1', 'Quiz 2', 'Quiz 3'], // Example labels
-            datasets: [{
-                label: 'Quiz Marks',
-                data: quizMarks,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Example color
-                borderColor: 'rgba(255, 99, 132, 1)', // Example color
-                borderWidth: 1
-            }, {
-                label: 'Assignment Marks',
-                data: assignmentMarks,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Example color
-                borderColor: 'rgba(54, 162, 235, 1)', // Example color
-                borderWidth: 1
-            }, {
-                label: 'Presentation Marks',
-                data: presentationMarks,
-                backgroundColor: 'rgba(255, 206, 86, 0.2)', // Example color
-                borderColor: 'rgba(255, 206, 86, 1)', // Example color
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    };
-
-    // Create the chart
-    var ctx = document.getElementById('marksChart').getContext('2d');
-    var marksChart = new Chart(ctx, chartConfig);
-</script>
 
 
 {% endblock %}
