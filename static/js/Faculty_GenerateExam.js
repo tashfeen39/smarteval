@@ -312,8 +312,8 @@ function displayQuestions(data) {
 
     paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
     <h3><b>Question ${index + 1}:</b></h3>
-    <p>BT Level: ${btLevel}</p>
-    <p>Complexity: ${complexity}</p>
+    <p><b>BT Level:</b> ${btLevel}</p>
+    <p><b>Complexity:</b> ${complexity}</p>
     <p>${prompt.replace(/\n/g, "<br>")}</p>
   </div>`;
   });

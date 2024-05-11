@@ -1,25 +1,3 @@
-.container {
-  margin-top: 65px;
-  margin-bottom: 65px;
-  max-width: 560px;
-  /* background-color: rgb(246, 251, 254); another choice for background color*/
-  background-color: rgb(233, 240, 244);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px 30px 20px;
-  border-radius: 2%;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.mainheading {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-.form-group {
-  margin: 15px 0;
-}
 
 .file-upload {
   display: inline-flex;
@@ -33,7 +11,10 @@
   background-color: #f1f1f1;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  float: right;
+  margin-bottom: 10px;
 }
+
 
 .file-upload:hover {
   background-color: #ddd;
@@ -77,4 +58,24 @@
   transform: translate(-50%, -50%);
   font-size: 120px;
   color: #888;
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+  font-size: 1rem;
+  line-height: 2.15;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
+.card-registration .select-arrow {
+  top: 13px;
+}
+
+.form-wrapper {
+  max-height: 760px; /* Adjust the height as needed */
+  overflow-y: auto;
+}
+
+.first-name{
+  margin-left: 0px;
 }
