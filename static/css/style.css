@@ -1449,7 +1449,7 @@ button.bg-danger:hover {
 }
 .card .card-header .card-title {
   margin-bottom: 0;
-  font-size: 18px;
+  font-size: 28px;
 }
 .modal-footer.text-left {
   text-align: left;
@@ -1844,6 +1844,7 @@ div.dataTables_wrapper div.dataTables_length select {
 .avatar-sm {
   width: 2.5rem;
   height: 2.5rem;
+  padding-top: 7px;
 }
 .avatar-sm .border {
   border-width: 3px !important;
@@ -2051,7 +2052,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 .user-menu.nav > li > a:hover,
 .user-menu.nav > li > a:focus {
-  background-color: white;
+  background-color: #4258cb;
 }
 .user-menu.nav > li > a:hover i,
 .user-menu.nav > li > a:focus i {
@@ -3647,11 +3648,13 @@ table.table-inbox tbody tr.checked {
   justify-content: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
+  margin-left: -70px;
+  padding-left: none;
 }
 .profile-user-img {
   margin-right: 20px;
   position: relative;
-  top: -30px;
+  /* top: -30px; */
 }
 .profile-user-img img {
   border-radius: 50%;

@@ -31,15 +31,13 @@
   vertical-align: middle;
   padding: 1rem;
   border-bottom: 1px solid rgb(207, 207, 207);
-
+  background-color: rgb(244, 244, 244);
 }
 
 .table th:hover,
 .table td:hover {
-  background-color: rgb(236, 236, 236);
+  background-color: #dddddd;
 }
-
-
 
 .table-striped tbody tr:nth-of-type(odd) {
   background-color: #f8f9fa;
@@ -60,5 +58,3 @@
   color: #3d5ee1;
   cursor: pointer;
 }
-
-
