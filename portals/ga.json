@@ -1,0 +1,7 @@
+{"GAs": [
+    {"id": "GA1", "description": "Ability to apply knowledge of mathematics, science, and engineering."},
+    {"id": "GA2", "description": "Ability to design and conduct experiments, as well as to analyze and interpret data."},
+    {"id": "GA3", "description": "Ability to design a system, component, or process to meet desired needs."},
+    {"id": "GA4", "description": "Ability to function on multidisciplinary teams."},
+    {"id": "GA5", "description": "Understanding of professional and ethical responsibility."}
+  ]}

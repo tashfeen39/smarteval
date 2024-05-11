@@ -1,0 +1,8 @@
+{"CLOs": [
+    {"id": "CLO1", "description": "Demonstrate knowledge of fundamental concepts in computer science."},
+    {"id": "CLO2", "description": "Apply critical thinking skills to analyze and solve computational problems."},
+    {"id": "CLO3", "description": "Communicate technical information effectively in written and oral forms."},
+    {"id": "CLO4", "description": "Design, implement, and evaluate computer-based solutions to meet a given set of requirements."},
+    {"id": "CLO5", "description": "Understand professional, ethical, legal, security, and social issues related to computing."}
+  ]
+}

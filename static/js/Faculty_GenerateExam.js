@@ -73,6 +73,44 @@ document
 
       // ---------------- BT LEVEL END -------------------
 
+      // -------------------- CLO's -------------------
+      var cloHeading = document.createElement("h5");
+      cloHeading.textContent = "CLO's";
+      questionDiv.appendChild(cloHeading);
+
+      // This code creates a single-selection dropdown for CLOs
+      var cloSelect = document.createElement("select");
+      cloSelect.name = `question_${i}_clo`;
+      cloSelect.classList.add("form-select", "mb-3", "question-clo");
+      ["N/A", "CLO 1", "CLO 2", "CLO 3", "CLO 4", "CLO 5"].forEach(function (
+        clo
+      ) {
+        var option = document.createElement("option");
+        option.value = clo.toLowerCase();
+        option.textContent = clo;
+        cloSelect.appendChild(option);
+      });
+      questionDiv.appendChild(cloSelect);
+
+      // -------------------- GA's -------------------
+      var gaHeading = document.createElement("h5");
+      gaHeading.textContent = "GA's";
+      questionDiv.appendChild(gaHeading);
+
+      // This code creates a single-selection dropdown for GAs
+      var gaSelect = document.createElement("select");
+      gaSelect.name = `question_${i}_ga`;
+      gaSelect.classList.add("form-select", "mb-3", "question-ga");
+      ["N/A", "ga 1", "ga 2", "ga 3", "ga 4", "ga 5"].forEach(function (
+        ga
+      ) {
+        var option = document.createElement("option");
+        option.value = ga.toLowerCase();
+        option.textContent = ga;
+        gaSelect.appendChild(option);
+      });
+      questionDiv.appendChild(gaSelect);
+
       // Complexity Level Heading
       var heading = document.createElement("h5");
       heading.textContent = `Complexity Level`;
@@ -172,7 +210,16 @@ document
   .addEventListener("submit", function (event) {
     event.preventDefault();
 
-    // Construct the data object from form fields
+    // Clear previous error messages
+    document.querySelectorAll(".error-message").forEach((e) => e.remove());
+
+    if (!validateQuestions()) {
+      // If validation fails, stop the submission
+      console.log("Validation failed.");
+      return;
+    }
+
+    // Proceed with constructing data object only if validation is successful
     var data = {
       subject_id: document.getElementById("subject").value,
       selectQuestions: document.getElementById("selectQuestions").value,
@@ -188,10 +235,20 @@ document
       questionComplexities: Array.from(
         document.querySelectorAll(".question-complexity")
       ).map((el) => el.value),
+      questionCLOs: Array.from(document.querySelectorAll(".question-clo")).map(
+        (select) => select.value
+      ),
+      questionGAs: Array.from(document.querySelectorAll(".question-ga")).map(
+        (select) => select.value
+      ),
       questionKeywords: Array.from(
         document.querySelectorAll('textarea[name*="question_"]')
       ).map((el) => el.value.split(",").map((kw) => kw.trim())),
     };
+    console.log("CLOs collected:", data.questionCLOs);
+    console.log("GAs collected:", data.questionGAs);
+
+    console.log("Submitting data:", data);
 
     // Sending data to the server
     fetch(generatePaperUrl, {
@@ -208,36 +265,64 @@ document
       .catch(handleError);
   });
 
+
 function handleResponse(response) {
   if (!response.ok) throw new Error(`HTTP error ${response.status}`);
   return response.json();
 }
 
 function displayQuestions(data) {
-  var paperPromptsDiv = document.getElementById("paperPrompts");
-  paperPromptsDiv.innerHTML = `<h2>Subject Name: ${data.subject_name}</h2>`;
+   console.log("Received data:", data); // Log the entire data object
 
+   if (!data.paper_prompts || !Array.isArray(data.paper_prompts)) {
+     console.error("Invalid or no prompts received:", data.paper_prompts);
+     return; // Exit if no valid prompts received
+   }
+
+  var paperPromptsDiv = document.getElementById("paperPrompts");
+  paperPromptsDiv.innerHTML = `<h2>Subject Name: ${
+    data.subject_name || "Unknown"
+  }</h2>`;
   data.paper_prompts.forEach((prompt, index) => {
-    var btLevel = data.questionBTLevels[index];
-    var complexity = data.questionComplexities[index];
+    var btLevel =
+      data.questionBTLevels && data.questionBTLevels[index]
+        ? data.questionBTLevels[index]
+        : "N/A";
+    var complexity =
+      data.questionComplexities && data.questionComplexities[index]
+        ? data.questionComplexities[index]
+        : "N/A";
+    var clos =
+      data.questionCLOs && data.questionCLOs[index]
+        ? data.questionCLOs[index]
+        : "n/a";
+    var gas =
+      data.questionGAs && data.questionGAs[index]
+        ? data.questionGAs[index]
+        : "n/a";
+
+      
 
     paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
-            <h3><b>Question ${index + 1}:</b></h3>
-            <p>BT Level: ${btLevel}</p>
-            <p>Complexity: ${complexity}</p>
-            <p>${prompt.replace(/\n/g, "<br>")}</p>
-        </div>`;
+    <h3><b>Question ${index + 1}:</b></h3>
+    <p>BT Level: ${btLevel}</p>
+    <p>Complexity: ${complexity}</p>
+    <p>${prompt.replace(/\n/g, "<br>")}</p>
+  </div>`;
   });
 
   enableRegenerateButtons();
   createDownloadButton(paperPromptsDiv.innerHTML);
 }
 
+
+
+
+
+
 function handleError(error) {
   console.error("Fetch error:", error);
 }
-
-
 
 window.addEventListener("unload", () => {
   controller.abort();
@@ -344,7 +429,6 @@ document.querySelectorAll(".regenerate-button").forEach((button, index) => {
   });
 });
 
-
 $(function () {
   // Initialize Select2 for the subject dropdown
   $("#subject").select2({
@@ -385,4 +469,36 @@ function createDownloadButton(paperContent) {
   });
 
   downloadContainer.appendChild(downloadButton);
+}
+
+
+function validateQuestions() {
+  var allTopicsEntered = true;
+  var questionTopics = document.querySelectorAll('input[name*="question_"]');
+
+  questionTopics.forEach((input) => {
+    // Remove existing error message if any
+    const existingError = input.previousSibling;
+    if (existingError && existingError.className === "error-message") {
+      input.parentNode.removeChild(existingError);
+    }
+
+    if (input.value.trim() === "") {
+      allTopicsEntered = false;
+      input.style.borderColor = "red"; // Highlight the input field with red if it's empty
+
+      // Create an error message and insert it right above the input
+      var error = document.createElement("div");
+      error.textContent = "Please enter a question topic";
+      error.className = "error-message"; // Add a class for potential styling
+      error.style.color = "red";
+      error.style.fontSize = "14px"; // Smaller font size for error message
+      error.style.padding = "2px 0"; // Padding for better layout
+      input.parentNode.insertBefore(error, input);
+    } else {
+      input.style.borderColor = ""; // Reset the border color if filled
+    }
+  });
+
+  return allTopicsEntered;
 }
