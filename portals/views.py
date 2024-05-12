@@ -113,6 +113,12 @@ def faculty_generate_exam_view(request):
 def faculty_grading_view(request):
     return render(request, "portals/Faculty_Grading.html")
 
+# StudentReports
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
+def faculty_studentsreports_view(request):
+    return render(request, "portals/Faculty_StudentsReports.html")
+
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()

@@ -16,6 +16,7 @@ urlpatterns = [
     path("generate_paper/", views.generate_paper, name="generate_paper"),
     path("regenerate_question/", views.regenerate_question, name="regenerate_question"),
     path("faculty/grading/", views.faculty_grading_view, name="grading"),
+    path("faculty/studentsreports/", views.faculty_studentsreports_view, name="studentsreports"),
     path("faculty/enter-marks/", views.faculty_marks_entry_view, name="enter-marks"),
     path("faculty/my-profile/", views.faculty_profile_view, name="my-profile"),
     path('faculty/student-info/<str:student_id>/<str:teachersectioncourse_id>/', views.faculty_student_info_view, name='student-info'),
