@@ -2,9 +2,8 @@
 
 ## High Priority
 
-- reports
-- multiple reports
-- percentage reports
+- reports for students
+- percentage reports for teachers
 - free room finder
 - classes ke lye clas_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
@@ -13,6 +12,7 @@
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
 - profille wale page pe data show krana
+- nav bar mai sahi data show krana
 - registration form se sara data save krna hai in db
 
 ## From Ali
@@ -27,3 +27,5 @@
 
 
 ## Done but review Required
+
+- multiple reports for teachers
