@@ -10,7 +10,7 @@
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
 
-# From Ali
+## From Ali
 - Student k registered courses, time table aur dashboard ka dekhna k uss main kia add kia ja sakta
 
 
