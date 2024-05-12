@@ -139,44 +139,57 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     student = get_object_or_404(Student, StudentID=student_id)
     teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
     course = teachersectioncourse.course
+    section_students = Student.objects.filter(section=teachersectioncourse.section)
+    print(section_students)
 
     # Get the relevant marks data for the student and course
-    semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+    semester_marks_data = SemesterMarksData.objects.get(student=student, course=course)
+
+    # Filter quiz marks by student and course
     quiz_marks = QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+    # print("Quiz marks", quiz_marks)
+    # Filter assignment marks by student and course
     assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+    # Filter presentation marks by student and course
     presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
 
-    # Calculate the average marks for quizzes, assignments, presentations, semester projects, mid-term marks, and final marks for the whole class
 
-    
-    avg_quiz_marks = QuizMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+    aavg_quiz_marks = {}
+    #For class average
+
+    for section_student in section_students:
+        avg_semester_marks_data = SemesterMarksData.objects.filter(student=section_student, course=course).first()
+        avg_quiz_marks = QuizMarks.objects.filter(semester_marks_data=avg_semester_marks_data)
+        print("\nInside loop avg quiz marks: ", avg_quiz_marks)
+        for i in range(1, 5):
+            aavg_quiz_marks[f'Quiz {i}'] = avg_quiz_marks.filter(quiz_num=i).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+            print("\nAvgg quiz", aavg_quiz_marks)
 
 
-    avg_assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('assignment_marks'))['assignment_marks__avg']
-    avg_presentation_marks = PresentationMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('presentation_marks'))['presentation_marks__avg']
+
+
+
+
+    # Calculate average marks for each quiz
+    # for i in range(1, 5):
+    #     avg_quiz_marks[f'Quiz {i}'] = quiz_marks.filter(quiz_num=i).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+
+    # Calculate average marks for each assignment
+    avg_assignment_marks = {}
+    for i in range(1, 5):
+        avg_assignment_marks[f'Assignment {i}'] = assignment_marks.filter(assignment_num=f'Assignment {i}').aggregate(Avg('assignment_marks'))['assignment_marks__avg']
+
+    # Calculate average marks for each presentation
+    avg_presentation_marks = {}
+    for i in range(1, 3):
+        avg_presentation_marks[f'Presentation {i}'] = presentation_marks.filter(presentation_num=f'Presentation {i}').aggregate(Avg('presentation_marks'))['presentation_marks__avg']
+    # print("Avg quiz: ", avg_quiz_marks)
+    # Calculate the average marks for semester project, mid-term, and final
     avg_semester_project_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('semester_project_marks'))['semester_project_marks__avg']
     avg_mids_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('mids_marks'))['mids_marks__avg']
     avg_final_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('final_marks'))['final_marks__avg']
 
-    print("Quiz Marks: ", quiz_marks)
-    print("Averae quiz marks: ", avg_quiz_marks)
-    
-    # Calculate total marks for each type of assessment
-    total_quiz_marks = quiz_marks.aggregate(Sum('quiz_marks'))['quiz_marks__sum']
-    total_assignment_marks = assignment_marks.aggregate(Sum('assignment_marks'))['assignment_marks__sum']
-    total_presentation_marks = presentation_marks.aggregate(Sum('presentation_marks'))['presentation_marks__sum']
-    total_semester_project_marks = semester_marks_data.semester_project_marks
-    total_mids_marks = semester_marks_data.mids_marks
-    total_final_marks = semester_marks_data.final_marks
-    
-    # Calculate percentage values
-    percentage_quiz_marks = (avg_quiz_marks / total_quiz_marks) * 100 if total_quiz_marks else 0
-    percentage_assignment_marks = (avg_assignment_marks / total_assignment_marks) * 100 if total_assignment_marks else 0
-    percentage_presentation_marks = (avg_presentation_marks / total_presentation_marks) * 100 if total_presentation_marks else 0
-    percentage_semester_project_marks = (avg_semester_project_marks / total_semester_project_marks) * 100 if total_semester_project_marks else 0
-    percentage_mids_marks = (avg_mids_marks / total_mids_marks) * 100 if total_mids_marks else 0
-    percentage_final_marks = (avg_final_marks / total_final_marks) * 100 if total_final_marks else 0
-    
     # Pass the student object, course, and marks data to the template context
     context = {
         'student': student,
@@ -191,15 +204,10 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'avg_semester_project_marks': avg_semester_project_marks,
         'avg_mids_marks': avg_mids_marks,
         'avg_final_marks': avg_final_marks,
-        'percentage_quiz_marks': percentage_quiz_marks,
-        'percentage_assignment_marks': percentage_assignment_marks,
-        'percentage_presentation_marks': percentage_presentation_marks,
-        'percentage_semester_project_marks': percentage_semester_project_marks,
-        'percentage_mids_marks': percentage_mids_marks,
-        'percentage_final_marks': percentage_final_marks,
     }
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
+
 
 
 @login_required(login_url='portals:faculty-login')
