@@ -147,12 +147,19 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
 
     # Calculate the average marks for quizzes, assignments, presentations, semester projects, mid-term marks, and final marks for the whole class
+
+    
     avg_quiz_marks = QuizMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+
+
     avg_assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('assignment_marks'))['assignment_marks__avg']
     avg_presentation_marks = PresentationMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('presentation_marks'))['presentation_marks__avg']
     avg_semester_project_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('semester_project_marks'))['semester_project_marks__avg']
     avg_mids_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('mids_marks'))['mids_marks__avg']
     avg_final_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('final_marks'))['final_marks__avg']
+
+    print("Quiz Marks: ", quiz_marks)
+    print("Averae quiz marks: ", avg_quiz_marks)
     
     # Calculate total marks for each type of assessment
     total_quiz_marks = quiz_marks.aggregate(Sum('quiz_marks'))['quiz_marks__sum']
@@ -257,8 +264,7 @@ def faculty_save_marks_view(request, teachersectioncourse_id):
                     # Update the PresentationMarks object for the student with the new marks
                     semester_marks_data.final_marks = value
                     semester_marks_data.save()
-           
-           
+
         
         # Redirect back to the same page after saving the changes
         return redirect('portals:student-marksentry', teachersectioncourse_id=teachersectioncourse_id)

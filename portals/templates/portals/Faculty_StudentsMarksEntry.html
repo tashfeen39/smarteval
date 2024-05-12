@@ -40,6 +40,7 @@
                                 <table class="table border-0 table-center table-hover">
                                     <thead class="student-thread sticky-header">
                                         <tr>
+                                            <th>No.</th>
                                             <th>Roll No.</th>
                                             <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</th>
                                             {% for quiz_mark in single_student.quiz_marks %}
@@ -63,6 +64,7 @@
                                     <tbody>
                                         {% for student_marks_data in students_marks_data %}
                                         <tr>
+                                            <td>{{ forloop.counter }}</td>
                                             <td class="table_width">{{ student_marks_data.student.StudentID }}</td>
                                             <td>
                                                 <h2 class="table-avatar">
