@@ -1,56 +1,53 @@
-{% extends "portals/dashboard_template.html" %}
-
-
-{% load static %}
+{% extends "portals/dashboard_template.html" %} {% load static %}
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
-<link rel="stylesheet" href="{% static 'css/Faculty_DisplayClasses.css' %}">
-
+<link rel="stylesheet" href="{% static 'css/Faculty_DisplayClasses.css' %}" />
 
 {% endblock %}
-
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
 <div class="page-wrapper">
-    <div class="content container-fluid">
-
-        <div class="page-header">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row align-items-center">
-                                <div class="col-6">
-                                    <h5 class="card-title">Classes</h5>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="card-body">
-
-                            <table class="table table-striped ">
-                                <tbody>
-                                    {% for sectioncourse in sections_taught %}
-                                    <tr>
-                                        <td><a class="table_height" href="{% url 'portals:student-marksentry' sectioncourse.pk %}">{{ sectioncourse.section.degree.degree_abbreviation }} {{ sectioncourse.section.semester }} {{ sectioncourse.section.section_name }} - {{ sectioncourse.course }}</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-6">
+                  <h5 class="card-title">Classes</h5>
                 </div>
+              </div>
             </div>
+            <div class="card-body">
+              <table class="table table-striped">
+                <tbody>
+                  {% for sectioncourse in sections_taught %}
+                  <tr>
+                    <td>
+                      <a
+                        class="table_height"
+                        href="{% url 'portals:student-marksentry' sectioncourse.pk %}"
+                        >{{ sectioncourse.section.degree.degree_abbreviation }}
+                        {{ sectioncourse.section.semester }} {{
+                        sectioncourse.section.section_name }} - {{
+                        sectioncourse.course }}</a
+                      >
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
 
 <!-- ---------------- Block for Footer ---------------- -->
-{% block footer %}
-
-{% endblock %}
-
+{% block footer %} {% endblock %}
