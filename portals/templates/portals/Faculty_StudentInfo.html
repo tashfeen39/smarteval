@@ -106,13 +106,39 @@
             <br />
             <br />
             <canvas id="averageMarksChart" width="300" height="100"></canvas>
-
+            <br />
+            <br />
+            <br />
             <canvas id="quizMarks" width="300" height="100"></canvas>
+            <br />
+            <br />
+            <br />
             <canvas id="assignmentMarks" width="300" height="100"></canvas>
+            <br />
+            <br />
+            <br />
             <canvas id="presentationMarks" width="300" height="100"></canvas>
+            <br />
+            <br />
+            <br />
             <canvas id="semesterProjectMarks" width="300" height="100"></canvas>
-            <canvas id="midsMarks" width="300" height="100"></canvas>
-            <canvas id="finalMarks" width="300" height="100"></canvas>
+            <br />
+            <br />
+            <br />
+            <h2>Exams</h2>
+            <br />
+            <div class = "examMarks row">
+            <div class = "col-sm-6">
+            <canvas id="midsMarks" width="300" height="300"></canvas>
+            </div>
+            <div class = "col-sm-6">
+           
+            <canvas id="finalMarks" width="300" height="300"></canvas>
+            </div>
+            </div>
+            <br />
+            <br />
+
             
           </div>
         </div>
@@ -155,11 +181,12 @@
     var maxAssignmentMarks = [{% for key, value in max_assignment_marks.items %} {{ value }},{% endfor %}];
     var maxPresentationMarks = [{% for key, value in max_presentation_marks.items %} {{ value }},{% endfor %}];
 
-    var maxSemesterProjectMarks = {{ max_semester_project_marks }};
+    var maxSemesterProjectMarks = {{ max_semester_project_marks|safe }};
     var maxMidsMarks = {{ max_mids_marks }};
     var maxFinalMarks = {{ max_final_marks }};
 
-    
+
+
     var minQuizMarks = [
       {% for key, value in min_quiz_marks.items %} {{ value }},{% endfor %}
     ];
@@ -169,8 +196,6 @@
     var minSemesterProjectMarks = {{ min_semester_project_marks }};
     var minMidsMarks = {{ min_mids_marks }};
     var minFinalMarks = {{ min_final_marks }};
-  
-  
   
 
     var allMarks = [
@@ -204,17 +229,354 @@
     ];
     allMinMarks.push(minSemesterProjectMarks, minMidsMarks, minFinalMarks)
 
-    var labels = [];
-    {% for quiz_mark in quiz_marks %}    labels.push(`Quiz {{ forloop.counter }}`);{% endfor %}
-    {% for assignment_mark in assignment_marks %}    labels.push(`Assignment {{ forloop.counter }}`);{% endfor %}
-    {% for presentation_mark in presentation_marks %}    labels.push(`Presentation {{ forloop.counter }}`);{% endfor %}
-    labels.push(`Semester Project`);
-    labels.push(`Mids`);
-    labels.push(`Finals`);
+    var quizLabels = [];
+    var assignmentLabels = [];
+    var presentationLabels = [];
+    var semProjLabels = [];
+    var midsLabels = [];
+    var finalLabels = [];
 
-    // Add labels for average marks
-    // labels.push("Average Quiz", "Average Assignment", "Average Presentation", "Average Semester Project", "Average Mids", "Average Finals");
+    {% for quiz_mark in quiz_marks %}    quizLabels.push(`Quiz {{ forloop.counter }}`);{% endfor %}
+    {% for assignment_mark in assignment_marks %}    assignmentLabels.push(`Assignment {{ forloop.counter }}`);{% endfor %}
+    {% for presentation_mark in presentation_marks %}    presentationLabels.push(`Presentation {{ forloop.counter }}`);{% endfor %}
+    semProjLabels.push(`Semester Project`);
+    midsLabels.push(`Mids`);
+    finalLabels.push(`Finals`);
 
+    var labels = [
+      ...quizLabels,
+      ...assignmentLabels,
+      ...presentationLabels,
+    ];
+    labels.push(semProjLabels, midsLabels, finalLabels)
+
+
+
+    var quizChartConfig = {
+      type: 'bar',
+      data: {
+        labels: quizLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: maxQuizMarks,
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: quizMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: avgQuizMarks,
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: minQuizMarks,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Quizzes',
+          fontSize: 24
+        },
+         layout: {
+      padding: {
+        top: 20 // Adjust the top padding value as needed
+      }
+    },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
+
+    var assignmentChartConfig = {
+      type: 'bar',
+      data: {
+        labels: assignmentLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: maxQuizMarks,
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: assignmentMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: avgAssignmentMarks,
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: minAssignmentMarks,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Assignments',
+          fontSize: 24
+        },
+        
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
+
+
+    var presentationChartConfig = {
+      type: 'bar',
+      data: {
+        labels: presentationLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: maxPresentationMarks,
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: presentationMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: avgPresentationMarks,
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: minPresentationMarks,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Presentations',
+          fontSize: 24
+        },
+        
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
+
+
+    var semProjChartConfig = {
+      type: 'bar',
+      data: {
+        labels: semProjLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: [maxSemesterProjectMarks],
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: semesterProjectMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: [avgSemesterProjectMarks],
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: [minSemesterProjectMarks],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Project',
+          fontSize: 24
+        },
+        
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
+
+
+    var midsChartConfig = {
+      type: 'bar',
+      data: {
+        labels: midsLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: [maxMidsMarks],
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: midsMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: [avgMidsMarks],
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: [minMidsMarks],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Mids',
+          fontSize: 24
+        },
+        
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
+
+
+    var finalChartConfig = {
+      type: 'bar',
+      data: {
+        labels: finalLabels,
+        datasets: [
+           {
+          label: 'Highest',
+          data: [maxFinalMarks],
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 1
+        },
+        {
+          label: 'Student',
+          data: FinalMarks,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        },
+        {
+          label: 'Average',
+          data: [avgFinalMarks],
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 1
+        },
+        {
+          label: 'Lowest',
+          data: [minFinalMarks],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 1
+        },
+       
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Student vs Class Performance in Finals',
+          fontSize: 24
+        },
+        
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    };
 
 
 
@@ -231,6 +593,11 @@
         }]
       },
       options: {
+         title: {
+          display: true,
+          text: 'Student Performance',
+          fontSize: 24
+        },
         scales: {
           yAxes: [{
             ticks: {
@@ -262,22 +629,6 @@
             fill: false, 
             tension: 0
           },
-          {
-            label: 'Lowest Marks',
-            data: allMinMarks,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)', 
-            borderColor: 'rgb(255, 99, 132)',
-            fill: false, 
-            tension: 0
-          },
-          {
-            label: 'Highest Marks',
-            data: allMaxMarks,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgb(75, 192, 192)',
-            fill: false, 
-            tension: 0
-          }
         ]
       },
       options: {
@@ -287,7 +638,8 @@
         },
         title: {
           display: true,
-          text: 'Student Performance vs Overall Class Performance'
+          text: 'Student Performance vs Class Performance',
+          fontSize: 24
         }
       },
     };
@@ -299,6 +651,24 @@
 
     var ctx = document.getElementById('averageMarksChart').getContext('2d');
     var marksChart = new Chart(ctx, avgChartConfig);
+    
+    var ctx = document.getElementById('quizMarks').getContext('2d');
+    var marksChart = new Chart(ctx, quizChartConfig);
+
+    var ctx = document.getElementById('assignmentMarks').getContext('2d');
+    var marksChart = new Chart(ctx, assignmentChartConfig);
+
+    var ctx = document.getElementById('presentationMarks').getContext('2d');
+    var marksChart = new Chart(ctx, presentationChartConfig);
+
+    var ctx = document.getElementById('semesterProjectMarks').getContext('2d');
+    var marksChart = new Chart(ctx, semProjChartConfig);
+
+    var ctx = document.getElementById('midsMarks').getContext('2d');
+    var marksChart = new Chart(ctx, midsChartConfig);
+
+    var ctx = document.getElementById('finalMarks').getContext('2d');
+    var marksChart = new Chart(ctx, finalChartConfig);
 
       });
   </script>
