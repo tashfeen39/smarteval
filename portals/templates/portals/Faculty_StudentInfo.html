@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'plugins/scrollbar/scroll.min.css' %}">
 <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,1,200" />
-    <link rel="stylesheet" href="{% static 'css/Faculty_StudentInfo.css' %}">
+<link rel="stylesheet" href="{% static 'css/Faculty_StudentInfo.css' %}">
 
 
 {% endblock %}
@@ -121,7 +121,8 @@
                                             <input type="float" name="final_marks"
                                                 value="{{ semester_marks_data.final_marks }}" class="form-control"
                                                 readonly>
-                                        </td> </tr>
+                                        </td>
+                                    </tr>
 
                                 </tbody>
                             </table>
@@ -131,6 +132,9 @@
                 <br>
                 <h2>Reports</h2>
                 <canvas id="marksChart" width="300" height="100"></canvas>
+                <div class="col-sm-12">
+                    <canvas id="averageMarksChart" width="300" height="100"></canvas>
+                </div>
             </div>
         </div>
 
@@ -150,6 +154,14 @@
     var midsMarks = [{{ semester_marks_data.mids_marks }}]
     var FinalMarks = [{{ semester_marks_data.final_marks }}]
 
+      // Average marks
+    var avgQuizMarks = {{ avg_quiz_marks }};
+    var avgAssignmentMarks = {{ avg_assignment_marks }};
+    var avgPresentationMarks = {{ avg_presentation_marks }};
+    var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
+    var avgMidsMarks = {{ avg_mids_marks }};
+    var avgFinalMarks = {{ avg_final_marks }};
+
     var allMarks = [
         ...quizMarks,
         ...assignmentMarks,
@@ -158,6 +170,10 @@
         ...midsMarks,
         ...FinalMarks
     ];
+
+    // Add average marks to the array
+    allMarks.push(avgQuizMarks, avgAssignmentMarks, avgPresentationMarks, avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks);
+
 
     var labels = [];
     {% for quiz_mark in quiz_marks %}
@@ -172,7 +188,12 @@
     labels.push(`Semester Project`);
     labels.push(`Mids`);
     labels.push(`Finals`);
-    
+
+    // Add labels for average marks
+    labels.push("Average Quiz", "Average Assignment", "Average Presentation", "Average Semester Project", "Average Mids", "Average Finals");
+
+
+
 
     var chartConfig = {
         type: 'bar',
@@ -197,8 +218,10 @@
         }
     };
 
+    
     var ctx = document.getElementById('marksChart').getContext('2d');
     var marksChart = new Chart(ctx, chartConfig);
+
     });
 </script>
 
