@@ -258,10 +258,14 @@ class Class(models.Model):
 class SemesterMarksData(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
-    mids_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    final_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    semester_project_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    mids_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    final_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    semester_project_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
     semester_number = models.PositiveSmallIntegerField(blank=True, null=True)
+    total_mids_marks = models.DecimalField(max_digits=5, decimal_places=1, default=25, blank=True, null=True)
+    total_final_marks = models.DecimalField(max_digits=5, decimal_places=1, default=45, blank=True, null=True)
+    total_project_marks = models.DecimalField(max_digits=5, decimal_places=1, default=10, blank=True, null=True)
+
 
     def __str__(self):
         return f"{self.student.user.first_name} {self.student.user.last_name} - {self.course.course_name} - Semester {self.semester_number} Marks"
@@ -273,7 +277,9 @@ class SemesterMarksData(models.Model):
 class AssignmentMarks(models.Model):
     semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
     assignment_num = models.CharField(max_length=20, blank=True, null=True) 
-    assignment_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    assignment_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    total_assignment_marks = models.DecimalField(default=10, max_digits=5, decimal_places=1, blank=True, null=True)
+
 
     def __str__(self):
         return f"{self.semester_marks_data} - Assignment {self.assignment_num} - Marks: {self.assignment_marks}"
@@ -285,7 +291,9 @@ class AssignmentMarks(models.Model):
 class QuizMarks(models.Model):
     semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
     quiz_num = models.CharField(max_length=20, blank=True, null=True)  
-    quiz_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    quiz_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    total_quiz_marks = models.DecimalField(default=10, max_digits=5, decimal_places=1, blank=True, null=True)
+    
 
     def __str__(self):
         return f"{self.semester_marks_data} - Quiz {self.quiz_num} - Marks: {self.quiz_marks}"
@@ -298,7 +306,9 @@ class QuizMarks(models.Model):
 class PresentationMarks(models.Model):
     semester_marks_data = models.ForeignKey(SemesterMarksData, on_delete=models.CASCADE, blank=True, null=True)
     presentation_num = models.CharField(max_length=20, blank=True, null=True) 
-    presentation_marks = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    presentation_marks = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    total_presentation_marks = models.DecimalField(default=10, max_digits=5, decimal_places=1, blank=True, null=True)
+
 
     def __str__(self):
         return f"{self.semester_marks_data} - Presentation {self.presentation_num} - Marks: {self.presentation_marks}"

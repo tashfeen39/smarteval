@@ -26,6 +26,8 @@ from itertools import cycle
 import itertools
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg, Sum
+
 
 
 @login_required(login_url='portals:faculty-login')
@@ -133,37 +135,65 @@ def faculty_marks_entry_view(request):
 def faculty_profile_view(request):
     return render(request, "portals/Faculty_Profile.html")
 
-
-@login_required(login_url='portals:faculty-login')
-@teacher_required()
 def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     student = get_object_or_404(Student, StudentID=student_id)
     teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
-    course=teachersectioncourse.course
-    # print(course)
+    course = teachersectioncourse.course
 
     # Get the relevant marks data for the student and course
     semester_marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
-    quiz_marks = list(QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course))
+    quiz_marks = QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
     assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
     presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
 
-    # print("semester_marks_data: ", semester_marks_data)
-
-    # print("Quiz Marks: ", quiz_marks[3].quiz_marks)
-    # print("Finals: ", semester_marks_data.final_marks)
-
+    # Calculate the average marks for quizzes, assignments, presentations, semester projects, mid-term marks, and final marks for the whole class
+    avg_quiz_marks = QuizMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+    avg_assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('assignment_marks'))['assignment_marks__avg']
+    avg_presentation_marks = PresentationMarks.objects.filter(semester_marks_data__course=course).aggregate(Avg('presentation_marks'))['presentation_marks__avg']
+    avg_semester_project_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('semester_project_marks'))['semester_project_marks__avg']
+    avg_mids_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('mids_marks'))['mids_marks__avg']
+    avg_final_marks = SemesterMarksData.objects.filter(course=course).aggregate(Avg('final_marks'))['final_marks__avg']
+    
+    # Calculate total marks for each type of assessment
+    total_quiz_marks = quiz_marks.aggregate(Sum('quiz_marks'))['quiz_marks__sum']
+    total_assignment_marks = assignment_marks.aggregate(Sum('assignment_marks'))['assignment_marks__sum']
+    total_presentation_marks = presentation_marks.aggregate(Sum('presentation_marks'))['presentation_marks__sum']
+    total_semester_project_marks = semester_marks_data.semester_project_marks
+    total_mids_marks = semester_marks_data.mids_marks
+    total_final_marks = semester_marks_data.final_marks
+    
+    # Calculate percentage values
+    percentage_quiz_marks = (avg_quiz_marks / total_quiz_marks) * 100 if total_quiz_marks else 0
+    percentage_assignment_marks = (avg_assignment_marks / total_assignment_marks) * 100 if total_assignment_marks else 0
+    percentage_presentation_marks = (avg_presentation_marks / total_presentation_marks) * 100 if total_presentation_marks else 0
+    percentage_semester_project_marks = (avg_semester_project_marks / total_semester_project_marks) * 100 if total_semester_project_marks else 0
+    percentage_mids_marks = (avg_mids_marks / total_mids_marks) * 100 if total_mids_marks else 0
+    percentage_final_marks = (avg_final_marks / total_final_marks) * 100 if total_final_marks else 0
+    
     # Pass the student object, course, and marks data to the template context
     context = {
         'student': student,
         'course': course,
         'semester_marks_data': semester_marks_data,
-        'quiz_marks': quiz_marks,
+        'quiz_marks': list(quiz_marks),
         'assignment_marks': list(assignment_marks),
-        'presentation_marks': list(presentation_marks)
+        'presentation_marks': list(presentation_marks),
+        'avg_quiz_marks': avg_quiz_marks,
+        'avg_assignment_marks': avg_assignment_marks,
+        'avg_presentation_marks': avg_presentation_marks,
+        'avg_semester_project_marks': avg_semester_project_marks,
+        'avg_mids_marks': avg_mids_marks,
+        'avg_final_marks': avg_final_marks,
+        'percentage_quiz_marks': percentage_quiz_marks,
+        'percentage_assignment_marks': percentage_assignment_marks,
+        'percentage_presentation_marks': percentage_presentation_marks,
+        'percentage_semester_project_marks': percentage_semester_project_marks,
+        'percentage_mids_marks': percentage_mids_marks,
+        'percentage_final_marks': percentage_final_marks,
     }
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
+
 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
@@ -464,86 +494,6 @@ def assign_classes_to_sections(request):
                     
     print("Classes assigned successfully")
 
-# def assign_classes_to_sections(request):
-#     # Get all teacher-section mappings
-#     teacher_section_mappings = TeacherSectionsTaught.objects.all()
-#     print(teacher_section_mappings)
-
-#     # Create a dictionary to track the availability of each classroom
-#     classroom_availability = {classroom.class_room_number: {} for classroom in ClassRoom.objects.all()}
-
-#     # Initialize teacher availability dictionary
-#     weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-#     teacher_availability = {teacher: {weekday: set() for weekday in weekdays} for teacher in Teacher.objects.all()}
-        
-#     # Iterate over each teacher-section mapping
-#     for teacher_section_mapping in teacher_section_mappings:
-#         teacher = teacher_section_mapping.teacher
-#         sections = teacher_section_mapping.section
-        
-#         # Generate random class timing for each course in each section
-#         courses_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section=sections).values_list('course', flat=True)
-#         for course_id in courses_taught:
-#             course = Course.objects.get(pk=course_id)
-#             print("Teacher: ", teacher)
-#             print("Course: ", course)
-            
-#             # Generate random start time between 8:00 AM and 4:00 PM
-#             start_hour = random.randint(8, 16) 
-#             start_minute = 0
-#             start_time = time(hour=start_hour, minute=start_minute)
-
-#             # Calculate end time (1 hour duration)
-#             end_time = (start_time.hour + 1) % 24
-#             end_time = time(hour=end_time, minute=start_minute)
-
-#             # Generate random weekdays for two classes
-#             weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-#             random.shuffle(weekdays)  # Shuffle to randomize the selection
-#             class_weekdays = weekdays[:2]  # Select two random weekdays
-
-#             # Check if there's a clash with existing classes for each selected weekday
-#             for weekday in class_weekdays:
-#                 # Check classroom availability
-#                 available_classrooms = [classroom for classroom, availability in classroom_availability.items() if weekday not in availability or start_time not in availability[weekday]]
-                
-#                 if not available_classrooms:
-#                     print(f"No available classrooms for {course} in section {sections} on {weekday}")
-#                     continue
-                
-#                 # Randomly select a classroom
-#                 classroom_number = random.choice(available_classrooms)
-
-#                 # Check if the teacher is available at the specified time slot
-#                 if start_time not in teacher_availability[teacher][weekday]:
-#                     # Create class
-#                     new_class = Class.objects.create(
-#                         course=course,
-#                         teacher=teacher,
-#                         section=sections,
-#                         classroom=ClassRoom.objects.filter(class_room_number=classroom_number).first(),
-#                         class_timing=ClassTiming.objects.create(
-#                             start_time=start_time,
-#                             end_time=end_time,
-#                             weekday=weekday
-#                         )
-#                     )
-#                     # Update classroom availability
-#                     if weekday not in classroom_availability[classroom_number]:
-#                         classroom_availability[classroom_number][weekday] = []
-#                     classroom_availability[classroom_number][weekday].append(start_time)
-
-#                     # Update teacher availability
-#                     teacher_availability[teacher][weekday].add(start_time)
-
-#                     print(f"Assigned class: {new_class}")
-#                 else:
-#                     # Teacher is not available at the specified time slot
-#                     print(f"Teacher {teacher} is not available on {weekday} at {start_time}")
-                    
-#     print("Classes assigned successfully")
-
-
 
 
 def create_course_teacher_mapping():
@@ -682,27 +632,7 @@ def create_class_rooms(request):
     print("Class rooms created successfully")
 
 
-# def create_class_rooms(request):
-#     # Get all departments
-#     departments = Department.objects.all()
-    
-#     # Define the number of floors and classes per floor
-#     num_floors = 5
-#     classes_per_floor = 5
-    
-#     # Iterate over each department
-#     for department in departments:
-#         # Iterate over each floor
-#         for floor in range(1, num_floors + 1):
-#             # Iterate over each class room on the floor
-#             for room_number in range(1, classes_per_floor + 1):
-#                 # Generate the class room number
-#                 class_room_number = f"{floor}{room_number:02}"
-                
-#                 # Create the class room for the department and floor
-#                 ClassRoom.objects.create(class_room_number=class_room_number, department=department)
-    
-#     print("Students assigned sections successfully")
+
 
 def assign_sections_to_students(request):
     # Get all degrees
@@ -751,43 +681,6 @@ def assign_sections_to_students(request):
 
 
 
-# def assign_sections_to_students(request):
-#     # Get all degrees
-#     degrees = Degree.objects.filter(degree_name__startswith='B')
-    
-#     for degree in degrees:
-#         # Get all semesters of the degree
-#         semesters = set(Student.objects.filter(degree=degree).values_list('semester', flat=True))
-        
-#         for semester in semesters:
-#             # Get all students in the current semester of the degree
-#             students = Student.objects.filter(degree=degree, semester=semester)
-            
-#             # Sort students by date of birth or any other criteria you prefer
-#             sorted_students = students.order_by('StudentID')
-            
-#             # Calculate the total number of students
-#             total_students = sorted_students.count()
-            
-#             # Calculate the number of sections needed
-#             num_sections = (total_students // 30) + (1 if total_students % 30 != 0 else 0)
-            
-#             # Create sections and assign students to each section
-#             for i in range(num_sections):
-#                 section_name = chr(65 + i)  # Convert integer to corresponding alphabet (A, B, C, ...)
-#                 section = Section.objects.create(section_name=section_name, degree=degree, semester=semester)
-                
-#                 # Calculate the range of students to assign to this section
-#                 start_index = i * 30
-#                 end_index = min((i + 1) * 30, total_students)
-                
-#                 # Assign students to the section
-#                 students_to_assign = sorted_students[start_index:end_index]
-#                 for student in students_to_assign:
-#                     student.section = section
-#                     student.save()
-
-#     return "Students assigned sections successfully"
 
 
 def distribute_students_semesters():
@@ -1932,3 +1825,52 @@ def regenerate_question(request):
     except Exception as e:
         logger.error(f"Error in regenerate_question view: {e}")
         return JsonResponse({"success": False, "error": "An error occurred while regenerating the question"}, status=500)
+
+
+
+
+def student_marks_api_view(request, student_id, course_id):
+    # Retrieve student object
+    student = get_object_or_404(Student, StudentID=student_id)
+
+    # Retrieve semester marks data for the student
+    semester_marks_data = SemesterMarksData.objects.filter(student=student)
+
+    # Initialize data lists
+    labels = []
+    quiz_marks_data = []
+    assignment_marks_data = []
+    presentation_marks_data = []
+    semester_project_marks_data = []
+    mids_marks_data = []
+    final_marks_data = []
+
+    for marks_data in semester_marks_data:
+        labels.append(f"Semester {marks_data.semester_number}")
+        # print(labels)
+
+        # Retrieve marks data for each category
+        quiz_marks = list(QuizMarks.objects.filter(semester_marks_data=marks_data).values_list('quiz_marks', flat=True))
+        assignment_marks = list(AssignmentMarks.objects.filter(semester_marks_data=marks_data).values_list('assignment_marks', flat=True))
+        presentation_marks = list(PresentationMarks.objects.filter(semester_marks_data=marks_data).values_list('presentation_marks', flat=True))
+        # Append data to respective lists
+        quiz_marks_data.append(sum(quiz_marks) if quiz_marks else 0)
+        assignment_marks_data.append(sum(assignment_marks) if assignment_marks else 0)
+        presentation_marks_data.append(sum(presentation_marks) if presentation_marks else 0)
+        semester_project_marks_data.append(marks_data.semester_project_marks)
+        mids_marks_data.append(marks_data.mids_marks)
+        final_marks_data.append(marks_data.final_marks)
+
+    # Construct response data
+    response_data = {
+        'labels': labels,
+        'quiz_marks': quiz_marks_data,
+        'assignment_marks': assignment_marks_data,
+        'presentation_marks': presentation_marks_data,
+        'semester_project_marks': semester_project_marks_data,
+        'mids_marks': mids_marks_data,
+        'final_marks': final_marks_data,
+    }
+    print(quiz_marks)
+
+    return JsonResponse(response_data)
