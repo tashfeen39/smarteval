@@ -3,6 +3,8 @@
 ## High Priority
 
 - reports
+- multiple reports
+- percentage reports
 - free room finder
 - classes ke lye clas_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
@@ -11,7 +13,7 @@
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
 - profille wale page pe data show krana
-- registration form se sara dataa save krna hai in db
+- registration form se sara data save krna hai in db
 
 ## From Ali
 - Student k registered courses, time table aur dashboard ka dekhna k uss main kia add kia ja sakta
