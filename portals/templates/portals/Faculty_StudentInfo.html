@@ -132,6 +132,7 @@
                 <br>
                 <h2>Reports</h2>
                 <canvas id="marksChart" width="300" height="100"></canvas>
+                <br><br>
                 <div class="col-sm-12">
                     <canvas id="averageMarksChart" width="300" height="100"></canvas>
                 </div>
@@ -157,8 +158,8 @@
     // Average marks
     var avgQuizMarks = [
         {% for key, value in avg_quiz_marks.items %}
-            {{ value }},
-        {% endfor %}
+    {{ value }},
+    {% endfor %}
 ];
 
 
@@ -173,9 +174,9 @@
     {{ value }},
     {% endfor %}
 ];
-   
-   
-var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
+
+
+    var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
     var avgMidsMarks = {{ avg_mids_marks }};
     var avgFinalMarks = {{ avg_final_marks }};
 
@@ -189,8 +190,13 @@ var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
     ];
 
     // Add average marks to the array
-    allMarks.push(avgQuizMarks, avgAssignmentMarks, avgPresentationMarks, avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks);
-
+    // allMarks.push(avgQuizMarks, avgAssignmentMarks, avgPresentationMarks, avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks);
+    var allAvgMarks = [
+        ...avgQuizMarks,
+        ...avgAssignmentMarks,
+        ...avgPresentationMarks,
+    ];
+    allAvgMarks.push(avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks)
 
     var labels = [];
     {% for quiz_mark in quiz_marks %}
@@ -207,7 +213,7 @@ var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
     labels.push(`Finals`);
 
     // Add labels for average marks
-    labels.push("Average Quiz", "Average Assignment", "Average Presentation", "Average Semester Project", "Average Mids", "Average Finals");
+    // labels.push("Average Quiz", "Average Assignment", "Average Presentation", "Average Semester Project", "Average Mids", "Average Finals");
 
 
 
@@ -235,9 +241,46 @@ var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
         }
     };
 
+    const avgChartConfig = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Student',
+                    data: allMarks,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    fill: false
+                },
+                {
+                    label: 'Class',
+                    data: allAvgMarks,
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderColor: 'rgb(255, 159, 64)',
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Student Performance vs Overall Class Performance'
+            }
+        },
+    };
+
+
 
     var ctx = document.getElementById('marksChart').getContext('2d');
     var marksChart = new Chart(ctx, chartConfig);
+
+    var ctx = document.getElementById('averageMarksChart').getContext('2d');
+    var marksChart = new Chart(ctx, avgChartConfig);
 
     });
 </script>

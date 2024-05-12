@@ -186,9 +186,6 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     total_final_marks = section_semester_marks_data.aggregate(Sum('final_marks'))['final_marks__sum'] or 0
     total_project_marks = section_semester_marks_data.aggregate(Sum('semester_project_marks'))['semester_project_marks__sum'] or 0
 
-    print("Total Mids Marks:", total_mids_marks)
-    print("Total Final Marks:", total_final_marks)
-    print("Total Project Marks:", total_project_marks)
 
 
     total_students = len(section_students)
@@ -224,13 +221,6 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_final_marks = round(total_final_marks / total_students, 1)
     avg_project_marks = round(total_project_marks / total_students, 1)
 
-    print(quiz_marks)
-    print(avg_quiz_marks)
-    # print(avg_assignment_marks)
-    # print(avg_presentation_marks)
-    # print(avg_mids_marks)
-    # print(avg_final_marks)
-    # print(avg_project_marks)
 
     # Pass the data to the template context
     context = {
