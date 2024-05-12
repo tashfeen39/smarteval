@@ -154,11 +154,28 @@
     var midsMarks = [{{ semester_marks_data.mids_marks }}]
     var FinalMarks = [{{ semester_marks_data.final_marks }}]
 
-      // Average marks
-    var avgQuizMarks = {{ avg_quiz_marks }};
-    var avgAssignmentMarks = {{ avg_assignment_marks }};
-    var avgPresentationMarks = {{ avg_presentation_marks }};
-    var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
+    // Average marks
+    var avgQuizMarks = [
+        {% for key, value in avg_quiz_marks.items %}
+            {{ value }},
+        {% endfor %}
+];
+
+
+    var avgAssignmentMarks = [
+        {% for key, value in avg_assignment_marks.items %}
+    {{ value }},
+    {% endfor %}
+];
+
+    var avgPresentationMarks = [
+        {% for key, value in avg_presentation_marks.items %}
+    {{ value }},
+    {% endfor %}
+];
+   
+   
+var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
     var avgMidsMarks = {{ avg_mids_marks }};
     var avgFinalMarks = {{ avg_final_marks }};
 
@@ -218,7 +235,7 @@
         }
     };
 
-    
+
     var ctx = document.getElementById('marksChart').getContext('2d');
     var marksChart = new Chart(ctx, chartConfig);
 

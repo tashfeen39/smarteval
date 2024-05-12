@@ -171,7 +171,7 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_quiz_marks = {f'Quiz {i}': 0 for i in unique_quiz_nums}
     avg_assignment_marks = {f'Assignment {i}': 0 for i in unique_assignment_nums}
     avg_presentation_marks = {f'Presentation {i}': 0 for i in unique_presentation_nums}
-    
+
     # Get the relevant semester marks data for all students in the section
     section_semester_marks_data = SemesterMarksData.objects.filter(student__in=section_students, course=course)
 
@@ -218,12 +218,13 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_final_marks = round(total_final_marks / total_students, 1)
     avg_project_marks = round(total_project_marks / total_students, 1)
 
+    print(quiz_marks)
     print(avg_quiz_marks)
-    print(avg_assignment_marks)
-    print(avg_presentation_marks)
-    print(avg_mids_marks)
-    print(avg_final_marks)
-    print(avg_project_marks)
+    # print(avg_assignment_marks)
+    # print(avg_presentation_marks)
+    # print(avg_mids_marks)
+    # print(avg_final_marks)
+    # print(avg_project_marks)
 
     # Pass the data to the template context
     context = {

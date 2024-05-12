@@ -2,6 +2,7 @@
 
 ## High Priority
 
+- reports
 - free room finder
 - classes ke lye clas_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
