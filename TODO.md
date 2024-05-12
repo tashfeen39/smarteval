@@ -8,6 +8,10 @@
 - grading wala sara 
 - feedback and complaints
 
+# From Ali
+- Student k registered courses, time table aur dashboard ka dekhna k uss main kia add kia ja sakta
+
+
 ## Low Priority
 
 
