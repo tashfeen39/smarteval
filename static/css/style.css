@@ -2575,20 +2575,27 @@ footer p {
   height: 100vh;
   min-height: 100vh;
 }
+
+
 .login-wrapper {
   width: 100%;
-  height: 100%;
-  display: table-cell;
-  vertical-align: middle;
+  height: 100vh; /* Set height to 100% of viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("{% static '/img/login-bg.jpg' %}");
+  background-size: cover; 
+  background-position: center; 
 }
+
 .login-wrapper .loginbox {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   margin: 1.875rem auto;
-  max-width: 400px;
-  min-height: 400px;
+  max-width: 600px;
+  min-height: 600px;
   width: 100%;
 }
 .login-wrapper .loginbox .login-left {
@@ -2625,7 +2632,7 @@ footer p {
   display: flex;
   justify-content: center;
   padding: 40px;
-  width: 400px;
+  width: 600px;
 }
 .login-wrapper .loginbox .login-right .login-right-wrap {
   max-width: 100%;
@@ -2650,10 +2657,10 @@ footer p {
   color: red;
 }
 .login-wrapper .loginbox .login-right h1 {
-  font-size: 25px;
+  font-size: 35px;
   font-weight: 600;
   margin-bottom: 5px;
-  text-align: left;
+  text-align: center;
 }
 .account-subtitle {
   color: #aaa;
