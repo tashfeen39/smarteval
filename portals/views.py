@@ -26,7 +26,7 @@ from itertools import cycle
 import itertools
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, Max, Min
 
 
 
@@ -141,7 +141,7 @@ def faculty_marks_entry_view(request):
 def faculty_profile_view(request):
     return render(request, "portals/Faculty_Profile.html")
 
-from django.db.models import Avg, Sum
+
 
 def calculate_average_marks(queryset, total_students):
     """
@@ -172,6 +172,18 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     unique_quiz_nums = quiz_marks.values_list('quiz_num', flat=True).distinct()
     unique_assignment_nums = assignment_marks.values_list('assignment_num', flat=True).distinct()
     unique_presentation_nums = presentation_marks.values_list('presentation_num', flat=True).distinct()
+    
+
+    # Calculate the maximum marks for each assessment type
+    max_quiz_marks = {}
+    max_assignment_marks = {}
+    max_presentation_marks = {}
+
+
+    # Calculate the minimum marks for each assessment type for the entire class
+    min_quiz_marks = {}
+    min_assignment_marks = {}
+    min_presentation_marks = {}
 
     # Create dictionaries to accumulate average marks
     avg_quiz_marks = {f'Quiz {i}': 0 for i in unique_quiz_nums}
@@ -198,6 +210,7 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
             avg_presentation_marks_student = PresentationMarks.objects.filter(semester_marks_data=avg_semester_marks_data)
 
             for i in unique_quiz_nums:
+                # max_quiz_marks[f'Quiz {i}'] = avg_quiz_marks_student.filter(quiz_num=i).aggregate(Max('quiz_marks'))['quiz_marks__max'] or 0
                 quiz_avg = avg_quiz_marks_student.filter(quiz_num=i).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
                 if quiz_avg is not None:
                     avg_quiz_marks[f'Quiz {i}'] += quiz_avg
@@ -221,6 +234,30 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_final_marks = round(total_final_marks / total_students, 1)
     avg_project_marks = round(total_project_marks / total_students, 1)
 
+    
+
+
+    # Query all marks for the corresponding assessment types for all students in the class
+    all_quiz_marks = QuizMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+    all_assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+    all_presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+
+    # Calculate max marks for quizzes
+    for quiz_num in unique_quiz_nums:
+        max_quiz_marks[f'Quiz {quiz_num}'] = all_quiz_marks.filter(quiz_num=quiz_num).aggregate(Max('quiz_marks'))['quiz_marks__max'] or 0
+        min_quiz_marks[f'Quiz {quiz_num}'] = all_quiz_marks.filter(quiz_num=quiz_num).aggregate(Min('quiz_marks'))['quiz_marks__min'] or 0
+
+
+    # Calculate max marks for assignments
+    for assignment_num in unique_assignment_nums:
+        max_assignment_marks[f'Assignment {assignment_num}'] = all_assignment_marks.filter(assignment_num=assignment_num).aggregate(Max('assignment_marks'))['assignment_marks__max'] or 0
+        min_assignment_marks[f'Assignment {assignment_num}'] = all_assignment_marks.filter(assignment_num=assignment_num).aggregate(Min('assignment_marks'))['assignment_marks__min'] or 0
+
+    # Calculate max marks for presentations
+    for presentation_num in unique_presentation_nums:
+        max_presentation_marks[f'Presentation {presentation_num}'] = all_presentation_marks.filter(presentation_num=presentation_num).aggregate(Max('presentation_marks'))['presentation_marks__max'] or 0
+        min_presentation_marks[f'Presentation {presentation_num}'] = all_presentation_marks.filter(presentation_num=presentation_num).aggregate(Min('presentation_marks'))['presentation_marks__min'] or 0
+
 
     # Pass the data to the template context
     context = {
@@ -236,6 +273,12 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'avg_semester_project_marks': avg_project_marks,
         'avg_mids_marks': avg_mids_marks,
         'avg_final_marks': avg_final_marks,
+        'max_quiz_marks': max_quiz_marks,
+        'max_assignment_marks': max_assignment_marks,
+        'max_presentation_marks': max_presentation_marks,
+         'min_quiz_marks': min_quiz_marks,
+        'min_assignment_marks': min_assignment_marks,
+        'min_presentation_marks': min_presentation_marks,
     }
 
     return render(request, "portals/Faculty_StudentInfo.html", context)

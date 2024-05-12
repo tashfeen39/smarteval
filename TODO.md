@@ -11,6 +11,7 @@
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
 - profille wale page pe data show krana
+- registration form se sara dataa save krna hai in db
 
 ## From Ali
 - Student k registered courses, time table aur dashboard ka dekhna k uss main kia add kia ja sakta
@@ -21,3 +22,6 @@
 
 
 - courses ke credit hours add krne
+
+
+## Done but review Required
