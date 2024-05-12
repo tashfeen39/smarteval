@@ -198,6 +198,17 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     total_final_marks = section_semester_marks_data.aggregate(Sum('final_marks'))['final_marks__sum'] or 0
     total_project_marks = section_semester_marks_data.aggregate(Sum('semester_project_marks'))['semester_project_marks__sum'] or 0
 
+    max_semester_project_marks = section_semester_marks_data.aggregate(Max('semester_project_marks'))['semester_project_marks__max'] or 0
+    min_semester_project_marks = section_semester_marks_data.aggregate(Min('semester_project_marks'))['semester_project_marks__min'] or 0
+
+    max_mids_marks = section_semester_marks_data.aggregate(Max('mids_marks'))['mids_marks__max'] or 0
+    min_mids_marks = section_semester_marks_data.aggregate(Min('mids_marks'))['mids_marks__min'] or 0
+
+    max_final_marks = section_semester_marks_data.aggregate(Max('final_marks'))['final_marks__max'] or 0
+    min_final_marks = section_semester_marks_data.aggregate(Min('final_marks'))['final_marks__min'] or 0
+
+
+
 
 
     total_students = len(section_students)
@@ -276,9 +287,15 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'max_quiz_marks': max_quiz_marks,
         'max_assignment_marks': max_assignment_marks,
         'max_presentation_marks': max_presentation_marks,
-         'min_quiz_marks': min_quiz_marks,
+        'min_quiz_marks': min_quiz_marks,
         'min_assignment_marks': min_assignment_marks,
         'min_presentation_marks': min_presentation_marks,
+        'max_semester_project_marks': max_semester_project_marks,
+        'min_semester_project_marks': min_semester_project_marks,
+        'max_mids_marks': max_mids_marks,
+        'min_mids_marks': min_mids_marks,
+        'max_final_marks': max_final_marks,
+        'min_final_marks': min_final_marks,
     }
 
     return render(request, "portals/Faculty_StudentInfo.html", context)

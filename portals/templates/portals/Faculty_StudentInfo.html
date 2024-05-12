@@ -127,7 +127,6 @@
       {% for key, value in avg_quiz_marks.items %}    {{ value }},{% endfor %}
   ];
 
-
     var avgAssignmentMarks = [
       {% for key, value in avg_assignment_marks.items %}    {{ value }},{% endfor %}
   ];
@@ -136,10 +135,33 @@
       {% for key, value in avg_presentation_marks.items %}    {{ value }},{% endfor %}
   ];
 
-
     var avgSemesterProjectMarks = {{ avg_semester_project_marks }};
     var avgMidsMarks = {{ avg_mids_marks }};
     var avgFinalMarks = {{ avg_final_marks }};
+
+    var maxQuizMarks = [
+      {% for key, value in max_quiz_marks.items %} {{ value }},{% endfor %}
+    ];
+    var maxAssignmentMarks = [{% for key, value in max_assignment_marks.items %} {{ value }},{% endfor %}];
+    var maxPresentationMarks = [{% for key, value in max_presentation_marks.items %} {{ value }},{% endfor %}];
+
+    var maxSemesterProjectMarks = {{ max_semester_project_marks }};
+    var maxMidsMarks = {{ max_mids_marks }};
+    var maxFinalMarks = {{ max_final_marks }};
+
+    
+    var minQuizMarks = [
+      {% for key, value in min_quiz_marks.items %} {{ value }},{% endfor %}
+    ];
+    var minAssignmentMarks = [{% for key, value in min_assignment_marks.items %} {{ value }},{% endfor %}];
+    var minPresentationMarks = [{% for key, value in min_presentation_marks.items %} {{ value }},{% endfor %}];
+    
+    var minSemesterProjectMarks = {{ min_semester_project_marks }};
+    var minMidsMarks = {{ min_mids_marks }};
+    var minFinalMarks = {{ min_final_marks }};
+  
+  
+  
 
     var allMarks = [
       ...quizMarks,
@@ -150,14 +172,27 @@
       ...FinalMarks
     ];
 
-    // Add average marks to the array
-    // allMarks.push(avgQuizMarks, avgAssignmentMarks, avgPresentationMarks, avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks);
+   
     var allAvgMarks = [
       ...avgQuizMarks,
       ...avgAssignmentMarks,
       ...avgPresentationMarks,
     ];
     allAvgMarks.push(avgSemesterProjectMarks, avgMidsMarks, avgFinalMarks)
+    
+    var allMaxMarks = [
+      ...maxQuizMarks,
+      ...maxAssignmentMarks,
+      ...maxPresentationMarks,
+    ];
+    allMaxMarks.push(maxSemesterProjectMarks, maxMidsMarks, maxFinalMarks)
+    
+    var allMinMarks = [
+      ...minQuizMarks,
+      ...minAssignmentMarks,
+      ...minPresentationMarks,
+    ];
+    allMinMarks.push(minSemesterProjectMarks, minMidsMarks, minFinalMarks)
 
     var labels = [];
     {% for quiz_mark in quiz_marks %}    labels.push(`Quiz {{ forloop.counter }}`);{% endfor %}
@@ -214,6 +249,22 @@
             data: allAvgMarks,
             backgroundColor: 'rgba(255, 159, 64, 0.2)',
             borderColor: 'rgb(255, 159, 64)',
+            fill: false, 
+            tension: 0
+          },
+          {
+            label: 'Lowest Marks',
+            data: allMinMarks,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', 
+            borderColor: 'rgb(255, 99, 132)',
+            fill: false, 
+            tension: 0
+          },
+          {
+            label: 'Highest Marks',
+            data: allMaxMarks,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgb(75, 192, 192)',
             fill: false, 
             tension: 0
           }
