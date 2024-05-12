@@ -99,8 +99,7 @@
                   <div class="alert alert-danger" role="alert">{{ error }}</div>
                   {% endif %}
                   <div class="forgotpass">
-                    {% comment %}
-                    <div class="remember-me">
+                    {% comment %} <div class="remember-me">
                       <label
                         class="custom_check mr-2 mb-0 d-inline-flex remember-me"
                       >
@@ -108,9 +107,8 @@
                         <input type="checkbox" name="radio" />
                         <span class="checkmark"></span>
                       </label>
-                    </div>
-                    {% endcomment %}
-                    <a href="{% static ‘portals:student-login’ %}"
+                    </div> {% endcomment %}
+                    <a href="{% url 'portals:student-login' %}"
                       >Sign In as Student</a>
                   </div>
                   <br />
