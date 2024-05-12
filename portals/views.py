@@ -1699,7 +1699,15 @@ def get_programs(request):
 
 
 # ---------------------------- GENERATE PAPER ------------------
-
+# Define keywords for Bloom's Taxonomy levels
+# bt_keywords = {
+#     "remember": ["define", "list", "recall", "identify", "name", "state", "describe"],
+#     "understand": ["explain", "describe", "summarize", "paraphrase", "interpret"],
+#     "apply": ["solve", "use", "apply", "demonstrate", "implement", "execute"],
+#     "analyze": ["analyze", "compare", "contrast", "differentiate", "examine"],
+#     "evaluate": ["evaluate", "justify", "assess", "critique", "recommend"],
+#     "create": ["create", "design", "construct", "develop", "formulate"]
+# }
 @csrf_exempt
 def generate_paper(request):
     try:
@@ -1739,7 +1747,7 @@ def generate_paper(request):
                 question_prompt += f"BT Level: {question_bt_levels[i].capitalize()}\n"
                 question_prompt += f"Complexity Level: {question_complexities[i].capitalize()}\n"
                 question_prompt += f"Number of parts: {question_parts[i]} parts.\n"
-                question_prompt += "Each part should be distinct and clearly numbered.\n"
+                question_prompt += "Each part should be distinct and clearly numbered. The question must meet the selected BT Level.\n"
                 prompts.append(question_prompt)
 
             prompt = "\n".join(prompts)
