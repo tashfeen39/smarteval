@@ -2,6 +2,23 @@
 
 ## High Priority
 
+- search bar for students
+- student dashboard mai timetable
+- upcoming classes pe subject followed by class krna in faculty dashboard
+- generate exam ko pyaara krna
+- no. of parts mai se N/A hatana
+- total question 5 krne generate exam mai
+- internal graphs
+- speed o meter ???
+- space decrease krni faulty dashbooard
+- classes display sai treeqe se krani aur design bhi
+- student info ko read only krna
+- marks entry walli file mai empty marks ko shade krna
+- feedback aur complaint form mai from wale ko readonly krna
+- reports related to subjects for teacher
+
+
+
 - reports for students
 - free room finder
 - classes ke lye class_taken wali functionlity implement krni

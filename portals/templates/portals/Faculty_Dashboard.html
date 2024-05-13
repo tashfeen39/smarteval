@@ -94,7 +94,7 @@
                             </div>
                           </td>
                           <td>
-                            <form id="classTakenForm" method="post" action="{% url 'portals:update-class-taken' %}">
+                            <form action="{% url 'portals:update_class_taken' %}" method="post" id="classTakenForm">
                             {% csrf_token %}
                             <input type="hidden" name="class_id" value="{{ class_obj.id }}">
                             <div class="lesson-confirm">
@@ -203,12 +203,19 @@
                 </div>
               </div>
 
-              <!-- Your existing HTML code -->
             </div>
 {% endblock %}
 
                  <!-- ---------------- Block for Footer ---------------- -->
           {% block footer %}
+          <script>
+  $(document).ready(function() {
+    $('input[type="checkbox"]').change(function() {
+      $(this).closest('form').submit();
+    });
+  });
+</script>
+
           <script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
           <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
           {% endblock %}
