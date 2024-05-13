@@ -195,9 +195,10 @@ def faculty_profile_view(request):
     return render(request, "portals/Faculty_Profile.html", context)
 
 
-from datetime import datetime, timedelta
 
 def find_available_time_slots(request):
+    classrooms = create_class_rooms(request)
+    # print(classrooms)
      # Mapping of weekday numbers to weekday names
     weekday_names = {
         0: 'Monday',
@@ -251,9 +252,14 @@ def find_available_time_slots(request):
     if available_slots:
         print("Available time slots for scheduling a class:")
         for start_time, weekday in available_slots:
-            start_datetime = datetime.combine(datetime.today(), start_time)  # Convert to datetime object
-            end_datetime = start_datetime + timedelta(hours=1)  # Add timedelta
-            print(f"{start_time.strftime('%H:%M')} - {end_datetime.strftime('%H:%M')} (Weekday: {weekday})")  # Print formatted time strings
+            start_datetime = datetime.combine(datetime.today(), start_time) 
+            end_datetime = start_datetime + timedelta(hours=1)  
+            availableClassSlots=ClassTiming.objects.filter(start_time=start_datetime, end_time=end_datetime, weekday=weekday)
+            for availableClassSlot in availableClassSlots:
+                classAvailable = Class.objects.filter(class_timing=availableClassSlot)
+                for classInstance in classAvailable:
+                    print(f"{start_time.strftime('%H:%M')} - {end_datetime.strftime('%H:%M')} (Weekday: {weekday}) Room: {classInstance.classroom}")  # Print formatted time strings
+
     else:
         print("No available time slots found for scheduling a class.")
 
@@ -908,6 +914,8 @@ def create_class_rooms(request):
     
     # Initialize the starting room number
     starting_room_number = 1
+
+    classrooms=[]
     
     # Iterate over each department
     for department in departments:
@@ -918,12 +926,14 @@ def create_class_rooms(request):
                 class_room_number = f"{floor}{room_number:02}"
                 
                 # Create the class room for the department
-                ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+                # ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+                classrooms.append(class_room_number)
                 
                 # Increment the room number
             starting_room_number += 1
     
     print("Class rooms created successfully")
+    return classrooms
 
 
 
