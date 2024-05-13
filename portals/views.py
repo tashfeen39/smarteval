@@ -1545,8 +1545,10 @@ def faculty_registration(request):
         # Handle the form submission
         return saveFaculty(request)
     else:
+        departments = Department.objects.all()
+        # print(departments)
         # Render the signup page for GET requests
-        return render(request, "portals/Faculty_Registration.html")
+        return render(request, "portals/Faculty_Registration.html",{'departments': departments})
 
 
 def saveFaculty(request):
@@ -1566,10 +1568,10 @@ def saveFaculty(request):
         religion = request.POST.get("religion")
         Nationality = request.POST.get("Nationality")
         CNIC = request.POST.get("CNIC")
-        Department = request.POST.get("Department")
+        Departmentt = request.POST.get("Department")
         Address = request.POST.get("Address")
 
-
+        department=Department.objects.filter(department_name=Departmentt).first()
 
 
 
@@ -1641,6 +1643,14 @@ def saveFaculty(request):
         # user.save()
         teacher = Teacher(
             user=user,
+            department=department,
+            date_of_birth=birthday,
+            gender=gender,
+            marital_status=marital_status,
+            religion=religion,
+            nationality=Nationality,
+            cnic=CNIC,
+            address=Address,
         )
         teacher.save()
 
@@ -1758,6 +1768,18 @@ def saveStudent(request):
         # user.save()
         student = Student(
             user=user,
+            date_of_birth=birthday,
+            gender=gender,
+            marital_status=marital_status,
+            religion=religion,
+            nationality=Nationality,
+            cnic=CNIC,
+            father_name=Father_Name,
+            father_occupation=Father_Occupation,
+            semester=Semester,
+
+
+
         )
         student.save()
 
