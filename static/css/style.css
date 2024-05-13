@@ -2275,6 +2275,11 @@ html.menu-opened body {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
 }
+
+.user-menu.nav .header-nav-list:hover {
+    background-color: white;
+}
+
 .user-menu.nav .header-nav-list i {
   font-size: 20px;
 }
