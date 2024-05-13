@@ -315,3 +315,43 @@ class PresentationMarks(models.Model):
     
     class Meta:
         verbose_name_plural = "Presentations Marks"
+
+def get_default_course_grade(student, course):
+    # Retrieve the SemesterMarksData for the current student and course
+    # Assuming SemesterMarksData has a related_name of 'marks_data' in the ForeignKey field
+    marks_data = SemesterMarksData.objects.filter(student=student, course=course).first()
+    
+    # If marks_data exists, calculate the grade based on conditions
+    if marks_data:
+        mids_marks = marks_data.mids_marks
+        final_marks = marks_data.final_marks
+
+        # Set conditions for each grade
+        if mids_marks > 20 and final_marks > 40:
+            return 'A'
+        elif mids_marks > 15 and final_marks > 35:
+            return 'B'
+        elif mids_marks > 10 and final_marks > 30:
+            return 'C'
+        else:
+            return 'D'
+    
+    # If marks_data does not exist, return a default grade
+    return 'N/A'
+
+class SemesterCourseGrade(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
+    semester_number = models.IntegerField(blank=True, null=True)
+    course_grade = models.CharField(max_length=5, default='N/A', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.student.user.first_name} - {self.student.user.last_name} - {self.course} - Semester {self.semester_number}: {self.course_grade}"
+    
+    def save(self, *args, **kwargs):
+        # Calculate default grade based on marks data
+        self.course_grade = get_default_course_grade(self.student, self.course)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "Semester Courses Grades"

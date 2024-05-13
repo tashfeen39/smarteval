@@ -11,7 +11,7 @@ import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from portals.decorators import student_required, teacher_required
-from .models import AssignmentMarks, ClassRoom, ClassTiming, Degree, PresentationMarks, Program, QuizMarks, Section, SemesterCourses, SemesterDetails, SemesterMarksData, TeacherCoursesTaught, Class, TeacherSectionsTaught
+from .models import AssignmentMarks, ClassRoom, ClassTiming, Degree, PresentationMarks, Program, QuizMarks, Section, SemesterCourseGrade, SemesterCourses, SemesterDetails, SemesterMarksData, TeacherCoursesTaught, Class, TeacherSectionsTaught
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
@@ -451,6 +451,39 @@ def student_profile_view(request):
 def student_subjectwisereport_view(request):
     return render(request, "portals/Student_SubjectWiseReport.html")
 
+
+
+
+def populate_semester_course_grades(request):
+    # Step 1: Filter out all students
+    students = Student.objects.all()
+
+    # Step 2: Iterate over each student
+    for student in students:
+        # Get the SemesterDetails for the student's degree and semester number
+        semester_details = SemesterDetails.objects.filter(degree=student.degree, semester_number=student.semester).first()
+
+
+        # Get the SemesterCourses for the SemesterDetails
+        semester_courses = SemesterCourses.objects.filter(semester_details=semester_details)
+
+        # Iterate over each SemesterCourses
+        for semester_course in semester_courses:
+            # Get the courses for the SemesterCourses
+            courses = semester_course.courses.all()
+
+            # Iterate over each course
+            for course in courses:
+                # Create a new SemesterCourseGrade object
+                semester_course_grade = SemesterCourseGrade.objects.create(
+                    student=student,
+                    course=course,
+                    semester_number=student.semester,
+                    # Default grade will be calculated automatically in the save method
+                )
+
+    # You can render a success page or redirect to another URL after populating the grades
+    print("Students sucessfully assigned grades")
 
 def generate_marks_view(request):
     # Step 1: Retrieve all students
@@ -1630,6 +1663,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    populate_semester_course_grades(request)
     # generate_marks_view(request)
     # test_mapping()
     # assign_classes_to_sections(request)
@@ -1987,3 +2021,5 @@ def student_marks_api_view(request, student_id, course_id):
     print(quiz_marks)
 
     return JsonResponse(response_data)
+
+
