@@ -2,11 +2,47 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
-<link
-  rel="stylesheet"
-  href="{% static '/plugins/scrollbar/scroll.min.css' %}" />
+<link rel="stylesheet" href="{% static '/plugins/scrollbar/scroll.min.css' %}" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,1,200" />
+
+
 
 {% endblock %}
+
+{% block profilemenu %}
+<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        <span class="user-img">
+                             {% if teacher.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ teacher.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            <div class="user-text">
+                                <h6>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h6>
+                            </div>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                
+                               {% if teacher.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ teacher.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            </div>
+                            <div class="user-text">
+                                <h6>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h6>
+                            </div>
+                        </div>
+                        <a class="dropdown-item" href="{% url 'portals:my-profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
+                    </div>
+{% endblock %}
+
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
