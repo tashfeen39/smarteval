@@ -2051,10 +2051,10 @@ div.dataTables_wrapper div.dataTables_length select {
   padding: 0 15px;
   height: 60px;
 }
-.user-menu.nav > li > a:hover,
+/* .user-menu.nav > li > a:hover,
 .user-menu.nav > li > a:focus {
   background-color: #4258cb;
-}
+} */
 .user-menu.nav > li > a:hover i,
 .user-menu.nav > li > a:focus i {
   color: #18aefa;
