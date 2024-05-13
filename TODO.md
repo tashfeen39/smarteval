@@ -9,8 +9,8 @@
 - grading teacher ko display krane
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
-- nav bar mai sahi data show krana
 - registration form se sara data save krna hai in db
+- scroll bar ka issue teacher dashboard pe
 
 ## From Ali
 - Student k registered courses, time table aur dashboard ka dekhna k uss main kia add kia ja sakta
@@ -25,6 +25,7 @@
 
 ## Done but review Required
 
+- nav bar mai sahi data show krana
 - profille wale page pe data show krana
 - percentage reports for teachers
 - grades ka backend
