@@ -1559,6 +1559,20 @@ def saveFaculty(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         username = request.POST.get("username")
+        birthday = request.POST.get("birthday")
+        gender = request.POST.get("gender")
+        marital_status = request.POST.get("marital_status")
+        religion = request.POST.get("religion")
+        Nationality = request.POST.get("Nationality")
+        CNIC = request.POST.get("CNIC")
+        Department = request.POST.get("Department")
+        Address = request.POST.get("Address")
+
+
+
+
+
+
         is_teacher = True
 
         # Check if the phone, email, or username already exists in the database
@@ -1656,6 +1670,24 @@ def saveStudent(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         username = request.POST.get("username")
+        birthday = request.POST.get("birthday")
+        gender = request.POST.get("gender")
+        marital_status = request.POST.get("marital_status")
+        religion = request.POST.get("religion")
+        Nationality = request.POST.get("Nationality")
+        CNIC = request.POST.get("CNIC")
+        Father_Name = request.POST.get("Father Name")
+        Father_Occupation = request.POST.get("Father_Occupation")
+        Semester = request.POST.get("Semester")
+        Degree = request.POST.get("Degree")
+        Address = request.POST.get("Address")
+
+
+
+
+
+
+
         is_student = True
         is_teacher = False
 
