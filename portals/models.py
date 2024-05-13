@@ -247,6 +247,7 @@ class Class(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     class_timing = models.ForeignKey(ClassTiming, on_delete=models.CASCADE)
+    class_taken = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.course} - {self.section} - {self.teacher}"
