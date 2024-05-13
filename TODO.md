@@ -4,12 +4,11 @@
 
 - reports for students
 - free room finder
-- classes ke lye clas_taken wali functionlity implement krni
+- classes ke lye class_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
 - grading teacher ko display krane
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
-- profille wale page pe data show krana
 - nav bar mai sahi data show krana
 - registration form se sara data save krna hai in db
 
@@ -26,6 +25,7 @@
 
 ## Done but review Required
 
+- profille wale page pe data show krana
 - percentage reports for teachers
 - grades ka backend
 - feedback and complaints
