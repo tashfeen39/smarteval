@@ -7,8 +7,7 @@
 - free room finder
 - classes ke lye clas_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
-- grading wala sara 
-- feedback and complaints
+- grading teacher ko display krane
 - marks entry pe validation -- total marks se ziada nhi hone chahye
 - new quiz ya assignment ke marks enter krne ka teacher ke paas koi option nhi hai
 - profille wale page pe data show krana
@@ -28,5 +27,7 @@
 
 ## Done but review Required
 
+- grades ka backend
+- feedback and complaints
 - multiple reports for teachers
 - grade model ka save function remove krke default values check krni

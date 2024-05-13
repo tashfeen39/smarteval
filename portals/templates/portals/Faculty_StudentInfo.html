@@ -158,6 +158,15 @@
     var midsMarks = [{{ semester_marks_data.mids_marks }}]
     var FinalMarks = [{{ semester_marks_data.final_marks }}]
 
+    var quizPercentage = {{ quiz_percentage_data | safe }};
+    var assignmentPercentage = {{ assignment_percentage_data | safe }};
+    var presentationPercentage = {{ presentation_percentage_data | safe }};
+    var semesterProjectPercentage = {{ semester_project_percentage_data }};
+    var midsPercentage = {{ mids_percentage_data }};
+    var finalPercentage = {{ final_percentage_data }}
+
+    console.log(finalPercentage)
+
     // Average marks
     var avgQuizMarks = [
       {% for key, value in avg_quiz_marks.items %}    {{ value }},{% endfor %}
@@ -206,7 +215,12 @@
       ...midsMarks,
       ...FinalMarks
     ];
-
+    var allPercentage = [
+      ...quizPercentage,
+      ...assignmentPercentage,
+      ...presentationPercentage,
+    ];
+    allPercentage.push(semesterProjectPercentage, midsPercentage, finalPercentage)
    
     var allAvgMarks = [
       ...avgQuizMarks,
@@ -585,8 +599,8 @@
       data: {
         labels: labels,
         datasets: [{
-          label: 'Marks',
-          data: allMarks,
+          label: 'Percentage Marks',
+          data: allPercentage,
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           borderColor: 'rgb(255, 99, 132)',
           borderWidth: 1
