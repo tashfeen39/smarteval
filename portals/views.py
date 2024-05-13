@@ -2129,3 +2129,18 @@ def student_marks_api_view(request, student_id, course_id):
     return JsonResponse(response_data)
 
 
+def update_class_taken(request):
+    if request.method == 'POST':
+        class_id = request.POST.get('class_id')
+        class_taken = request.POST.get('class_taken')
+        
+        # Update the class_taken field in the Class model
+        try:
+            class_obj = Class.objects.get(pk=class_id)
+            class_obj.class_taken = bool(class_taken)
+            class_obj.save()
+            return HttpResponse('Class taken status updated successfully.')
+        except Class.DoesNotExist:
+            return HttpResponse('Class not found.', status=404)
+
+    return HttpResponse('Invalid request method.', status=405)
