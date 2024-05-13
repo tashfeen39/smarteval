@@ -38,7 +38,6 @@
                                         <th></th>
                                         <th>Roll No.</th>
                                         <th>Name</th>
-                                        <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,14 +62,7 @@
                                                     {{ student.user.last_name }}</a>
                                             </h2>
                                         </td>
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{% url 'portals:student-info' student.StudentID sectioncourse.pk %}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                               
                                     </tr>
                                     {% endfor %}
                                 </tbody>
