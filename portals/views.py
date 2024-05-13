@@ -67,6 +67,7 @@ def faculty_dashboard_view(request):
         class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
 
     context = {
+        'teacher': teacher,
         'teacher_name': teacher_name,
         'upcoming_classes': upcoming_classes,
         'current_date': current_date,
