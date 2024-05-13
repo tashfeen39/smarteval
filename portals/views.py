@@ -28,6 +28,8 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Sum, Max, Min
 from datetime import timedelta
+from django.db.models import Q
+
 
 
 
@@ -2273,4 +2275,6 @@ def student_marks_api_view(request, student_id, course_id):
     print(quiz_marks)
 
     return JsonResponse(response_data)
+
+
 
