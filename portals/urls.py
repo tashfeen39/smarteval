@@ -12,6 +12,7 @@ urlpatterns = [
     path("faculty/display-classes/", views.faculty_display_classes_view, name="display-classes"),
     path("faculty/feedbacks/", views.faculty_feedback_view, name="feedbacks"),
     path("faculty/generate-exam/", views.faculty_generate_exam_view, name="generate-exam"),
+    path("update-class-taken/", views.update_class_taken, name='update_class_taken'),
     # For generating the paper
     path("generate_paper/", views.generate_paper, name="generate_paper"),
     path("regenerate_question/", views.regenerate_question, name="regenerate_question"),

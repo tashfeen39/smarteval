@@ -94,20 +94,17 @@
                             </div>
                           </td>
                           <td>
+                            <form action="{% url 'portals:update_class_taken' %}" method="post" id="classTakenForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="class_id" value="{{ class_obj.id }}">
                             <div class="lesson-confirm">
-                              <label class="custom_check w-60">
-                                <input
-                                  type="checkbox"
-                                  id="chkYes"
-                                  name="invoice" />
-                                <span class="checkmark"></span
-                                ><span
-                                  class="float-end view-link"
-                                  style="color: #3d5ee1"
-                                  >Class Taken</span
-                                >
-                              </label>
+                                <label class="custom_check w-60">
+                                <input type="checkbox" name="class_taken" {% if class_obj.class_taken %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                                <span class="float-end view-link" style="color: #3d5ee1">Class Taken</span>
+                                </label>
                             </div>
+                            </form>
                           </td>
                         </tr>
                         {% endfor %}
@@ -206,12 +203,19 @@
                 </div>
               </div>
 
-              <!-- Your existing HTML code -->
             </div>
 {% endblock %}
 
                  <!-- ---------------- Block for Footer ---------------- -->
           {% block footer %}
+          <script>
+  $(document).ready(function() {
+    $('input[type="checkbox"]').change(function() {
+      $(this).closest('form').submit();
+    });
+  });
+</script>
+
           <script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
           <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
           {% endblock %}
