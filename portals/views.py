@@ -184,7 +184,13 @@ def faculty_marks_entry_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_profile_view(request):
-    return render(request, "portals/Faculty_Profile.html")
+    teacher = request.user.teacher
+    context = {
+        'teacher': teacher
+    }
+
+    return render(request, "portals/Faculty_Profile.html", context)
+
 
 
 
@@ -292,7 +298,17 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_final_marks = round(total_final_marks / total_students, 1)
     avg_project_marks = round(total_project_marks / total_students, 1)
 
-    
+    # Assuming you have retrieved and processed the necessary data
+    quiz_percentage_data = [float((quiz_mark.quiz_marks * 100) / quiz_mark.total_quiz_marks) for quiz_mark in quiz_marks]
+    assignment_percentage_data = [float((assignment_mark.assignment_marks * 100) / assignment_mark.total_assignment_marks) for assignment_mark in assignment_marks]
+    presentation_percentage_data = [float((presentation_mark.presentation_marks * 100) / presentation_mark.total_presentation_marks) for presentation_mark in presentation_marks]
+    semester_project_percentage_data = (semester_marks_data.semester_project_marks * 100) / semester_marks_data.total_project_marks 
+    mids_percentage_data = (semester_marks_data.mids_marks * 100) / semester_marks_data.total_mids_marks
+    final_percentage_data = (semester_marks_data.final_marks * 100) / semester_marks_data.total_final_marks
+
+
+
+
 
 
     # Query all marks for the corresponding assessment types for all students in the class
@@ -343,7 +359,16 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'min_mids_marks': min_mids_marks,
         'max_final_marks': max_final_marks,
         'min_final_marks': min_final_marks,
+        'quiz_percentage_data': quiz_percentage_data,
+        'assignment_percentage_data': assignment_percentage_data,
+        'presentation_percentage_data': presentation_percentage_data,
+        'semester_project_percentage_data': semester_project_percentage_data,
+        'mids_percentage_data': mids_percentage_data,
+        'final_percentage_data': final_percentage_data,
+
     }
+    print(avg_quiz_marks)
+    print(quiz_percentage_data)
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
 

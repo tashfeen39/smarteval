@@ -20,7 +20,7 @@
                 <div class="col">
                     <h3 class="page-title">Profile</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item">Dashboard</></li>
                         <li class="breadcrumb-item active">Profile</li>
                     </ul>
                 </div>
@@ -38,8 +38,8 @@
                             </a>
                         </div>
                         <div class="col ms-md-n2 profile-user-info">
-                            <h4 class="user-name mb-0">Mr. Atif Ali Shah</h4>
-                            <h6 class="text-muted">Computer Science</h6>
+                            <h4 class="user-name mb-0">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h4>
+                            <h6 class="text-muted"> {{ teacher.department.department_name }}</h6>
 
                         </div>
 
@@ -60,25 +60,44 @@
                                         </h5>
                                         <div class="row">
                                             <p class="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Name</p>
-                                            <p class="col-sm-9">Mr. Atif Ali Shah</p>
+                                            <p class="col-sm-9">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</p>
                                         </div>
                                         <div class="row">
                                             <p class="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Date of
                                                 Birth</p>
-                                            <p class="col-sm-9">24 Jul 1983</p>
+                                            <p class="col-sm-9"> {{ teacher.date_of_birth }} </p>
                                         </div>
                                         <div class="row">
                                             <p class="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Email ID</p>
-                                            <p class="col-sm-9">ali123@gmail.com</p>
+                                            <p class="col-sm-9"> {{ teacher.user.email }}</p> 
                                         </div>
                                         <div class="row">
                                             <p class="col-sm-3 text-muted text-sm-end mb-0 mb-sm-3">Mobile</p>
-                                            <p class="col-sm-9">03425837535</p>
+                                            <p class="col-sm-9"> 03{{ teacher.user.phone_number }} </p>
                                         </div>
                                         <div class="row">
                                             <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
-                                            <p class="col-sm-9 mb-0">House # 40, Street # 1, Sector # 1, Rawalpindi.<br>
-
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
+                                        </div>
+                                        <div class="row">
+                                            <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
+                                        </div>
+                                        <div class="row">
+                                            <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
+                                        </div>
+                                        <div class="row">
+                                            <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
+                                        </div>
+                                        <div class="row">
+                                            <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
+                                        </div>
+                                        <div class="row">
+                                            <p class="col-sm-3 text-muted text-sm-end mb-0">Address</p>
+                                            <p class="col-sm-9 mb-0">{{ teacher.address }}<br>
                                         </div>
                                     </div>
                                 </div>
