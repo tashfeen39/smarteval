@@ -347,11 +347,24 @@ class SemesterCourseGrade(models.Model):
 
     def __str__(self):
         return f"{self.student.user.first_name} - {self.student.user.last_name} - {self.course} - Semester {self.semester_number}: {self.course_grade}"
-    
-    def save(self, *args, **kwargs):
-        # Calculate default grade based on marks data
-        self.course_grade = get_default_course_grade(self.student, self.course)
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Semester Courses Grades"
+
+
+class Feedback(models.Model):
+    feedback_from = models.CharField(max_length=100, blank=True, null=True)
+    feedback_for = models.CharField(max_length=100, blank=True, null=True)
+    feedback_details = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return f"Feedback from {self.feedback_from} to {self.feedback_for}"
+    
+class Complaint(models.Model):
+    complaint_from = models.CharField(max_length=100, blank=True, null=True)
+    complaint_for = models.CharField(max_length=100, blank=True, null=True)
+    complaint_details = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Complaint from {self.complaint_from} to {self.complaint_for}"    

@@ -11,7 +11,7 @@ import string
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from portals.decorators import student_required, teacher_required
-from .models import AssignmentMarks, ClassRoom, ClassTiming, Degree, PresentationMarks, Program, QuizMarks, Section, SemesterCourseGrade, SemesterCourses, SemesterDetails, SemesterMarksData, TeacherCoursesTaught, Class, TeacherSectionsTaught
+from .models import AssignmentMarks, ClassRoom, ClassTiming, Complaint, Degree, Feedback, PresentationMarks, Program, QuizMarks, Section, SemesterCourseGrade, SemesterCourses, SemesterDetails, SemesterMarksData, TeacherCoursesTaught, Class, TeacherSectionsTaught
 from django.db.models import Count
 from portals.models import Course, Department, Student, Teacher, User
 from django.http import HttpResponse
@@ -94,7 +94,49 @@ def faculty_display_classes_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_feedback_view(request):
-    return render(request, "portals/Faculty_Feedbacks.html")
+    teacher = request.user.teacher
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
+    # Get the Section instances for the sections taught
+    section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
+    if request.method == 'POST':
+            # Extract data from the form
+            feedback_type = request.POST.get('feedbackType')
+            feedback_from = request.POST.get('name')
+            feedback_for = request.POST.get('classSelect')
+            message = request.POST.get('message')
+
+            print("Feedback Type: " , feedback_type)
+
+            if feedback_type == "Feedback":
+                # Create a new instance of Feedback model
+                feedback = Feedback(
+                    feedback_from=feedback_from,
+                    feedback_for=feedback_for,
+                    feedback_details=message,
+                    created_at=timezone.now()
+                )
+
+                # Save the instance to the database
+                feedback.save()
+
+            elif feedback_type == "Complaint":
+                complaint = Complaint(
+                    complaint_from=feedback_from,
+                    complaint_for=feedback_for,
+                    complaint_details=message,
+                    created_at=timezone.now()
+                )
+                complaint.save()
+
+            # Redirect to the same page after successful submission
+            return redirect('portals:feedbacks')
+    context = {
+        'teacher': teacher,
+        'sections_taught': sections_taught,
+        'section_instances': section_instances,
+    }
+    return render(request, "portals/Faculty_Feedbacks.html", context)    
+
 
 
 @login_required(login_url='portals:faculty-login')
@@ -120,16 +162,19 @@ def faculty_studentsreports_view(request):
     return render(request, "portals/Faculty_StudentsReports.html")
 
 
+# Display the list of classes that the teacher teaches before marks entry page
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_marks_entry_view(request):
-    sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+    teacher = request.user.teacher
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
     
 
     # Get the Section instances for the sections taught
     section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     context = {
+
         'sections_taught': sections_taught,
         'section_instances': section_instances,
     }
@@ -152,6 +197,8 @@ def calculate_average_marks(queryset, total_students):
         avg_marks[item] = round(queryset[item] / total_students, 1)
     return avg_marks
 
+
+# Display student marks and also generate data for reports to send over to the frontend
 def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     student = get_object_or_404(Student, StudentID=student_id)
     teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
@@ -301,6 +348,7 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     return render(request, "portals/Faculty_StudentInfo.html", context)
 
 
+# View to save the marks of the student when the teacher edits them in marks entry page
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_save_marks_view(request, teachersectioncourse_id):
@@ -369,6 +417,8 @@ def faculty_save_marks_view(request, teachersectioncourse_id):
         return redirect('portals:student-marksentry', teachersectioncourse_id=teachersectioncourse_id)
     return render(request, 'portals/Faculty_StudentMarksEntry.html')
 
+
+# Display marks of all students in marks entry page and teacher can also edit them 
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_student_marks_entry_view(request, teachersectioncourse_id):

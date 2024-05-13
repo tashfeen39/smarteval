@@ -2,7 +2,6 @@
 
 ## High Priority
 
-- grade model ka save function remove krke default values check krni
 - reports for students
 - percentage reports for teachers
 - free room finder
@@ -30,3 +29,4 @@
 ## Done but review Required
 
 - multiple reports for teachers
+- grade model ka save function remove krke default values check krni
