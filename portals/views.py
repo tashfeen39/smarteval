@@ -367,8 +367,6 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
         'final_percentage_data': final_percentage_data,
 
     }
-    print(avg_quiz_marks)
-    print(quiz_percentage_data)
 
     return render(request, "portals/Faculty_StudentInfo.html", context)
 

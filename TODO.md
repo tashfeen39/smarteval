@@ -3,7 +3,6 @@
 ## High Priority
 
 - reports for students
-- percentage reports for teachers
 - free room finder
 - classes ke lye clas_taken wali functionlity implement krni
 - missed classes wala faculty dashboard pe
@@ -27,6 +26,7 @@
 
 ## Done but review Required
 
+- percentage reports for teachers
 - grades ka backend
 - feedback and complaints
 - multiple reports for teachers
