@@ -1713,7 +1713,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    populate_semester_course_grades(request)
+    # populate_semester_course_grades(request)
     # generate_marks_view(request)
     # test_mapping()
     # assign_classes_to_sections(request)
