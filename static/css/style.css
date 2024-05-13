@@ -1968,7 +1968,7 @@ div.dataTables_wrapper div.dataTables_length select {
   font-size: 22px !important;
 }
 .header {
-  background-color: #4258cb;
+  background: linear-gradient(329deg, #4a4a4a 0%, rgb(32 98 220) 40%);
   border-bottom: 1px solid #f3f3f4;
   left: 0;
   position: fixed;
@@ -2311,7 +2311,7 @@ footer p {
   transition: all 0.2s ease-in-out 0s;
   width: 259px;
   z-index: 1001;
-  background: #4258cb;
+background: linear-gradient(329deg, #d0d0d0 0%, rgb(32 98 220) 40%);
 }
 .sidebar.opened {
   -webkit-transition: all 0.4s ease;
