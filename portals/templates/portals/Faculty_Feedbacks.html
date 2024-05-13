@@ -69,8 +69,8 @@
                       <option value="Complaint">Complaint</option>
                     </select>
                   </div>
-                  <label for="name">Faculty Name</label>
-                  <input type="text" id="name" name="name" value="{{ teacher.user.first_name }} {{ teacher.user.last_name }}" required /><br />
+                  <label for="name">Name</label>
+                  <input type="text" id="name" name="name" value="{{ teacher.user.first_name }} {{ teacher.user.last_name }}" readonly /><br />
 
                   <label for="classSelect">Select a Class</label>
                   <div class="custom-select">

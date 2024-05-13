@@ -77,8 +77,8 @@ class Course(models.Model):
     CourseID = models.AutoField(primary_key=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
     course_name = models.CharField(max_length=100)
-    theory_credit_hours = models.IntegerField()
-    lab_credit_hours = models.IntegerField()
+    theory_credit_hours = models.IntegerField(default=3, blank=True, null=True)
+    lab_credit_hours = models.IntegerField(default=1, blank=True, null=True)
 
     def __str__(self):
         return self.course_name

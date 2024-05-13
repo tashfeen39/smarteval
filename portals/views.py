@@ -27,6 +27,10 @@ import itertools
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Sum, Max, Min
+from datetime import timedelta
+
+
+
 
 
 
@@ -54,15 +58,31 @@ def faculty_class_info_view(request, sectioncourse_pk):
 def faculty_dashboard_view(request):
     # Get the current date
     current_date = timezone.now().date()
+    current_datetime = timezone.now()
     
     # Get the logged-in teacher
     teacher = request.user.teacher
     teacher_name = f"{request.user.first_name}"
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
+
     
     # Retrieve the upcoming classes for the teacher on the current day
+    # upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'), class_timing__start_time__gte=current_datetime.time())
     upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
+    missed_classes = Class.objects.filter(
+    teacher=teacher,
+    class_timing__weekday=current_datetime.strftime('%A'),
+    class_timing__start_time__lt=current_datetime.time(),
+    class_taken=False
+)
+
     # Convert time format to display "12 pm" instead of "noon"
     for class_obj in upcoming_classes:
+        class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
+        class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
+
+    # Convert time format to display "12 pm" instead of "noon"
+    for class_obj in missed_classes:
         class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
         class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
 
@@ -70,6 +90,7 @@ def faculty_dashboard_view(request):
         'teacher': teacher,
         'teacher_name': teacher_name,
         'upcoming_classes': upcoming_classes,
+        'missed_classes': missed_classes,
         'current_date': current_date,
     }
 
@@ -80,13 +101,15 @@ def faculty_dashboard_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_display_classes_view(request):
+    teacher = request.user.teacher
     # teacher = request.user.teacher
-    sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
 
     # print("Teacher: ", teacher)
     # print("\nSection: ", sections_taught)
 
     context = {
+        'teacher': teacher,
         'sections_taught': sections_taught
     }
     return render(request, "portals/Faculty_DisplayClasses.html", context)
@@ -143,11 +166,18 @@ def faculty_feedback_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_generate_exam_view(request):
+    teacher = request.user.teacher
     subjects = Course.objects.all()
 
     if request.method == "POST":
         subject_id = request.POST.get("subject")
-    return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
+
+    context = {
+        'teacher': teacher,
+        'subjects': subjects,
+      
+    }
+    return render(request, "portals/Faculty_GenerateExam.html", context)
     
 
 
@@ -160,7 +190,11 @@ def faculty_grading_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_studentsreports_view(request):
-    return render(request, "portals/Faculty_StudentsReports.html")
+    teacher = request.user.teacher
+    context = {
+        'teacher': teacher,
+    }
+    return render(request, "portals/Faculty_StudentsReports.html", context)
 
 
 # Display the list of classes that the teacher teaches before marks entry page
@@ -175,7 +209,7 @@ def faculty_marks_entry_view(request):
     section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     context = {
-
+        'teacher': teacher,
         'sections_taught': sections_taught,
         'section_instances': section_instances,
     }
@@ -192,6 +226,75 @@ def faculty_profile_view(request):
 
     return render(request, "portals/Faculty_Profile.html", context)
 
+
+
+def find_available_time_slots(request):
+
+     # Mapping of weekday numbers to weekday names
+    weekday_names = {
+        0: 'Monday',
+        1: 'Tuesday',
+        2: 'Wednesday',
+        3: 'Thursday',
+        4: 'Friday',
+    }
+
+    # Assuming one teacher and section for demonstration
+    teacher_section_taught = TeacherSectionsTaught.objects.first()
+
+    if not teacher_section_taught:
+        return HttpResponse("No teacher section taught found.")
+
+    teacher = teacher_section_taught.teacher
+    section = teacher_section_taught.section
+
+    # Initialize teacher_free_slots with all possible classes and weekdays
+    teacher_free_slots = {(time(hour=h, minute=0), weekday_names[wd]) for h in range(8, 17) for wd in range(5)}
+    # Fetch teacher's class timings with weekday
+    teacher_class_timings = [(timing.start_time, timing.weekday) for timing in ClassTiming.objects.filter(class__teacher=teacher)]
+
+   # Convert teacher_class_timings to a set
+    teacher_class_timings_set = set(teacher_class_timings)
+
+    # Remove teacher's class timings from teacher_free_slots
+    teacher_free_slots -= teacher_class_timings_set
+
+
+    # Initialize student_free_slots with all possible classes and weekdays
+    student_free_slots = {(time(hour=h, minute=0), weekday_names[wd]) for h in range(8, 17) for wd in range(5)}
+    # Fetch student's class timings (for the same section) with weekday
+    student_class_timings = [(timing.start_time, timing.weekday) for timing in ClassTiming.objects.filter(class__section=section)]
+
+    student_class_timings_set = set(student_class_timings)
+    student_free_slots -= student_class_timings_set
+
+
+    # Extract start times and weekdays of teacher's and student's class timings
+    teacher_start_times = [timing[0] for timing in teacher_free_slots]
+    teacher_weekdays = [timing[1] for timing in teacher_free_slots]
+    student_start_times = [timing[0] for timing in student_free_slots]
+    student_weekdays = [timing[1] for timing in student_free_slots]
+
+
+     # Find overlapping start times and weekdays
+    available_slots = [(start_time, weekday) for start_time, weekday in zip(teacher_start_times, teacher_weekdays) if start_time in student_start_times]
+
+    # Print available time slots in the terminal
+    if available_slots:
+        print("Available time slots for scheduling a class:")
+        for start_time, weekday in available_slots:
+            start_datetime = datetime.combine(datetime.today(), start_time) 
+            end_datetime = start_datetime + timedelta(hours=1)  
+            availableClassSlots=ClassTiming.objects.filter(start_time=start_datetime, end_time=end_datetime, weekday=weekday)
+            for availableClassSlot in availableClassSlots:
+                classAvailable = Class.objects.filter(class_timing=availableClassSlot)
+                for classInstance in classAvailable:
+                    print(f"{start_time.strftime('%H:%M')} - {end_datetime.strftime('%H:%M')} (Weekday: {weekday}) Room: {classInstance.classroom}")  # Print formatted time strings
+
+    else:
+        print("No available time slots found for scheduling a class.")
+
+    return HttpResponse("Available time slots printed in the terminal.")
 
 def update_class_taken(request):
     if request.method == 'POST':
@@ -842,6 +945,8 @@ def create_class_rooms(request):
     
     # Initialize the starting room number
     starting_room_number = 1
+
+    classrooms=[]
     
     # Iterate over each department
     for department in departments:
@@ -852,12 +957,14 @@ def create_class_rooms(request):
                 class_room_number = f"{floor}{room_number:02}"
                 
                 # Create the class room for the department
-                ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+                # ClassRoom.objects.create(class_room_number=class_room_number, department=department)
+                classrooms.append(class_room_number)
                 
                 # Increment the room number
             starting_room_number += 1
     
     print("Class rooms created successfully")
+    return classrooms
 
 
 
@@ -1807,6 +1914,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    # find_available_time_slots(request)
     # populate_semester_course_grades(request)
     # generate_marks_view(request)
     # test_mapping()
