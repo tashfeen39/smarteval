@@ -27,6 +27,8 @@ import itertools
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Sum, Max, Min
+from datetime import timedelta
+
 
 
 
@@ -192,6 +194,70 @@ def faculty_profile_view(request):
 
     return render(request, "portals/Faculty_Profile.html", context)
 
+
+from datetime import datetime, timedelta
+
+def find_available_time_slots(request):
+     # Mapping of weekday numbers to weekday names
+    weekday_names = {
+        0: 'Monday',
+        1: 'Tuesday',
+        2: 'Wednesday',
+        3: 'Thursday',
+        4: 'Friday',
+    }
+
+    # Assuming one teacher and section for demonstration
+    teacher_section_taught = TeacherSectionsTaught.objects.first()
+
+    if not teacher_section_taught:
+        return HttpResponse("No teacher section taught found.")
+
+    teacher = teacher_section_taught.teacher
+    section = teacher_section_taught.section
+
+    # Initialize teacher_free_slots with all possible classes and weekdays
+    teacher_free_slots = {(time(hour=h, minute=0), weekday_names[wd]) for h in range(8, 17) for wd in range(5)}
+    # Fetch teacher's class timings with weekday
+    teacher_class_timings = [(timing.start_time, timing.weekday) for timing in ClassTiming.objects.filter(class__teacher=teacher)]
+
+   # Convert teacher_class_timings to a set
+    teacher_class_timings_set = set(teacher_class_timings)
+
+    # Remove teacher's class timings from teacher_free_slots
+    teacher_free_slots -= teacher_class_timings_set
+
+
+    # Initialize student_free_slots with all possible classes and weekdays
+    student_free_slots = {(time(hour=h, minute=0), weekday_names[wd]) for h in range(8, 17) for wd in range(5)}
+    # Fetch student's class timings (for the same section) with weekday
+    student_class_timings = [(timing.start_time, timing.weekday) for timing in ClassTiming.objects.filter(class__section=section)]
+
+    student_class_timings_set = set(student_class_timings)
+    student_free_slots -= student_class_timings_set
+
+
+    # Extract start times and weekdays of teacher's and student's class timings
+    teacher_start_times = [timing[0] for timing in teacher_free_slots]
+    teacher_weekdays = [timing[1] for timing in teacher_free_slots]
+    student_start_times = [timing[0] for timing in student_free_slots]
+    student_weekdays = [timing[1] for timing in student_free_slots]
+
+
+     # Find overlapping start times and weekdays
+    available_slots = [(start_time, weekday) for start_time, weekday in zip(teacher_start_times, teacher_weekdays) if start_time in student_start_times]
+
+    # Print available time slots in the terminal
+    if available_slots:
+        print("Available time slots for scheduling a class:")
+        for start_time, weekday in available_slots:
+            start_datetime = datetime.combine(datetime.today(), start_time)  # Convert to datetime object
+            end_datetime = start_datetime + timedelta(hours=1)  # Add timedelta
+            print(f"{start_time.strftime('%H:%M')} - {end_datetime.strftime('%H:%M')} (Weekday: {weekday})")  # Print formatted time strings
+    else:
+        print("No available time slots found for scheduling a class.")
+
+    return HttpResponse("Available time slots printed in the terminal.")
 
 def update_class_taken(request):
     if request.method == 'POST':
@@ -1785,6 +1851,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
+    find_available_time_slots(request)
     # populate_semester_course_grades(request)
     # generate_marks_view(request)
     # test_mapping()
