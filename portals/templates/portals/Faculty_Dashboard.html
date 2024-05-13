@@ -81,7 +81,7 @@
                         <tr>
                           <td>
                             <div class="date">
-                              <b>{{ class_obj.section }}</b>
+                              <b>{{ class_obj.course }} - {{ class_obj.section.degree.degree_abbreviation }}-{{ class_obj.section.semester}} {{ class_obj.section.section_name}}</b>
                               <ul class="teacher-date-list">
                                 <li>
                                   <i class="fas fa-calendar-alt me-2"></i>{{ current_date }}
@@ -148,11 +148,11 @@
                   <div class="table-responsive lesson">
                     <table class="table table-center">
                     <tbody>
-                        {% for class_obj in upcoming_classes %}
+                        {% for class_obj in missed_classes %}
                         <tr>
                           <td>
                             <div class="date">
-                              <b>{{ class_obj.section }}</b>
+                              <b>{{ class_obj.course }} - {{ class_obj.section.degree.degree_abbreviation }}-{{ class_obj.section.semester}} {{ class_obj.section.section_name}}</b>
                               <ul class="teacher-date-list">
                                 <li>
                                   <i class="fas fa-calendar-alt me-2"></i>{{ current_date }}
@@ -165,20 +165,17 @@
                             </div>
                           </td>
                           <td>
+                             <form action="{% url 'portals:update_class_taken' %}" method="post" id="classTakenForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="class_id" value="{{ class_obj.id }}">
                             <div class="lesson-confirm">
-                              <label class="custom_check w-60">
-                                <input
-                                  type="checkbox"
-                                  id="chkYes"
-                                  name="invoice" />
-                                <span class="checkmark"></span
-                                ><span
-                                  class="float-end view-link"
-                                  style="color: #3d5ee1"
-                                  >Class Taken</span
-                                >
-                              </label>
+                                <label class="custom_check w-60">
+                                <input type="checkbox" name="class_taken" {% if class_obj.class_taken %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                                <span class="float-end view-link" style="color: #3d5ee1">Class Taken</span>
+                                </label>
                             </div>
+                            </form>
                           </td>
                         </tr>
                         {% endfor %}

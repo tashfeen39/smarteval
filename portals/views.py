@@ -32,6 +32,8 @@ from datetime import timedelta
 
 
 
+
+
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_class_info_view(request, sectioncourse_pk):
@@ -56,15 +58,31 @@ def faculty_class_info_view(request, sectioncourse_pk):
 def faculty_dashboard_view(request):
     # Get the current date
     current_date = timezone.now().date()
+    current_datetime = timezone.now()
     
     # Get the logged-in teacher
     teacher = request.user.teacher
     teacher_name = f"{request.user.first_name}"
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
+
     
     # Retrieve the upcoming classes for the teacher on the current day
+    # upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'), class_timing__start_time__gte=current_datetime.time())
     upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
+    missed_classes = Class.objects.filter(
+    teacher=teacher,
+    class_timing__weekday=current_datetime.strftime('%A'),
+    class_timing__start_time__lt=current_datetime.time(),
+    class_taken=False
+)
+
     # Convert time format to display "12 pm" instead of "noon"
     for class_obj in upcoming_classes:
+        class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
+        class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
+
+    # Convert time format to display "12 pm" instead of "noon"
+    for class_obj in missed_classes:
         class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
         class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
 
@@ -72,6 +90,7 @@ def faculty_dashboard_view(request):
         'teacher': teacher,
         'teacher_name': teacher_name,
         'upcoming_classes': upcoming_classes,
+        'missed_classes': missed_classes,
         'current_date': current_date,
     }
 
@@ -82,13 +101,15 @@ def faculty_dashboard_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_display_classes_view(request):
+    teacher = request.user.teacher
     # teacher = request.user.teacher
-    sections_taught = TeacherSectionsTaught.objects.filter(teacher=request.user.teacher)
+    sections_taught = TeacherSectionsTaught.objects.filter(teacher=teacher)
 
     # print("Teacher: ", teacher)
     # print("\nSection: ", sections_taught)
 
     context = {
+        'teacher': teacher,
         'sections_taught': sections_taught
     }
     return render(request, "portals/Faculty_DisplayClasses.html", context)
@@ -145,11 +166,18 @@ def faculty_feedback_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_generate_exam_view(request):
+    teacher = request.user.teacher
     subjects = Course.objects.all()
 
     if request.method == "POST":
         subject_id = request.POST.get("subject")
-    return render(request, "portals/Faculty_GenerateExam.html", {"subjects": subjects})
+
+    context = {
+        'teacher': teacher,
+        'subjects': subjects,
+      
+    }
+    return render(request, "portals/Faculty_GenerateExam.html", context)
     
 
 
@@ -162,7 +190,11 @@ def faculty_grading_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_studentsreports_view(request):
-    return render(request, "portals/Faculty_StudentsReports.html")
+    teacher = request.user.teacher
+    context = {
+        'teacher': teacher,
+    }
+    return render(request, "portals/Faculty_StudentsReports.html", context)
 
 
 # Display the list of classes that the teacher teaches before marks entry page
@@ -177,7 +209,7 @@ def faculty_marks_entry_view(request):
     section_instances = [get_object_or_404(Section, pk=section_taught.section.pk) for section_taught in sections_taught]
 
     context = {
-
+        'teacher': teacher,
         'sections_taught': sections_taught,
         'section_instances': section_instances,
     }
@@ -197,8 +229,7 @@ def faculty_profile_view(request):
 
 
 def find_available_time_slots(request):
-    classrooms = create_class_rooms(request)
-    # print(classrooms)
+
      # Mapping of weekday numbers to weekday names
     weekday_names = {
         0: 'Monday',
@@ -1883,7 +1914,7 @@ def saveStudent(request):
 
 
 def student_login_view(request):
-    find_available_time_slots(request)
+    # find_available_time_slots(request)
     # populate_semester_course_grades(request)
     # generate_marks_view(request)
     # test_mapping()
