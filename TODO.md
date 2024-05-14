@@ -8,7 +8,7 @@
 - speed o meter ???
 
 - classes display sai treeqe se krani aur design bhi
-- student info ko read only krna
+
 - marks entry walli file mai empty marks ko shade krna
 - reports related to subjects for teacher
 - generate paper ka download button ki alignment
@@ -51,5 +51,7 @@
 - no. of parts mai se N/A hatana
 - total question 5 krne generate exam mai
 - space decrease krni faulty dashbooard
+- student info ko read only krna
+
 
 
