@@ -12,6 +12,42 @@
 {% endblock %}
 
 
+{% block profilemenu %}
+<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        <span class="user-img">
+                             {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                
+                               {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            </div>
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </div>
+                        <a class="dropdown-item" href="{% url 'portals:student-profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
+                    </div>
+{% endblock %}
+
+
+
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
 

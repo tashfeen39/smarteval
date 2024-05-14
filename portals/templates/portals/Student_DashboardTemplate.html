@@ -74,28 +74,8 @@
                 </li>
 
                 <li class="nav-item dropdown has-arrow new-user-menus">
-                    <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                        <span class="user-img">
-                            <img class="rounded-circle" src="{% static 'img/profiles/avatar-01.jpg' %}" width="31"
-                                alt="Ali Raza">
-                            <div class="user-text">
-                                <h6>Ali Raza</h6>
-                            </div>
-                        </span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <div class="user-header">
-                            <div class="avatar avatar-sm">
-                                <img src="{% static 'img/profiles/avatar-01.jpg' %}" alt="User Image"
-                                    class="avatar-img rounded-circle">
-                            </div>
-                            <div class="user-text">
-                                <h6>Ali Raza</h6>
-                            </div>
-                        </div>
-                        <a class="dropdown-item" href="{% url 'portals:student-profile' %}">My Profile</a>
-                        <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
-                    </div>
+                {% block profilemenu %}
+                {% endblock %}
                 </li>
 
             </ul>

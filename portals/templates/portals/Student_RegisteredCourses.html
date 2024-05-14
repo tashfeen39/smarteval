@@ -10,6 +10,39 @@
 
 {% endblock %}
 
+{% block profilemenu %}
+<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        <span class="user-img">
+                             {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                
+                               {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            </div>
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </div>
+                        <a class="dropdown-item" href="{% url 'portals:student-profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
+                    </div>
+{% endblock %}
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
@@ -27,85 +60,29 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="registration-info">
-                                <p><strong>Registration ID:</strong> 200819</p>
-                                <p><strong>Name:</strong> Muhammad Ali Raza</p>
-                                <p><strong>Class:</strong> Course</p>
+                                <p><strong>Registration ID:</strong> {{student.StudentID}}</p>
+                                <p><strong>Name:</strong> {{ student.user.first_name }} {{ student.user.last_name }} </p>
+
                             </div>
 
                             <table>
-                                <tr>
-                                    <th>Sr. No.</th>
-                                    <th>Course Code</th>
-                                    <th>Course Title</th>
-                                    <th>Credit Hours</th>
-                                    <th>Pre-Requisite</th>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td>CS225 - CS225L</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td>CS494</td>
-                                </tr>
-                                <tr>
-                                    <td>8</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td>CS225 - CS225L</td>
-                                </tr>
-                                <tr>
-                                    <td>9</td>
-                                    <td>CS371</td>
-                                    <td>F-23-Software Engineering-923</td>
-                                    <td>2</td>
-                                    <td></td>
-                                </tr>
-                            </table>
-
-
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Course Title</th>
+                                <th>Credit Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td> <!-- Use forloop.counter to generate Sr. No. -->
+                                <td>{{ course.course_name }}</td>
+                                <td>{{ course.theory_credit_hours }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
 
                         </div>
