@@ -28,10 +28,10 @@
                             <div class="avatar avatar-sm">
                                 
                                {% if teacher.user.profile_picture %}
-                                <img class="avatar-img rounded-circle profile-menu" style="width: 40px;
+                                <img class="avatar-img rounded-circle" style="width: 40px;
                                             height: 40px" src="{{ teacher.user.profile_picture.url }}" />
                             {% else %}
-                                <span class="material-symbols-outlined image-size profile-menu"  >person</span>
+                                <span class="material-symbols-outlined image-size">person</span>
                             {% endif %}
                             </div>
                             <div class="user-text">
@@ -42,6 +42,7 @@
                         <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
                     </div>
 {% endblock %}
+
 
 {% comment %} <!-------------- Block for Body ---------------- --> {% endcomment %}
 {% block body %}
