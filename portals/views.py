@@ -71,10 +71,10 @@ def faculty_dashboard_view(request):
     upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
     missed_classes = Class.objects.filter(
     teacher=teacher,
-    class_timing__weekday=current_datetime.strftime('%A'),
-    class_timing__start_time__lt=current_datetime.time(),
     class_taken=False
 )
+    # class_timing__weekday=current_datetime.strftime('%A'),
+    # class_timing__start_time__lt=current_datetime.time(),
 
     # Convert time format to display "12 pm" instead of "noon"
     for class_obj in upcoming_classes:
@@ -228,9 +228,19 @@ def faculty_profile_view(request):
 
 
 
+@login_required(login_url='portals:faculty-login')
+@teacher_required()
 def find_available_time_slots(request):
-
-     # Mapping of weekday numbers to weekday names
+    current_date = timezone.now().date()
+    current_datetime = timezone.now()
+    
+    teacher = request.user.teacher
+    section_id = request.POST.get('section_id') 
+    course_id = request.POST.get('course_id')
+    print("teacher", teacher)
+    print("section", section_id)
+    print("course_id", course_id)
+    # Mapping of weekday numbers to weekday names
     weekday_names = {
         0: 'Monday',
         1: 'Tuesday',
@@ -240,7 +250,7 @@ def find_available_time_slots(request):
     }
 
     # Assuming one teacher and section for demonstration
-    teacher_section_taught = TeacherSectionsTaught.objects.first()
+    teacher_section_taught = TeacherSectionsTaught.objects.filter(teacher=teacher, section_id=section_id, course_id=course_id).first()
 
     if not teacher_section_taught:
         return HttpResponse("No teacher section taught found.")
@@ -279,9 +289,10 @@ def find_available_time_slots(request):
      # Find overlapping start times and weekdays
     available_slots = [(start_time, weekday) for start_time, weekday in zip(teacher_start_times, teacher_weekdays) if start_time in student_start_times]
 
+    available_slots_list = []
     # Print available time slots in the terminal
     if available_slots:
-        print("Available time slots for scheduling a class:")
+        # print("Available time slots for scheduling a class:")
         for start_time, weekday in available_slots:
             start_datetime = datetime.combine(datetime.today(), start_time) 
             end_datetime = start_datetime + timedelta(hours=1)  
@@ -289,12 +300,46 @@ def find_available_time_slots(request):
             for availableClassSlot in availableClassSlots:
                 classAvailable = Class.objects.filter(class_timing=availableClassSlot)
                 for classInstance in classAvailable:
-                    print(f"{start_time.strftime('%H:%M')} - {end_datetime.strftime('%H:%M')} (Weekday: {weekday}) Room: {classInstance.classroom}")  # Print formatted time strings
+                     available_slots_list.append({
+                    'start_time': start_time.strftime('%H:%M'),
+                    'end_time': end_datetime.strftime('%H:%M'),
+                    'weekday': weekday,
+                    'room': classInstance.classroom
+                })
+                     
+                     
+    
+    # Retrieve the upcoming classes for the teacher on the current day
+    # upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'), class_timing__start_time__gte=current_datetime.time())
+    upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
+    missed_classes = Class.objects.filter(
+    teacher=teacher,
+    class_taken=False
+)
+    # class_timing__weekday=current_datetime.strftime('%A'),
+    # class_timing__start_time__lt=current_datetime.time(),
 
-    else:
-        print("No available time slots found for scheduling a class.")
+    # Convert time format to display "12 pm" instead of "noon"
+    for class_obj in upcoming_classes:
+        class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
+        class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
 
-    return HttpResponse("Available time slots printed in the terminal.")
+    # Convert time format to display "12 pm" instead of "noon"
+    for class_obj in missed_classes:
+        class_obj.class_timing.start_time = class_obj.class_timing.start_time.strftime('%I:%M %p').lstrip('0')
+        class_obj.class_timing.end_time = class_obj.class_timing.end_time.strftime('%I:%M %p').lstrip('0')
+
+    context = {
+        'teacher': teacher,
+        'upcoming_classes': upcoming_classes,
+        'missed_classes': missed_classes,
+        'current_date': current_date,
+        'available_slots_list': available_slots_list,
+    }
+
+    print(len(available_slots_list))
+
+    return render(request, "portals/Faculty_Dashboard.html", context)
 
 def update_class_taken(request):
     if request.method == 'POST':
