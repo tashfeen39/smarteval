@@ -864,7 +864,49 @@ def student_report_view(request):
 @login_required(login_url='portals:student-login') 
 @student_required()
 def student_feedback_view(request):
-    return render(request, "portals/Student_Feedback.html")
+    student = request.user.student
+    teachers = TeacherSectionsTaught.objects.filter(section=student.section)
+
+    if request.method == 'POST':
+            # Extract data from the form
+            feedback_type = request.POST.get('feedbackType')
+            feedback_from = request.POST.get('name')
+            feedback_for = request.POST.get('classSelect')
+            message = request.POST.get('message')
+
+            print("Feedback Type: " , feedback_type)
+
+            if feedback_type == "Feedback":
+                # Create a new instance of Feedback model
+                feedback = Feedback(
+                    feedback_from=feedback_from,
+                    feedback_for=feedback_for,
+                    feedback_details=message,
+                    created_at=timezone.now()
+                )
+
+                # Save the instance to the database
+                feedback.save()
+
+            elif feedback_type == "Complaint":
+                complaint = Complaint(
+                    complaint_from=feedback_from,
+                    complaint_for=feedback_for,
+                    complaint_details=message,
+                    created_at=timezone.now()
+                )
+                complaint.save()
+
+            # Redirect to the same page after successful submission
+            return redirect('portals:student-feedback')
+
+    
+    context = {
+        'student':student,
+        'teachers':teachers
+        
+    }
+    return render(request, "portals/Student_Feedback.html", context)
 
 
 @login_required(login_url='portals:student-login') 
