@@ -113,8 +113,9 @@ button:hover {
   margin-top: 5px;
 }
 #downloadContainer {
-  float: right !important;
+  float: center !important;
   width: 30%;
+  margin: 20px;
 }
 
 .question-div {

@@ -127,7 +127,7 @@ ol {
 }
 .table > :not(caption) > * > * {
   box-shadow: unset;
-  padding: 0.75rem;
+  /* padding: 0.75rem; */
 }
 .table thead th {
   vertical-align: bottom;
@@ -9382,3 +9382,8 @@ body[data-layout-mode="dark"]
   background-color: white !important; /* Change the background color to white */
   color: black; /* Change the text color to black (optional) */
 }
+
+/* yellow background */
+/* input[type="float"]:required:invalid {
+        background-color: yellow;
+    } */

@@ -28,6 +28,8 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Sum, Max, Min
 from datetime import timedelta
+from django.db.models import Q
+
 
 
 
@@ -2113,7 +2115,7 @@ def generate_paper(request):
             subject_id = data.get("subject_id")
             subject_name = subject_id
             select_questions = int(data.get("selectQuestions"))
-            question_parts = data.get("questionParts") or ['N/A'] * select_questions
+            question_parts = data.get("questionParts", [''] * select_questions)
             question_topics = data.get("questionTopics") or [''] * select_questions
             # Check if all topics are provided
             if any(not topic.strip() for topic in question_topics):
@@ -2318,4 +2320,6 @@ def student_marks_api_view(request, student_id, course_id):
     print(quiz_marks)
 
     return JsonResponse(response_data)
+
+
 

@@ -165,10 +165,10 @@ document
       select.name = `question_${i}_parts`;
       select.classList.add("form-select", "mb-3", "question-parts");
 
-      var notApplicable = document.createElement("option");
-      notApplicable.value = "N/A";
-      notApplicable.textContent = "N/A";
-      select.appendChild(notApplicable);
+      // var notApplicable = document.createElement("option");
+      // notApplicable.value = "N/A";
+      // notApplicable.textContent = "N/A";
+      // select.appendChild(notApplicable);
 
       for (var j = 1; j <= 4; j++) {
         var option = document.createElement("option");
@@ -289,9 +289,9 @@ function displayQuestions(data) {
   }
 
   var paperPromptsDiv = document.getElementById("paperPrompts");
-  paperPromptsDiv.innerHTML = `<h2>Subject Name: ${
+  paperPromptsDiv.innerHTML = `<h2><center> ${
     data.subject_name || "Unknown"
-  }</h2>`;
+  }</center></h2><br><br>`;
   data.paper_prompts.forEach((prompt, index) => {
     var btLevel =
       data.questionBTLevels && data.questionBTLevels[index]
@@ -311,9 +311,9 @@ function displayQuestions(data) {
         : "N/A";
 
     paperPromptsDiv.innerHTML += `<div class="question-prompt-container">
-    <h3><b>Question ${index + 1}:</b></h3>
-    <p><b>BT Level:</b> ${btLevel}</p>
-    <p><b>Complexity:</b> ${complexity}</p>
+    <h3><b style="color:green;">Question ${index + 1}:</b></h3>
+    <p><b style="color: red;">BT Level:</b> ${btLevel}</p>
+<p><b style="color: blue;">Complexity:</b> ${complexity}</p>
     <p>${prompt.replace(/\n/g, "<br>")}</p>
   </div>`;
   });
@@ -455,7 +455,7 @@ function createDownloadButton(paperContent) {
   }
 
   const downloadButton = document.createElement("button");
-  downloadButton.textContent = "Download Paper";
+  downloadButton.textContent = "Download";
   downloadButton.classList.add("btn", "btn-primary");
   downloadButton.addEventListener("click", () => {
     const cleanedContent = paperContent.replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags
