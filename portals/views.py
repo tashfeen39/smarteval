@@ -188,7 +188,11 @@ def faculty_generate_exam_view(request):
 @login_required(login_url='portals:faculty-login')
 @teacher_required()
 def faculty_grading_view(request):
-    return render(request, "portals/Faculty_Grading.html")
+    teacher = request.user.teacher
+    context = {
+        'teacher': teacher,
+    }
+    return render(request, "portals/Faculty_Grading.html", context)
 
 # StudentReports
 @login_required(login_url='portals:faculty-login')
@@ -468,7 +472,6 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
     avg_final_marks = round(total_final_marks / total_students, 1)
     avg_project_marks = round(total_project_marks / total_students, 1)
 
-    # Assuming you have retrieved and processed the necessary data
     quiz_percentage_data = [float((quiz_mark.quiz_marks * 100) / quiz_mark.total_quiz_marks) for quiz_mark in quiz_marks]
     assignment_percentage_data = [float((assignment_mark.assignment_marks * 100) / assignment_mark.total_assignment_marks) for assignment_mark in assignment_marks]
     presentation_percentage_data = [float((presentation_mark.presentation_marks * 100) / presentation_mark.total_presentation_marks) for presentation_mark in presentation_marks]
@@ -657,7 +660,170 @@ def faculty_student_marks_entry_view(request, teachersectioncourse_id):
 @login_required(login_url='portals:student-login') 
 @student_required()
 def student_dashboard_view(request):
-    return render(request, "portals/Student_Dashboard.html")
+    teacher = request.user.teacher
+    student = get_object_or_404(Student, StudentID=student_id)
+    teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
+    course = teachersectioncourse.course
+    section_students = Student.objects.filter(section=teachersectioncourse.section)
+
+    # Get the relevant marks data for the student and course
+    semester_marks_data = SemesterMarksData.objects.get(student=student, course=course)
+
+    # Filter quiz marks by student and course
+    quiz_marks = QuizMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+    # Filter assignment marks by student and course
+    assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+    # Filter presentation marks by student and course
+    presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student=student, semester_marks_data__course=course)
+
+    # Get unique assessment numbers
+    unique_quiz_nums = quiz_marks.values_list('quiz_num', flat=True).distinct()
+    unique_assignment_nums = assignment_marks.values_list('assignment_num', flat=True).distinct()
+    unique_presentation_nums = presentation_marks.values_list('presentation_num', flat=True).distinct()
+    
+
+    # Calculate the maximum marks for each assessment type
+    max_quiz_marks = {}
+    max_assignment_marks = {}
+    max_presentation_marks = {}
+
+
+    # Calculate the minimum marks for each assessment type for the entire class
+    min_quiz_marks = {}
+    min_assignment_marks = {}
+    min_presentation_marks = {}
+
+    # Create dictionaries to accumulate average marks
+    avg_quiz_marks = {f'Quiz {i}': 0 for i in unique_quiz_nums}
+    avg_assignment_marks = {f'Assignment {i}': 0 for i in unique_assignment_nums}
+    avg_presentation_marks = {f'Presentation {i}': 0 for i in unique_presentation_nums}
+
+    # Get the relevant semester marks data for all students in the section
+    section_semester_marks_data = SemesterMarksData.objects.filter(student__in=section_students, course=course)
+
+    # Calculate the total mids marks, final marks, and project marks
+    total_mids_marks = section_semester_marks_data.aggregate(Sum('mids_marks'))['mids_marks__sum'] or 0
+    total_final_marks = section_semester_marks_data.aggregate(Sum('final_marks'))['final_marks__sum'] or 0
+    total_project_marks = section_semester_marks_data.aggregate(Sum('semester_project_marks'))['semester_project_marks__sum'] or 0
+
+    max_semester_project_marks = section_semester_marks_data.aggregate(Max('semester_project_marks'))['semester_project_marks__max'] or 0
+    min_semester_project_marks = section_semester_marks_data.aggregate(Min('semester_project_marks'))['semester_project_marks__min'] or 0
+
+    max_mids_marks = section_semester_marks_data.aggregate(Max('mids_marks'))['mids_marks__max'] or 0
+    min_mids_marks = section_semester_marks_data.aggregate(Min('mids_marks'))['mids_marks__min'] or 0
+
+    max_final_marks = section_semester_marks_data.aggregate(Max('final_marks'))['final_marks__max'] or 0
+    min_final_marks = section_semester_marks_data.aggregate(Min('final_marks'))['final_marks__min'] or 0
+
+
+
+
+
+    total_students = len(section_students)
+
+    for section_student in section_students:
+        avg_semester_marks_data = SemesterMarksData.objects.filter(student=section_student, course=course).first()
+        if avg_semester_marks_data:
+            avg_quiz_marks_student = QuizMarks.objects.filter(semester_marks_data=avg_semester_marks_data)
+            avg_assignment_marks_student = AssignmentMarks.objects.filter(semester_marks_data=avg_semester_marks_data)
+            avg_presentation_marks_student = PresentationMarks.objects.filter(semester_marks_data=avg_semester_marks_data)
+
+            for i in unique_quiz_nums:
+                # max_quiz_marks[f'Quiz {i}'] = avg_quiz_marks_student.filter(quiz_num=i).aggregate(Max('quiz_marks'))['quiz_marks__max'] or 0
+                quiz_avg = avg_quiz_marks_student.filter(quiz_num=i).aggregate(Avg('quiz_marks'))['quiz_marks__avg']
+                if quiz_avg is not None:
+                    avg_quiz_marks[f'Quiz {i}'] += quiz_avg
+
+            for i in unique_assignment_nums:
+                assignment_avg = avg_assignment_marks_student.filter(assignment_num=i).aggregate(Avg('assignment_marks'))['assignment_marks__avg']
+                if assignment_avg is not None:
+                    avg_assignment_marks[f'Assignment {i}'] += assignment_avg
+
+            for i in unique_presentation_nums:
+                presentation_avg = avg_presentation_marks_student.filter(presentation_num=i).aggregate(Avg('presentation_marks'))['presentation_marks__avg']
+                if presentation_avg is not None:
+                    avg_presentation_marks[f'Presentation {i}'] += presentation_avg
+
+    # Calculate overall average marks for each assessment type
+    avg_quiz_marks = calculate_average_marks(avg_quiz_marks, total_students)
+    avg_assignment_marks = calculate_average_marks(avg_assignment_marks, total_students)
+    avg_presentation_marks = calculate_average_marks(avg_presentation_marks, total_students)
+
+    avg_mids_marks = round(total_mids_marks / total_students, 1)
+    avg_final_marks = round(total_final_marks / total_students, 1)
+    avg_project_marks = round(total_project_marks / total_students, 1)
+
+    quiz_percentage_data = [float((quiz_mark.quiz_marks * 100) / quiz_mark.total_quiz_marks) for quiz_mark in quiz_marks]
+    assignment_percentage_data = [float((assignment_mark.assignment_marks * 100) / assignment_mark.total_assignment_marks) for assignment_mark in assignment_marks]
+    presentation_percentage_data = [float((presentation_mark.presentation_marks * 100) / presentation_mark.total_presentation_marks) for presentation_mark in presentation_marks]
+    semester_project_percentage_data = (semester_marks_data.semester_project_marks * 100) / semester_marks_data.total_project_marks 
+    mids_percentage_data = (semester_marks_data.mids_marks * 100) / semester_marks_data.total_mids_marks
+    final_percentage_data = (semester_marks_data.final_marks * 100) / semester_marks_data.total_final_marks
+
+
+
+
+
+
+    # Query all marks for the corresponding assessment types for all students in the class
+    all_quiz_marks = QuizMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+    all_assignment_marks = AssignmentMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+    all_presentation_marks = PresentationMarks.objects.filter(semester_marks_data__student__in=section_students, semester_marks_data__course=course)
+
+    # Calculate max marks for quizzes
+    for quiz_num in unique_quiz_nums:
+        max_quiz_marks[f'Quiz {quiz_num}'] = all_quiz_marks.filter(quiz_num=quiz_num).aggregate(Max('quiz_marks'))['quiz_marks__max'] or 0
+        min_quiz_marks[f'Quiz {quiz_num}'] = all_quiz_marks.filter(quiz_num=quiz_num).aggregate(Min('quiz_marks'))['quiz_marks__min'] or 0
+
+
+    # Calculate max marks for assignments
+    for assignment_num in unique_assignment_nums:
+        max_assignment_marks[f'Assignment {assignment_num}'] = all_assignment_marks.filter(assignment_num=assignment_num).aggregate(Max('assignment_marks'))['assignment_marks__max'] or 0
+        min_assignment_marks[f'Assignment {assignment_num}'] = all_assignment_marks.filter(assignment_num=assignment_num).aggregate(Min('assignment_marks'))['assignment_marks__min'] or 0
+
+    # Calculate max marks for presentations
+    for presentation_num in unique_presentation_nums:
+        max_presentation_marks[f'Presentation {presentation_num}'] = all_presentation_marks.filter(presentation_num=presentation_num).aggregate(Max('presentation_marks'))['presentation_marks__max'] or 0
+        min_presentation_marks[f'Presentation {presentation_num}'] = all_presentation_marks.filter(presentation_num=presentation_num).aggregate(Min('presentation_marks'))['presentation_marks__min'] or 0
+
+
+    # Pass the data to the template context
+    context = {
+        'teacher': teacher,
+        'student': student,
+        'course': course,
+        'semester_marks_data': semester_marks_data,
+        'quiz_marks': list(quiz_marks),
+        'assignment_marks': list(assignment_marks),
+        'presentation_marks': list(presentation_marks),
+        'avg_quiz_marks': avg_quiz_marks,
+        'avg_assignment_marks': avg_assignment_marks,
+        'avg_presentation_marks': avg_presentation_marks,
+        'avg_semester_project_marks': avg_project_marks,
+        'avg_mids_marks': avg_mids_marks,
+        'avg_final_marks': avg_final_marks,
+        'max_quiz_marks': max_quiz_marks,
+        'max_assignment_marks': max_assignment_marks,
+        'max_presentation_marks': max_presentation_marks,
+        'min_quiz_marks': min_quiz_marks,
+        'min_assignment_marks': min_assignment_marks,
+        'min_presentation_marks': min_presentation_marks,
+        'max_semester_project_marks': max_semester_project_marks,
+        'min_semester_project_marks': min_semester_project_marks,
+        'max_mids_marks': max_mids_marks,
+        'min_mids_marks': min_mids_marks,
+        'max_final_marks': max_final_marks,
+        'min_final_marks': min_final_marks,
+        'quiz_percentage_data': quiz_percentage_data,
+        'assignment_percentage_data': assignment_percentage_data,
+        'presentation_percentage_data': presentation_percentage_data,
+        'semester_project_percentage_data': semester_project_percentage_data,
+        'mids_percentage_data': mids_percentage_data,
+        'final_percentage_data': final_percentage_data,
+
+    }
+
+    return render(request, "portals/Student_Dashboard.html", context)
 
 
 @login_required(login_url='portals:student-login') 
