@@ -91,32 +91,32 @@
                             <span>Main Menu</span>
                         </li>
 
-                        <li>
+                        {% comment %} <li>
                             <a href="{% url 'portals:student-dashboard' %}"><i class="feather-grid"></i> <span>
                                     Dashboard
                                 </span> </a>
 
-                        </li>
+                        </li> {% endcomment %}
                         <li>
                             <a href="{% url 'portals:student-registeredcourses' %}"><i
                                     class="fas fa-chalkboard-teacher"></i> <span>
                                     Registered Courses</span> </a>
 
                         </li>
-                        <li>
+                        {% comment %} <li>
                             <a href="{% url 'portals:student-timetable' %}"><i class="fas fa-building"></i> <span>
                                     TimeTable
                                 </span>
                             </a>
 
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li>
+                        {% comment %} <li>
                             <a href="{% url 'portals:student-report' %}"><i class="fas fa-clipboard"></i> <span>
                                     Report</span>
                             </a>
 
-                        </li>
+                        </li> {% endcomment %}
                         <li>
                             <a href="{% url 'portals:student-feedback' %}"><i class="fas fa-file"></i> <span>
                                     Feedback / Complaint</span>

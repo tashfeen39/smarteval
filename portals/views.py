@@ -75,10 +75,10 @@ def faculty_dashboard_view(request):
     upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
     missed_classes = Class.objects.filter(
     teacher=teacher,
-    class_taken=False
+    class_taken=False,
+    class_timing__weekday=current_datetime.strftime('%A'),
+    class_timing__start_time__lt=current_datetime.time(),
 )
-    # class_timing__weekday=current_datetime.strftime('%A'),
-    # class_timing__start_time__lt=current_datetime.time(),
 
     # Convert time format to display "12 pm" instead of "noon"
     for class_obj in upcoming_classes:
@@ -322,10 +322,10 @@ def find_available_time_slots(request):
     upcoming_classes = Class.objects.filter(teacher=teacher, class_timing__weekday=current_date.strftime('%A'))
     missed_classes = Class.objects.filter(
     teacher=teacher,
-    class_taken=False
+    class_taken=False,
+    class_timing__weekday=current_datetime.strftime('%A'),
+    class_timing__start_time__lt=current_datetime.time()
 )
-    # class_timing__weekday=current_datetime.strftime('%A'),
-    # class_timing__start_time__lt=current_datetime.time(),
 
     # Convert time format to display "12 pm" instead of "noon"
     for class_obj in upcoming_classes:
@@ -864,13 +864,59 @@ def student_report_view(request):
 @login_required(login_url='portals:student-login') 
 @student_required()
 def student_feedback_view(request):
-    return render(request, "portals/Student_Feedback.html")
+    student = request.user.student
+    teachers = TeacherSectionsTaught.objects.filter(section=student.section)
+
+    if request.method == 'POST':
+            # Extract data from the form
+            feedback_type = request.POST.get('feedbackType')
+            feedback_from = request.POST.get('name')
+            feedback_for = request.POST.get('classSelect')
+            message = request.POST.get('message')
+
+            print("Feedback Type: " , feedback_type)
+
+            if feedback_type == "Feedback":
+                # Create a new instance of Feedback model
+                feedback = Feedback(
+                    feedback_from=feedback_from,
+                    feedback_for=feedback_for,
+                    feedback_details=message,
+                    created_at=timezone.now()
+                )
+
+                # Save the instance to the database
+                feedback.save()
+
+            elif feedback_type == "Complaint":
+                complaint = Complaint(
+                    complaint_from=feedback_from,
+                    complaint_for=feedback_for,
+                    complaint_details=message,
+                    created_at=timezone.now()
+                )
+                complaint.save()
+
+            # Redirect to the same page after successful submission
+            return redirect('portals:student-feedback')
+
+    
+    context = {
+        'student':student,
+        'teachers':teachers
+        
+    }
+    return render(request, "portals/Student_Feedback.html", context)
 
 
 @login_required(login_url='portals:student-login') 
 @student_required()
 def student_profile_view(request):
-    return render(request, "portals/Student_Profile.html")
+    student = request.user.student
+    context = {
+        'teacher': student
+    }
+    return render(request, "portals/Student_Profile.html", context)
 
 
 @login_required(login_url='portals:student-login') 
@@ -1925,10 +1971,10 @@ def saveFaculty(request):
         religion = request.POST.get("religion")
         Nationality = request.POST.get("Nationality")
         CNIC = request.POST.get("CNIC")
-        Departmentt = request.POST.get("Department")
+        # Departmentt = request.POST.get("Department")
         Address = request.POST.get("Address")
 
-        department=Department.objects.filter(department_name=Departmentt).first()
+        # department=Department.objects.filter(department_name=Departmentt).first()
 
 
 
@@ -2000,7 +2046,6 @@ def saveFaculty(request):
         # user.save()
         teacher = Teacher(
             user=user,
-            department=department,
             date_of_birth=birthday,
             gender=gender,
             marital_status=marital_status,
@@ -2029,6 +2074,7 @@ def student_registration(request):
 
 def saveStudent(request):
     if request.method == "POST":
+        print("savin student")
         # Get form input values
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -2047,7 +2093,7 @@ def saveStudent(request):
         Father_Name = request.POST.get("Father Name")
         Father_Occupation = request.POST.get("Father_Occupation")
         Semester = request.POST.get("Semester")
-        Degree = request.POST.get("Degree")
+        # Degree = request.POST.get("Degree")
         Address = request.POST.get("Address")
 
 
@@ -2134,10 +2180,8 @@ def saveStudent(request):
             father_name=Father_Name,
             father_occupation=Father_Occupation,
             semester=Semester,
-
-
-
         )
+        print("student")
         student.save()
 
         # Redirect to the signin page or any other desired page

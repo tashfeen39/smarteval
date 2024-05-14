@@ -5,10 +5,45 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,1,200" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="{% static 'css/Student_Feedback.css' %}">
 {% endblock %}
 
+
+{% block profilemenu %}
+<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        <span class="user-img">
+                             {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                
+                               {% if student.user.profile_picture %}
+                                <img class="avatar-img rounded-circle" style="width: 40px;
+                                            height: 40px" src="{{ student.user.profile_picture.url }}" />
+                            {% else %}
+                                <span class="material-symbols-outlined image-size">person</span>
+                            {% endif %}
+                            </div>
+                            <div class="user-text">
+                                <h6>{{ student.user.first_name }} {{ student.user.last_name }}</h6>
+                            </div>
+                        </div>
+                        <a class="dropdown-item" href="{% url 'portals:student-profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'portals:logout' %}">Logout</a>
+                    </div>
+{% endblock %}
 
 <!-- ---------------- Block for Body ---------------- -->
 {% block body %}
@@ -23,10 +58,10 @@
 
                 </div>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body"> student-feedback
                         <div class="row">
                             <div class="feedback-form">
-                                <form id="feedbackForm" onsubmit="submitFeedback(); return false;">
+                                <form id="feedbackForm" method="post" action="{% url 'portals:student-feedback' %}">
                                     {% csrf_token %}
                                     <label for="classSelect">Select</label>
                                     <div class="custom-select">
@@ -41,13 +76,13 @@
 
                                     <label for="classSelect">Select a Teacher</label>
                                     <div class="custom-select">
-                                        <select id="classSelect" name="classSelect">
-                                            <option value="Teacher A">Mr. Atif Ali Shah</option>
-                                            <option value="Teacher B">Mr. Imran</option>
-                                            <option value="Teacher C">Mr. Sohaib</option>
-                                            <option value="Teacher D">Mr. Junaid</option>
-                                            <option value="Teacher E">Mr. Shoaib</option>
-                                        </select>
+                                       <select id="classSelect" name="classSelect">
+                                        {% for teacher in teachers %}
+                                        <option>{{ teacher.teacher.user.first_name }} {{ teacher.teacher.user.last_name }} - 
+                                         {{ teacher.course }}</option>
+                                            {% endfor %}
+                                    
+                                    </select>
                                     </div>
 
                                     <label for="message">Message</label><br>
