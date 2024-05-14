@@ -165,10 +165,10 @@ document
       select.name = `question_${i}_parts`;
       select.classList.add("form-select", "mb-3", "question-parts");
 
-      var notApplicable = document.createElement("option");
-      notApplicable.value = "N/A";
-      notApplicable.textContent = "N/A";
-      select.appendChild(notApplicable);
+      // var notApplicable = document.createElement("option");
+      // notApplicable.value = "N/A";
+      // notApplicable.textContent = "N/A";
+      // select.appendChild(notApplicable);
 
       for (var j = 1; j <= 4; j++) {
         var option = document.createElement("option");

@@ -2070,7 +2070,7 @@ def generate_paper(request):
             subject_id = data.get("subject_id")
             subject_name = subject_id
             select_questions = int(data.get("selectQuestions"))
-            question_parts = data.get("questionParts") or ['N/A'] * select_questions
+            question_parts = data.get("questionParts", [''] * select_questions)
             question_topics = data.get("questionTopics") or [''] * select_questions
             # Check if all topics are provided
             if any(not topic.strip() for topic in question_topics):

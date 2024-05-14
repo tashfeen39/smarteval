@@ -4,9 +4,6 @@
 
 - search bar for students
 - student dashboard mai timetable
-- generate exam ko pyaara krna
-- no. of parts mai se N/A hatana
-- total question 5 krne generate exam mai
 - internal graphs
 - speed o meter ???
 - space decrease krni faulty dashbooard
@@ -48,3 +45,9 @@
 - feedback and complaints
 - multiple reports for teachers
 - grade model ka save function remove krke default values check krni
+
+
+- generate exam ko pyaara krna
+- no. of parts mai se N/A hatana
+- total question 5 krne generate exam mai
+
