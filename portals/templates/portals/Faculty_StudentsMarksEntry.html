@@ -9,6 +9,9 @@
 
 <link rel="stylesheet" href="{% static '/plugins/datatables/datatables.min.css' %}" />
 
+
+
+
 {% endblock %}
 
 {% block profilemenu %}
@@ -71,6 +74,7 @@
                         </div>
 
                         <form method="post" action="{% url 'portals:save-marks' teachersectioncourse.pk %}">
+                           
                             <div class="table-responsive">
                                 {% csrf_token %}
                                 <table class="table border-0 table-center table-hover">
@@ -185,6 +189,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 {% endblock %}

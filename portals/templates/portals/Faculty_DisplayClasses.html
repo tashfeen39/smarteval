@@ -49,7 +49,7 @@
 
 {% comment %} <!-- ---------------- Block for Body ---------------- --> {% endcomment %}
 {% block body %}
-<div class="page-wrapper">
+{% comment %} <div class="page-wrapper">
     <div class="content container-fluid">
 
         <div class="page-header">
@@ -82,6 +82,42 @@
             </div>
         </div>
     </div>
+</div> {% endcomment %}
+
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-6">
+                  <h5 class="card-title">Classes</h5>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                {% for sectioncourse in sections_taught %}
+                <div class="col-md-4">
+                  <div class="card card-bg">
+                    <div class="card-body">
+                      <a href="{% url 'portals:class-info' sectioncourse.pk %}">
+                        <h5 class="card-title">{{ sectioncourse.section.degree.degree_abbreviation }} {{ sectioncourse.section.semester }} {{ sectioncourse.section.section_name }} - {{ sectioncourse.course }}</h5>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 and not forloop.last %}</div><div class="row">{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

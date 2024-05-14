@@ -2,16 +2,16 @@
 
 ## High Priority
 
-- search bar for students
+- search bar for students (tried)
 - student dashboard mai timetable
 - internal graphs
 - speed o meter ???
 
 - classes display sai treeqe se krani aur design bhi
 
-- marks entry walli file mai empty marks ko shade krna
+- marks entry walli file mai empty marks ko shade krna (tried)
 - reports related to subjects for teacher
-- generate paper ka download button ki alignment
+
 
 
 - reports for students
@@ -52,6 +52,8 @@
 - total question 5 krne generate exam mai
 - space decrease krni faulty dashbooard
 - student info ko read only krna
+- generate paper ka download button ki alignment
+
 
 
 

@@ -1,7 +1,7 @@
     .feedback-form {
         width: 700px;
         margin: 0 auto;
-        animation: fadeIn 2s ease-in-out;
+        animation: fadeIn 0.5s ease-in-out;
     }
 
     @keyframes fadeIn {
