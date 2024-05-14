@@ -2,6 +2,8 @@
 
 <!-- ---------------- Block for Header ---------------- -->
 {% block header %}
+{% comment %} <link rel="stylesheet" href="{% static 'css/Faculty_Dashboard.css' %}"> {% endcomment %}
+
 <link rel="stylesheet" href="{% static '/plugins/scrollbar/scroll.min.css' %}" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,1,200" />
 
@@ -216,14 +218,26 @@
 
         </div>
         <div class="col-md-12">
-  <div class="card">
-    <div class="card-header">
-      <h5 class="card-title">Available Time Slots</h5>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Available Time Slots</h3>
+        </div>
+        <div class="card-body">
+            {% if available_slots_list %}
+                <ul class="list-group">
+                    {% for slot in available_slots_list|slice:":10" %}
+                        <li class="list-group-item">
+                            {{ slot.start_time }} - {{ slot.end_time }} on {{ slot.weekday }} in Room: {{ slot.room }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if available_slots_list|length > 10 %}
+                {% endif %}
+            {% else %}
+                <p class="text-center">No available time slots found.</p>
+            {% endif %}
+        </div>
     </div>
-    <div class="card-body">
-      <ul id="freeSlotsList"></ul>
-    </div>
-  </div>
 </div>
         
 {% endblock %}
@@ -280,5 +294,8 @@
       $(this).closest('form').submit();
     });
   });
+
+  
 {% endblock %}
+
 
