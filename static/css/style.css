@@ -127,7 +127,7 @@ ol {
 }
 .table > :not(caption) > * > * {
   box-shadow: unset;
-  padding: 0.75rem;
+  /* padding: 0.75rem; */
 }
 .table thead th {
   vertical-align: bottom;

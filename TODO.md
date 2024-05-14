@@ -6,7 +6,7 @@
 - student dashboard mai timetable
 - internal graphs
 - speed o meter ???
-- space decrease krni faulty dashbooard
+
 - classes display sai treeqe se krani aur design bhi
 - student info ko read only krna
 - marks entry walli file mai empty marks ko shade krna
@@ -50,4 +50,6 @@
 - generate exam ko pyaara krna
 - no. of parts mai se N/A hatana
 - total question 5 krne generate exam mai
+- space decrease krni faulty dashbooard
+
 
