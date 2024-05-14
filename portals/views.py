@@ -40,6 +40,7 @@ from django.db.models import Q
 @teacher_required()
 def faculty_class_info_view(request, sectioncourse_pk):
     # Get the section instance
+    teacher = request.user.teacher
     sectioncourse = get_object_or_404(TeacherSectionsTaught, pk=sectioncourse_pk)
     
 
@@ -47,6 +48,7 @@ def faculty_class_info_view(request, sectioncourse_pk):
     students = Student.objects.filter(section=sectioncourse.section)
 
     context = {
+        'teacher': teacher,
         'sectioncourse':sectioncourse,
         'course': sectioncourse.course,
         'students': students,
@@ -373,6 +375,7 @@ def calculate_average_marks(queryset, total_students):
 
 # Display student marks and also generate data for reports to send over to the frontend
 def faculty_student_info_view(request, student_id, teachersectioncourse_id):
+    teacher = request.user.teacher
     student = get_object_or_404(Student, StudentID=student_id)
     teachersectioncourse = get_object_or_404(TeacherSectionsTaught, pk=teachersectioncourse_id)
     course = teachersectioncourse.course
@@ -502,6 +505,7 @@ def faculty_student_info_view(request, student_id, teachersectioncourse_id):
 
     # Pass the data to the template context
     context = {
+        'teacher': teacher,
         'student': student,
         'course': course,
         'semester_marks_data': semester_marks_data,
