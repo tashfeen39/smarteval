@@ -254,7 +254,7 @@
 <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
 <script>
   // Function to display available time slots
-  function showFreeSlots(availableSlots) {
+  {% comment %} function showFreeSlots(availableSlots) {
     // Clear any existing data
     $('#freeSlotsList').empty();
     // Loop through the available time slots and add them to the list
@@ -293,7 +293,7 @@
     $('input[type="checkbox"]').change(function() {
       $(this).closest('form').submit();
     });
-  });
+  }); {% endcomment %}
 
   
 {% endblock %}
