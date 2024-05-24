@@ -233,6 +233,7 @@ class ClassTiming(models.Model):
         ('Wednesday', 'Wednesday'),
         ('Thursday', 'Thursday'),
         ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
     ])
 
     def __str__(self):
