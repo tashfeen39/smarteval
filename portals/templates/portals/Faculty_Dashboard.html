@@ -253,12 +253,55 @@
 <script src="{% static 'plugins/scrollbar/scrollbar.min.js' %}"></script>
 <script src="{% static 'plugins/scrollbar/custom-scroll.js' %}"></script>
 <script>
+<<<<<<< HEAD
+  // Function to display available time slots
+  {% comment %} function showFreeSlots(availableSlots) {
+    // Clear any existing data
+    $('#freeSlotsList').empty();
+    // Loop through the available time slots and add them to the list
+    availableSlots.forEach(function(slot) {
+        console.log(slot)
+      $('#freeSlotsList').append(`
+        <li>${slot.start_time} - ${slot.end_time} (${slot.weekday}), Room: ${slot.room}</li>
+      `);
+    });
+  }
+
+  $(document).ready(function() {
+    // Submit form when the "Find Free Slots" button is clicked
+    $('#findslotsbtn').click(function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      console.log('Button clicked'); // Log button click
+
+      // Make AJAX request to fetch available time slots
+      $.ajax({
+        url: '{% url "portals:find_available_time_slots" %}',
+        method: 'POST',
+        data: $('#findFreeSlotsForm').serialize(), // Serialize form data
+        success: function(response) {
+          console.log('Success response:', response); // Log success response
+          // Display available time slots
+          showFreeSlots(response.available_slots);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error fetching available time slots:', error);
+        }
+      });
+    });
+
+=======
  
+>>>>>>> b87c0aeb321bc1bdf85e086d656ee8464e79e969
     // Submit form when checkboxes are changed
     $('input[type="checkbox"]').change(function() {
       $(this).closest('form').submit();
     });
+<<<<<<< HEAD
+  }); {% endcomment %}
+=======
 
+>>>>>>> b87c0aeb321bc1bdf85e086d656ee8464e79e969
 
   
 {% endblock %}

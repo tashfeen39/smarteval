@@ -2466,7 +2466,7 @@ def regenerate_question(request):
             prompt += f"Selected BT Level: {bt_level}\n"
             prompt += f"Complexity Level: {complexity.capitalize()}\n"
             prompt += f"Generate a {complexity} question with {parts} parts.\n"
-            prompt += "Each part should be distinct and clearly numbered.\n"
+            prompt += "Each part should be distinct and clearly numbered. The question must meet the selected BT Level\n"
 
             logger.info(f"Generated prompt: {prompt}")
 
