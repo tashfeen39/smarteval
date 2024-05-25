@@ -4137,7 +4137,7 @@ table.table-inbox tbody tr.checked {
   margin-left: 12px;
 }
 .lesson-confirm {
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 .lesson .lesson-confirm a {
   color: #3d5ee1;
@@ -9387,3 +9387,11 @@ body[data-layout-mode="dark"]
 /* input[type="float"]:required:invalid {
         background-color: yellow;
     } */
+
+    .class_taken{
+      /* margin-top: 10px; */
+    }
+
+.row_margin{
+  margin: 20px;
+}
